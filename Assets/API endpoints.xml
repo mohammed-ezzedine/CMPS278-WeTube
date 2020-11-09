@@ -1,0 +1,359 @@
+<endpoint id="1" description="Sign up a new user">
+	<method>POST</method>
+	<path>/api/identity/signup</path>
+	<body>{ firstName: '', lastName: '', username: '', password: '' }</body>
+	<response>
+		<success>user json object { Id: 0, firstName: '', lastName: '', username: '', secret: '', subscriptionsIds: [], watchlaterVideosIds: [], channelId: 0 }</success>
+		<failure>"username already exists"</failure>
+	</response>
+</endpoint>
+<endpoint id="2" description="Sign in a user">
+	<method>POST</method>
+	<path>/api/identity/signin</path>
+	<body>{ username: '', password: '' }</body>
+	<response>
+		<success>user json object { Id: 0, firstName: '', lastName: '', username:'', secret:'', subscriptionsIds: [], watchlaterVideosIds: [], channelId: 0 }</success>
+		<failure>"Ivalid username or password"</failure>
+	</response>
+</endpoint>
+<endpoint id="3" description="Get channel">
+	<method>GET</method>
+	<path>/api/channel?id={channel id}</path>
+	<response>
+		{
+			id: 0,
+			Name: '',
+			description: '',
+			imageUrl: 'https://url.com'
+			videos: [
+				{
+					id: 0,
+					author: 'author username',
+					authorId: 0,
+					title: '',
+					description: '',
+					uploadData: '',
+					shown: true/false,
+					url: 'https://url.com',
+					viewsCount: 0,
+					likesCount: 0,
+					disLikesCount: 0,
+					thumbnailUrl: 'https://url.com',
+					comments: [
+						{
+							id: 0,
+							userName: 'user full name',
+							userId: 0,
+							videoId: 0,
+							dateTime: '',
+							text: '',
+							replies: [
+								{
+									id: 0,
+									userId: 0,
+									text: ''
+								}
+							]
+						}
+					]
+				}
+			],
+			featuredVideos: [
+				{
+					id: 0,
+					author: 'author username',
+					authorId: 0,
+					title: '',
+					description: '',
+					uploadData: '',
+					shown: true/false,
+					url: 'https://url.com',
+					viewsCount: 0,
+					likesCount: 0,
+					disLikesCount: 0,
+					thumbnailUrl: 'https://url.com',
+					comments: [
+						{
+							id: 0,
+							userName: 'user full name',
+							userId: 0,
+							videoId: 0,
+							dateTime: '',
+							text: '',
+							replies: [
+								{
+									id: 0,
+									userId: 0,
+									text: ''
+								}
+							]
+						}
+					]
+				}
+			],
+			playlists: [
+				{
+					id: 0,
+					name: '',
+					videosCount: 0,
+					thumbnailUrl: 'https://url.com'
+				}
+			]
+		}
+	</response>
+</endpoint>
+<endpoint id="4" description="Get video">
+	<method>GET</method>
+	<path>/api/video?id={video id}</path>
+	<response>
+		{
+			id: 0,
+			author: 'author username',
+			authorId: 0,
+			title: '',
+			description: '',
+			uploadData: '',
+			shown: true/false,
+			url: 'https://url.com',
+			viewsCount: 0,
+			likesCount: 0,
+			disLikesCount: 0,
+			channelImageUrl: 'https://url.com',
+			thumbnailUrl: 'https://url.com',
+			channelDescription: '',
+			comments: [
+				{
+					id: 0,
+					userName: 'user full name',
+					userId: 0,
+					videoId: 0,
+					dateTime: '',
+					text: '',
+					replies: [
+						{
+							id: 0,
+							userId: 0,
+							text: ''
+						}
+					]
+				}
+			]
+		}
+	</response>
+</endpoint>
+<endpoint id="5" description="Get user's videos">
+	<method>GET</method>
+	<path>/api/video?userId={user id}</path>
+	<response>
+		[
+			{
+				id: 0,
+				author: 'author username',
+				authorId: 0,
+				title: '',
+				description: '',
+				uploadData: '',
+				shown: true/false,
+				url: 'https://url.com',
+				viewsCount: 0,
+				likesCount: 0,
+				disLikesCount: 0,
+				thumbnailUrl: 'https://url.com',
+				comments: [
+					{
+						id: 0,
+						userName: 'user full name',
+						userId: 0,
+						videoId: 0,
+						dateTime: '',
+						text: '',
+						replies: [
+							{
+								id: 0,
+								userId: 0,
+								text: ''
+							}
+						]
+					}
+				]
+			}
+		]
+	</response>
+</endpoint>
+<endpoint id="6" description="Get user's stats">
+	<method>GET</method>
+	<path>/api/video?userId={user id}&secret={user secret}</path>
+	<response>
+		{
+			lastMonthViewsCount: 0,
+			viewsCount: 0,
+			topVideos: [
+				{
+					id: 0,
+					author: 'author username',
+					authorId: 0,
+					title: '',
+					description: '',
+					uploadData: '',
+					shown: true/false,
+					url: 'https://url.com',
+					viewsCount: 0,
+					likesCount: 0,
+					disLikesCount: 0,
+					thumbnailUrl: 'https://url.com',
+					comments: [
+						{
+							id: 0,
+							userName: 'user full name',
+							userId: 0,
+							videoId: 0,
+							dateTime: '',
+							text: '',
+							replies: [
+								{
+									id: 0,
+									userId: 0,
+									text: ''
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	</response>
+</endpoint>
+<endpoint id="7" description="Get playlist">
+	<method>GET</method>
+	<path>/api/video/playlist?id={playlist id}</path>
+	<response>
+		[
+			{
+				id: 0,
+				author: 'author username',
+				authorId: 0,
+				title: '',
+				description: '',
+				uploadData: '',
+				shown: true/false,
+				url: 'https://url.com',
+				viewsCount: 0,
+				likesCount: 0,
+				disLikesCount: 0,
+				thumbnailUrl: 'https://url.com',
+				comments: [
+					{
+						id: 0,
+						userName: 'user full name',
+						userId: 0,
+						videoId: 0,
+						dateTime: '',
+						text: '',
+						replies: [
+							{
+								id: 0,
+								userId: 0,
+								text: ''
+							}
+						]
+					}
+				]
+			}
+		]
+	</response>
+</endpoint>
+<endpoint id="8" description="Get user's watchlater list">
+	<method>GET</method>
+	<path>/api/video/watchlater?userId={user id}&secret={user secret}</path>
+	<response>
+		[
+			{
+				id: 0,
+				author: 'author username',
+				authorId: 0,
+				title: '',
+				description: '',
+				uploadData: '',
+				shown: true/false,
+				url: 'https://url.com',
+				viewsCount: 0,
+				likesCount: 0,
+				disLikesCount: 0,
+				thumbnailUrl: 'https://url.com',
+				comments: [
+					{
+						id: 0,
+						userName: 'user full name',
+						userId: 0,
+						videoId: 0,
+						dateTime: '',
+						text: '',
+						replies: [
+							{
+								id: 0,
+								userId: 0,
+								text: ''
+							}
+						]
+					}
+				]
+			}
+		]
+	</response>
+</endpoint>
+<endpoint id="9" description="Get user's history">
+	<method>GET</method>
+	<path>/api/video/watchlater?userId={user id}&secret={user secret}</path>
+	<response>
+		[
+			{
+				id: 0,
+				dateTime: ''
+				video: {
+					id: 0,
+					title: '',
+					description: '',
+					thumbnailUrl: 'https://url.com'
+				}
+			}
+		]
+	</response>
+</endpoint>
+
+
+<endpoint description="Upload a video">
+</endpoint>
+<endpoint description="Update a video">
+</endpoint>
+<endpoint description="Delete a video">
+</endpoint>
+<endpoint description="Hide a video">
+</endpoint>
+<endpoint description="Show a video">
+</endpoint>
+<endpoint description="Like a video">
+</endpoint>
+<endpoint description="Dislike a video">
+</endpoint>
+<endpoint description="Add a video to playlist">
+</endpoint>
+<endpoint description="create a playlist">
+</endpoint>
+<endpoint description="add a video to watch later">
+</endpoint>
+<endpoint description="add a comment">
+</endpoint>
+<endpoint description="like a comment">
+</endpoint>
+<endpoint description="dislike a comment">
+</endpoint>
+<endpoint description="reply to a comment">
+</endpoint>
+<endpoint description="subscribe to channel">
+</endpoint>
+<endpoint description="report a video">
+</endpoint>
+<endpoint description="create a channel">
+</endpoint>
+<endpoint description="add video to channel's featured list">
+</endpoint>
