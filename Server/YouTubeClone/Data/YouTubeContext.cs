@@ -48,11 +48,6 @@ namespace YouTubeClone.Data
                 .WithMany(v => v.Playlists);
 
             builder.Entity<User>()
-                .HasOne(u => u.Channel)
-                .WithOne(c => c.User)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.Entity<User>()
                 .HasMany(u => u.Subscriptions)
                 .WithOne(c => c.User)
                 .OnDelete(DeleteBehavior.Cascade);
