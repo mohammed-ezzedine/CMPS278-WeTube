@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace YouTubeClone.Models
 {
@@ -13,5 +14,9 @@ namespace YouTubeClone.Models
         public string Text { get; set; }
 
         public DateTime DateTime { get; set; }
+
+        public List<UserCommentReaction> UserCommentReactions { get; set; }
+
+        public List<UserCommentReply> UserCommentReplies { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace YouTubeClone.Models
+﻿using System.Collections.Generic;
+
+namespace YouTubeClone.Models
 {
     public class Video
     {
@@ -15,5 +17,19 @@
         public string ThumbnailUrl { get; set; }
 
         public Channel Author { get; set; }
+
+        public bool Featured { get; set; }
+
+        public List<PlaylistVideo> Playlists { get; set; }
+
+        public List<UserVideoComment> UserVideoComments { get; set; }
+
+        public List<UserVideoReaction> UserVideoReactions { get; set; }
+
+        public List<UserVideoReport> UserVideoReports { get; set; }
+
+        public List<UserVideoView> UserVideoViews { get; set; }
+
+        public List<UserVideoWatchLater> UserVideoWatchLater { get; set; }
     }
 }

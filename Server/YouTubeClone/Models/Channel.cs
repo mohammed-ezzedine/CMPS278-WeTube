@@ -10,9 +10,11 @@ namespace YouTubeClone.Models
 
         public string ImageUrl { get; set; }
 
-        public List<Video> Videos { get; set; }
+        public User User { get; set; }
 
-        public List<Video> FeautredVideos { get; set; }
+        public List<UserChannelSubscription> Subscribers { get; set; }
+
+        public List<Video> Videos { get; set; }
 
         public List<Playlist> Playlists { get; set; }
     }

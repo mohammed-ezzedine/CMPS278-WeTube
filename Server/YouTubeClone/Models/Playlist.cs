@@ -6,7 +6,7 @@ namespace YouTubeClone.Models
     {
         public int Id { get; set; }
 
-        public List<Video> Videos { get; set; }
+        public List<PlaylistVideo> Videos { get; set; }
 
         public string Name { get; set; }
 

@@ -19,8 +19,20 @@ namespace YouTubeClone.Models
 
         public Channel Channel { get; set; }
 
-        public List<Channel> Subscriptions { get; set; }
+        public List<UserChannelSubscription> Subscriptions { get; set; }
 
-        public List<Video> WatchLater { get; set; }
+        public List<UserVideoWatchLater> WatchLater { get; set; }
+
+        public List<UserCommentReaction> UserCommentReactions { get; set; }
+
+        public List<UserCommentReply> UserCommentReplies { get; set; }
+
+        public List<UserVideoComment> UserVideoComments { get; set; }
+
+        public List<UserVideoReaction> UserVideoReactions { get; set; }
+
+        public List<UserVideoReport> UserVideoReports { get; set; }
+
+        public List<UserVideoView> UserVideoViews { get; set; }
     }
 }
