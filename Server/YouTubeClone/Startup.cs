@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using YouTubeClone.Data;
+using YouTubeClone.Settings;
 
 namespace YouTubeClone
 {
@@ -23,6 +24,8 @@ namespace YouTubeClone
 
             services.AddDbContext<YouTubeContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("YouTubeContext")));
+
+            services.AddTransient(sp => GetSettings<HashingSettings>(Configuration));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -42,6 +45,14 @@ namespace YouTubeClone
             {
                 endpoints.MapControllers();
             });
+        }
+
+        private T GetSettings<T>(IConfiguration configuration) where T : new()
+        {
+            var config = configuration.GetSection(typeof(T).Name);
+            T settings = new T();
+            config.Bind(settings);
+            return settings;
         }
     }
 }

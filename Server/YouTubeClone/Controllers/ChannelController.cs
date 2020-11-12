@@ -67,5 +67,17 @@ namespace YouTubeClone.Controllers
 
             return channel;
         }
+
+        [HttpPut]
+        public async Task<ActionResult> Subscribe(int id, [FromRoute] string userId, [FromRoute] string userSecret)
+        {
+            throw new NotImplementedException();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> FeatureVideo(int id, int videoId, [FromRoute] string userId, [FromRoute] string userSecret)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
