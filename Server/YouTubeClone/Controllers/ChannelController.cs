@@ -62,16 +62,28 @@ namespace YouTubeClone.Controllers
             }
 
             user.Channel = channel;
-            context.Channel.Add(channel);
+            await context.Channel.AddAsync(channel);
             await context.SaveChangesAsync();
 
             return channel;
         }
 
-        [HttpPut]
+        [HttpPost]
         public async Task<ActionResult> Subscribe(int id, [FromRoute] string userId, [FromRoute] string userSecret)
         {
-            throw new NotImplementedException();
+            var user = await context.User.FindAsync(userId);
+
+            if (user == null || user.Secret != Guid.Parse(userSecret))
+            {
+                return Unauthorized();
+            }
+
+            var channel = await context.Channel.FindAsync(id);
+            await context.UserChannelSubscription.AddAsync(new UserChannelSubscription { User = user, Channel = channel });
+            await context.SaveChangesAsync();
+            return Ok();
+            
+
         }
 
         [HttpPost]

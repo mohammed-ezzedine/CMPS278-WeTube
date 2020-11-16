@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
 
@@ -23,19 +24,48 @@ namespace YouTubeClone.Controllers
         [HttpGet("channel/{channelId}")]
         public async Task<ActionResult<IEnumerable<Video>>> GetChannelVideos(int channelId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var videos = await context.Video.Where(v => v.Author.Id == channelId).ToListAsync();
+                
+                return Ok(videos);
+            }
+            catch (Exception)
+            {
+
+                return BadRequest();
+            }
+
         }
 
-        [HttpGet]
-        public async Task<ActionResult<Video>> GetVideo(int id)
+        [HttpGet("{vidId}")]
+        public async Task<ActionResult<Video>> GetVideo(int vidId)
         {
-            throw new NotImplementedException();
+                var videoById = await context.Video.FindAsync(vidId);
+                if (videoById == null)
+                {
+                    return NotFound();
+                }
+                return Ok(videoById);
+            
         }
 
         [HttpPost]
-        public async Task<ActionResult<Video>> PostVideo(Video video)
+        public async Task<ActionResult<Video>> PostVideo(Video video, [FromRoute] string userId, [FromRoute] string userSecret)
         {
-            throw new NotImplementedException();
+            // Create an additional utility function for auth check
+
+            var user = await context.User.FindAsync(userId);
+
+            if (user == null || user.Secret != Guid.Parse(userSecret))
+            {
+                return Unauthorized();
+            }
+
+            await context.Video.AddAsync(video);
+            await context.SaveChangesAsync();
+            return Created( new Uri($"{Request.Path}/{video.Id}") , video);
+
         }
 
         [HttpPut]
@@ -47,7 +77,21 @@ namespace YouTubeClone.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteVideo(int videoId, int userId, string userSecret)
         {
-            throw new NotImplementedException();
+            // Create an additional utility function for auth check
+            var user = await context.User.FindAsync(userId);
+
+            if (user == null || user.Secret != Guid.Parse(userSecret))
+            {
+                return Unauthorized();
+            }
+            var video = await context.Video.FindAsync(videoId);
+            if (video == null)
+            {
+                return NotFound();
+            }
+            context.Video.Remove(video);
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPut("show")]
@@ -77,7 +121,22 @@ namespace YouTubeClone.Controllers
         [HttpPost("addtoplaylist")]
         public async Task<ActionResult> AddToPlaylist(int id, int playlistId, int userId, string userSecret)
         {
-            throw new NotImplementedException();
+            // Create an additional utility function for auth check
+            var user = await context.User.FindAsync(userId);
+
+            if (user == null || user.Secret != Guid.Parse(userSecret))
+            {
+                return Unauthorized();
+            }
+            var video = await context.Video.FindAsync(id);
+            var playlist = await context.Playlist.Where(p => p.Channel.Id == user.Channel.Id).FirstOrDefaultAsync();
+            if (playlist == null || video == null)
+            {
+                return NotFound();
+            }
+            await context.PlaylistVideo.AddAsync(new PlaylistVideo { Playlist = playlist, Video = video });
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPost("addtowatchlater")]

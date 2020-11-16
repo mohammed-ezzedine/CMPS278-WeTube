@@ -59,7 +59,7 @@ namespace YouTubeClone.Controllers
         }
 
         // POST: api/Identity/signup
-        [HttpPost("signin")]
+        [HttpPost("signup")]
         public async Task<ActionResult<User>> Signup(SignupDto _user)
         {
             var user = await context.User
@@ -81,7 +81,8 @@ namespace YouTubeClone.Controllers
                 Secret = Guid.NewGuid()
             };
 
-            context.User.Add(user);
+            await context.User.AddAsync(user);
+            await context.SaveChangesAsync();
 
             return user;
         }
