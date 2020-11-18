@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
+using YouTubeClone.Models;
 
 namespace YouTubeClone.Controllers
 {
@@ -19,28 +18,139 @@ namespace YouTubeClone.Controllers
             this.context = context;
         }
 
+        public class PostCommentDto
+        {
+            public int VideoId { get; set; }
+
+            public int CommentId { get; set; }
+
+            public int UserId { get; set; }
+
+            public string UserSecret { get; set; }
+
+            public string Message { get; set; }
+        }
+
         [HttpPost]
-        public async Task<ActionResult> PostCommentOnVideo(int videoId, int userId, string userSecret, string message)
+        public async Task<ActionResult<UserVideoComment>> PostCommentOnVideo([FromBody] PostCommentDto postCommentDto)
         {
-            throw new NotImplementedException();
+            var user = await context.User.FindAsync(postCommentDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postCommentDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            var video = await context.Video.FindAsync(postCommentDto.VideoId);
+            if (video == null)
+            {
+                return NotFound();
+            }
+
+            var comment = await context.UserVideoComment.AddAsync(new UserVideoComment { User = user, Video = video, DateTime = DateTime.Now, Text = postCommentDto.Message });
+            return comment.Entity;
         }
 
-        [HttpPut]
-        public async Task<ActionResult> LikeComment(int id, int userId, string userSecret)
+        [HttpPost]
+        public async Task<ActionResult> LikeComment([FromBody] PostCommentDto postCommentDto)
         {
-            throw new NotImplementedException();
+            var user = await context.User.FindAsync(postCommentDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postCommentDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            var comment = await context.UserVideoComment
+                .Include(c => c.Video)
+                .FirstOrDefaultAsync(c => c.Id == postCommentDto.CommentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var userCommentReaction = await context.UserCommentReaction
+                .Include(uc => uc.User)
+                .Include(uc => uc.Comment)
+                .FirstOrDefaultAsync(uc => uc.User == user && uc.Comment == comment);
+
+            if (userCommentReaction == null)
+            {
+                userCommentReaction = new UserCommentReaction { User = user, Comment = comment, Like = true };
+                await context.UserCommentReaction.AddAsync(userCommentReaction);
+            }
+            else
+            {
+                userCommentReaction.Like = true;
+            }
+
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
-        [HttpPut]
-        public async Task<ActionResult> DislikeComment(int id, int userId, string userSecret)
+        [HttpPost]
+        public async Task<ActionResult> DislikeComment([FromBody] PostCommentDto postCommentDto)
         {
-            throw new NotImplementedException();
+            var user = await context.User.FindAsync(postCommentDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postCommentDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            var comment = await context.UserVideoComment
+                .Include(c => c.Video)
+                .FirstOrDefaultAsync(c => c.Id == postCommentDto.CommentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var userCommentReaction = await context.UserCommentReaction
+                .Include(uc => uc.User)
+                .Include(uc => uc.Comment)
+                .FirstOrDefaultAsync(uc => uc.User == user && uc.Comment == comment);
+
+            if (userCommentReaction == null)
+            {
+                userCommentReaction = new UserCommentReaction { User = user, Comment = comment, Like = false };
+                await context.UserCommentReaction.AddAsync(userCommentReaction);
+            }
+            else
+            {
+                userCommentReaction.Like = false;
+            }
+
+            await context.SaveChangesAsync();
+            return Ok();
         }
 
-        [HttpPut]
-        public async Task<ActionResult> ReplyToComment(int id, int userId, string userSecret, string message)
+        [HttpPost]
+        public async Task<ActionResult<UserCommentReply>> ReplyToComment([FromBody] PostCommentDto postCommentDto)
         {
-            throw new NotImplementedException();
+            var user = await context.User.FindAsync(postCommentDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postCommentDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            var comment = await context.UserVideoComment
+                .Include(c => c.Video)
+                .FirstOrDefaultAsync(c => c.Id == postCommentDto.CommentId);
+
+            if (comment == null)
+            {
+                return NotFound();
+            }
+
+            var userCommentReply = new UserCommentReply { User = user, Comment = comment, DateTime = DateTime.Now, Text = postCommentDto.Message };
+            await context.UserCommentReply.AddAsync(userCommentReply);
+            await context.SaveChangesAsync();
+
+            return userCommentReply;
         }
     }
 }

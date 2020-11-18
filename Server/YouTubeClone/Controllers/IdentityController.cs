@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -88,15 +89,67 @@ namespace YouTubeClone.Controllers
         }
 
         [HttpGet("watchLater")]
-        public async Task<ActionResult<IEnumerable<Video>>> GetUserWatchLaterVideos([FromRoute] int userId, int userSecret)
+        public async Task<ActionResult<IEnumerable<Video>>> GetUserWatchLaterVideos([FromRoute] int userId, [FromRoute] string userSecret)
         {
-            throw new NotImplementedException();
+            var user = await context.User
+                .Include(u => u.WatchLater)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.Author)
+                .Include(u => u.WatchLater)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.UserVideoComments)
+                .Include(u => u.WatchLater)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.UserVideoViews)
+                .Include(u => u.WatchLater)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.UserVideoReactions)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Secret != Guid.Parse(userSecret))
+            {
+                return Unauthorized();
+            }
+
+            var videos = user.WatchLater.Select(uv => uv.Video).ToList();
+            return videos;
         }
 
         [HttpGet("history")]
-        public async Task<ActionResult<IEnumerable<Video>>> GetUserHistoryVideos([FromRoute] int userId, int userSecret)
+        public async Task<ActionResult<IEnumerable<Video>>> GetUserHistoryVideos([FromRoute] int userId, [FromRoute] string userSecret)
         {
-            throw new NotImplementedException();
+            var user = await context.User
+                .Include(u => u.UserVideoViews)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.Author)
+                .Include(u => u.UserVideoViews)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.UserVideoComments)
+                .Include(u => u.UserVideoViews)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.UserVideoViews)
+                .Include(u => u.UserVideoViews)
+                    .ThenInclude(uv => uv.Video)
+                    .ThenInclude(v => v.UserVideoReactions)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Secret != Guid.Parse(userSecret))
+            {
+                return Unauthorized();
+            }
+
+            var videos = user.UserVideoViews.Select(uv => uv.Video).ToList();
+            return videos;
         }
     }
 }

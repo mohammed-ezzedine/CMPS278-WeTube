@@ -19,6 +19,15 @@ namespace YouTubeClone.Controllers
             this.context = context;
         }
 
+        public class PostChannelDto
+        {
+            public int ChannelId { get; set; }
+            public int UserId { get; set; }
+            public string UserSecret { get; set; }
+            public int VideoId { get; set; }
+            public Channel Channel { get; set; }
+        }
+
         // GET: api/Channel
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Channel>>> GetChannel()
@@ -52,44 +61,74 @@ namespace YouTubeClone.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Channel>> PostChannel([FromRoute] string userId, [FromRoute] string userSecret, Channel channel)
+        public async Task<ActionResult<Channel>> PostChannel([FromBody] PostChannelDto postChannelDto)
         {
-            var user = await context.User.FindAsync(userId);
+            var user = await context.User.FindAsync(postChannelDto.UserId);
 
-            if (user == null || user.Secret != Guid.Parse(userSecret))
+            if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
             {
                 return Unauthorized();
             }
 
-            user.Channel = channel;
-            await context.Channel.AddAsync(channel);
+            user.Channel = postChannelDto.Channel;
+            await context.Channel.AddAsync(postChannelDto.Channel);
             await context.SaveChangesAsync();
 
-            return channel;
+            return postChannelDto.Channel;
         }
 
         [HttpPost]
-        public async Task<ActionResult> Subscribe(int id, [FromRoute] string userId, [FromRoute] string userSecret)
+        public async Task<ActionResult> Subscribe([FromBody] PostChannelDto postChannelDto)
         {
-            var user = await context.User.FindAsync(userId);
+            var user = await context.User.FindAsync(postChannelDto.UserId);
 
-            if (user == null || user.Secret != Guid.Parse(userSecret))
+            if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
             {
                 return Unauthorized();
             }
 
-            var channel = await context.Channel.FindAsync(id);
+            var channel = await context.Channel.FindAsync(postChannelDto.ChannelId);
             await context.UserChannelSubscription.AddAsync(new UserChannelSubscription { User = user, Channel = channel });
             await context.SaveChangesAsync();
             return Ok();
-            
-
         }
 
         [HttpPost]
-        public async Task<ActionResult> FeatureVideo(int id, int videoId, [FromRoute] string userId, [FromRoute] string userSecret)
+        public async Task<ActionResult> FeatureVideo([FromBody] PostChannelDto postChannelDto)
         {
-            throw new NotImplementedException();
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            var channel = await context.Channel.FindAsync(postChannelDto.ChannelId);
+            if (user.Channel.Id != channel.Id)
+            {
+                return Unauthorized();
+            }
+
+            var video = await context.Video
+                .Include(v => v.Author)
+                .FirstOrDefaultAsync(v => v.Id == postChannelDto.VideoId);
+
+            if (video == null)
+            {
+                return NotFound();
+            }
+
+            if (video.Author.Id != channel.Id)
+            {
+                return Unauthorized();
+            }
+
+            video.Shown = true;
+            await context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }

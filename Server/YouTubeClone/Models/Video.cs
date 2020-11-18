@@ -31,5 +31,15 @@ namespace YouTubeClone.Models
         public List<UserVideoView> UserVideoViews { get; set; }
 
         public List<UserVideoWatchLater> UserVideoWatchLater { get; set; }
+
+        public Video Update(Video video)
+        {
+            Title = video.Title;
+            Description = video.Description;
+            Shown = video.Shown;
+            Featured = video.Featured;
+
+            return this;
+        }
     }
 }
