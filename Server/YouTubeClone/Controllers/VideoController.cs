@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
+using YouTubeClone.Models.Dtos;
 
 namespace YouTubeClone.Controllers
 {
@@ -15,10 +16,12 @@ namespace YouTubeClone.Controllers
     public class VideoController : ControllerBase
     {
         private readonly YouTubeContext context;
+        private readonly IMapper mapper;
 
-        public VideoController(YouTubeContext context)
+        public VideoController(YouTubeContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public class PostVideoDto
@@ -31,17 +34,18 @@ namespace YouTubeClone.Controllers
         }
 
         [HttpGet("channel/{channelId}")]
-        public async Task<ActionResult<IEnumerable<Video>>> GetChannelVideos(int channelId)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetChannelVideos(int channelId)
         {
             var videos = await context.Video
                 .Where(v => v.Author.Id == channelId)
+                .Select(v => mapper.Map<VideoDto>(v))
                 .ToListAsync();
                 
             return videos;
         }
 
         [HttpGet]
-        public async Task<ActionResult<Video>> GetVideo(int id)
+        public async Task<ActionResult<VideoDto>> GetVideo(int id)
         {
             var videoById = await context.Video
                 .Include(v => v.Author)
@@ -55,11 +59,11 @@ namespace YouTubeClone.Controllers
                 return NotFound();
             }
             
-            return videoById;
+            return mapper.Map<VideoDto>(videoById);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Video>> PostVideo([FromBody] PostVideoDto postVideoDto)
+        public async Task<ActionResult<VideoDto>> PostVideo([FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -74,11 +78,11 @@ namespace YouTubeClone.Controllers
             await context.Video.AddAsync(postVideoDto.Video);
             await context.SaveChangesAsync();
 
-            return postVideoDto.Video;
+            return mapper.Map<VideoDto>(postVideoDto.Video);
         }
 
         [HttpPut]
-        public async Task<ActionResult<Video>> UpdateVideo(int id, [FromBody] PostVideoDto postVideoDto)
+        public async Task<ActionResult<VideoDto>> UpdateVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -101,7 +105,7 @@ namespace YouTubeClone.Controllers
             originalVideo.Update(postVideoDto.Video);
             await context.SaveChangesAsync();
 
-            return postVideoDto.Video;
+            return mapper.Map<VideoDto>(postVideoDto.Video);
         }
 
         [HttpDelete]

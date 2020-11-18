@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
+using YouTubeClone.Models.Dtos;
 
 namespace YouTubeClone.Controllers
 {
@@ -14,20 +16,23 @@ namespace YouTubeClone.Controllers
     public class PlaylistController : ControllerBase
     {
         private readonly YouTubeContext context;
+        private readonly IMapper mapper;
 
-        public PlaylistController(YouTubeContext context)
+        public PlaylistController(YouTubeContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         // GET: api/Playlist/channel/4
         [HttpGet("channel/{channelId}")]
-        public async Task<ActionResult<IEnumerable<Playlist>>> GetChannelPlaylists(int channelId)
+        public async Task<ActionResult<IEnumerable<PlaylistDto>>> GetChannelPlaylists(int channelId)
         {
             var results = await context.Playlist
                 .Include(p => p.Channel)
                 .Include(p => p.Videos)
                 .Where(p => p.Channel.Id == channelId)
+                .Select(p => mapper.Map<PlaylistDto>(p))
                 .ToListAsync();
 
             return results;
@@ -35,7 +40,7 @@ namespace YouTubeClone.Controllers
 
         // GET: api/Playlist/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Playlist>> GetPlaylist(int id)
+        public async Task<ActionResult<PlaylistDto>> GetPlaylist(int id)
         {
             var playlist = await context.Playlist.FindAsync(id);
 
@@ -44,7 +49,7 @@ namespace YouTubeClone.Controllers
                 return NotFound();
             }
 
-            return playlist;
+            return mapper.Map<PlaylistDto>(playlist);
         }
 
         // PUT: api/Playlist/addVideo/5?videoId=2
@@ -98,17 +103,17 @@ namespace YouTubeClone.Controllers
 
         // POST: api/Playlist
         [HttpPost]
-        public async Task<ActionResult<Playlist>> PostPlaylist(Playlist playlist)
+        public async Task<ActionResult<PlaylistDto>> PostPlaylist(Playlist playlist)
         {
             context.Playlist.Add(playlist);
             await context.SaveChangesAsync();
 
-            return playlist;
+            return mapper.Map<PlaylistDto>(playlist);
         }
 
         // DELETE: api/Playlist/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Playlist>> DeletePlaylist(int id, [FromRoute] int userId, [FromRoute] string userSecret)
+        public async Task<ActionResult<PlaylistDto>> DeletePlaylist(int id, [FromRoute] int userId, [FromRoute] string userSecret)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -131,7 +136,7 @@ namespace YouTubeClone.Controllers
             context.Playlist.Remove(playlist);
             await context.SaveChangesAsync();
 
-            return playlist;
+            return mapper.Map<PlaylistDto>(playlist);
         }
     }
 }

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,8 @@ namespace YouTubeClone
                 options.UseSqlServer(Configuration.GetConnectionString("YouTubeContext")));
 
             services.AddTransient(sp => GetSettings<HashingSettings>(Configuration));
+
+            services.AddAutoMapper(typeof(Startup).Assembly);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

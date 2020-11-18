@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
+using YouTubeClone.Models.Dtos;
 
 namespace YouTubeClone.Controllers
 {
@@ -13,10 +16,12 @@ namespace YouTubeClone.Controllers
     public class ChannelController : ControllerBase
     {
         private readonly YouTubeContext context;
+        private readonly IMapper mapper;
 
-        public ChannelController(YouTubeContext context)
+        public ChannelController(YouTubeContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public class PostChannelDto
@@ -30,12 +35,13 @@ namespace YouTubeClone.Controllers
 
         // GET: api/Channel
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Channel>>> GetChannel()
+        public async Task<ActionResult<IEnumerable<ChannelDto>>> GetChannel()
         {
             var channels = await context.Channel
                 .Include(c => c.Playlists)
                 .ThenInclude(p => p.Videos)
                 .Include(c => c.Videos)
+                .Select(c => mapper.Map<ChannelDto>(c))
                 .ToListAsync();
 
             return channels;
@@ -43,7 +49,7 @@ namespace YouTubeClone.Controllers
 
         // GET: api/Channel/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Channel>> GetChannel(int id)
+        public async Task<ActionResult<ChannelDto>> GetChannel(int id)
         {
             var channel = await context.Channel
                 .Include(c => c.Playlists)
@@ -57,11 +63,11 @@ namespace YouTubeClone.Controllers
                 return NotFound();
             }
 
-            return channel;
+            return mapper.Map<ChannelDto>(channel);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Channel>> PostChannel([FromBody] PostChannelDto postChannelDto)
+        public async Task<ActionResult<ChannelDto>> PostChannel([FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User.FindAsync(postChannelDto.UserId);
 
@@ -74,7 +80,7 @@ namespace YouTubeClone.Controllers
             await context.Channel.AddAsync(postChannelDto.Channel);
             await context.SaveChangesAsync();
 
-            return postChannelDto.Channel;
+            return mapper.Map<ChannelDto>(postChannelDto.Channel);
         }
 
         [HttpPost]

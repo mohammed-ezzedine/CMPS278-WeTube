@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
+using YouTubeClone.Models.Dtos;
 
 namespace YouTubeClone.Controllers
 {
@@ -12,10 +14,12 @@ namespace YouTubeClone.Controllers
     public class CommentController : ControllerBase
     {
         private readonly YouTubeContext context;
+        private readonly IMapper mapper;
 
-        public CommentController(YouTubeContext context)
+        public CommentController(YouTubeContext context, IMapper mapper)
         {
             this.context = context;
+            this.mapper = mapper;
         }
 
         public class PostCommentDto
@@ -32,7 +36,7 @@ namespace YouTubeClone.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserVideoComment>> PostCommentOnVideo([FromBody] PostCommentDto postCommentDto)
+        public async Task<ActionResult<CommentDto>> PostCommentOnVideo([FromBody] PostCommentDto postCommentDto)
         {
             var user = await context.User.FindAsync(postCommentDto.UserId);
 
@@ -48,7 +52,7 @@ namespace YouTubeClone.Controllers
             }
 
             var comment = await context.UserVideoComment.AddAsync(new UserVideoComment { User = user, Video = video, DateTime = DateTime.Now, Text = postCommentDto.Message });
-            return comment.Entity;
+            return mapper.Map<CommentDto>(comment.Entity);
         }
 
         [HttpPost]
@@ -128,7 +132,7 @@ namespace YouTubeClone.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<UserCommentReply>> ReplyToComment([FromBody] PostCommentDto postCommentDto)
+        public async Task<ActionResult<CommentReplyDto>> ReplyToComment([FromBody] PostCommentDto postCommentDto)
         {
             var user = await context.User.FindAsync(postCommentDto.UserId);
 
@@ -150,7 +154,7 @@ namespace YouTubeClone.Controllers
             await context.UserCommentReply.AddAsync(userCommentReply);
             await context.SaveChangesAsync();
 
-            return userCommentReply;
+            return mapper.Map<CommentReplyDto>(userCommentReply);
         }
     }
 }

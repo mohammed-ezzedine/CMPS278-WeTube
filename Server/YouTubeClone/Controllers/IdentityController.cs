@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
+using YouTubeClone.Models.Dtos;
 using YouTubeClone.Services;
 using YouTubeClone.Settings;
 
@@ -17,11 +19,13 @@ namespace YouTubeClone.Controllers
     {
         private readonly YouTubeContext context;
         private readonly HashingSettings settings;
+        private readonly IMapper mapper;
 
-        public IdentityController(YouTubeContext context, HashingSettings settings)
+        public IdentityController(YouTubeContext context, HashingSettings settings, IMapper mapper)
         {
             this.context = context;
             this.settings = settings;
+            this.mapper = mapper;
         }
 
         public class SigninDto
@@ -44,7 +48,7 @@ namespace YouTubeClone.Controllers
 
         // POST: api/Identity/signin
         [HttpPost("signin")]
-        public async Task<ActionResult<User>> Signin(SigninDto _user)
+        public async Task<ActionResult<UserDto>> Signin(SigninDto _user)
         {
             var hashedPassword = _user.Password.HashPassword(settings.Salt);
 
@@ -56,12 +60,12 @@ namespace YouTubeClone.Controllers
                 return NotFound();
             }
 
-            return user;
+            return mapper.Map<UserDto>(user);
         }
 
         // POST: api/Identity/signup
         [HttpPost("signup")]
-        public async Task<ActionResult<User>> Signup(SignupDto _user)
+        public async Task<ActionResult<UserDto>> Signup(SignupDto _user)
         {
             var user = await context.User
                 .FirstOrDefaultAsync(u => u.Username == _user.Username);
@@ -85,11 +89,11 @@ namespace YouTubeClone.Controllers
             await context.User.AddAsync(user);
             await context.SaveChangesAsync();
 
-            return user;
+            return mapper.Map<UserDto>(user);
         }
 
         [HttpGet("watchLater")]
-        public async Task<ActionResult<IEnumerable<Video>>> GetUserWatchLaterVideos([FromRoute] int userId, [FromRoute] string userSecret)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserWatchLaterVideos([FromRoute] int userId, [FromRoute] string userSecret)
         {
             var user = await context.User
                 .Include(u => u.WatchLater)
@@ -116,12 +120,12 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var videos = user.WatchLater.Select(uv => uv.Video).ToList();
+            var videos = user.WatchLater.Select(uv => mapper.Map<VideoDto>(uv.Video)).ToList();
             return videos;
         }
 
         [HttpGet("history")]
-        public async Task<ActionResult<IEnumerable<Video>>> GetUserHistoryVideos([FromRoute] int userId, [FromRoute] string userSecret)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserHistoryVideos([FromRoute] int userId, [FromRoute] string userSecret)
         {
             var user = await context.User
                 .Include(u => u.UserVideoViews)
@@ -148,7 +152,7 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var videos = user.UserVideoViews.Select(uv => uv.Video).ToList();
+            var videos = user.UserVideoViews.Select(uv => mapper.Map<VideoDto>(uv.Video)).ToList();
             return videos;
         }
     }
