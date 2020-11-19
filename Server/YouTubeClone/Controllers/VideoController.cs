@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
@@ -26,13 +27,27 @@ namespace YouTubeClone.Controllers
 
         public class PostVideoDto
         {
-            public Video Video { get; set; }
+            public IFormCollection Video { get; set; }
+            public IFormCollection Image { get; set; }
             public int UserId { get; set; }
             public string UserSecret { get; set; }
             public string Text { get; set; }
             public int PlaylistId { get; set; }
+            public string Title { get; set; }
+            public string Description { get; set; }
+            public bool Shown { get; set; }
+            public bool Featured { get; set; }
         }
 
+        /// <summary>
+        /// Get a channel's videos
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/video/channel/3
+        /// 
+        /// </remarks>
         [HttpGet("channel/{channelId}")]
         public async Task<ActionResult<IEnumerable<VideoDto>>> GetChannelVideos(int channelId)
         {
@@ -44,6 +59,15 @@ namespace YouTubeClone.Controllers
             return videos;
         }
 
+        /// <summary>
+        /// Get a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/video/4
+        /// 
+        /// </remarks>
         [HttpGet]
         public async Task<ActionResult<VideoDto>> GetVideo(int id)
         {
@@ -62,6 +86,27 @@ namespace YouTubeClone.Controllers
             return mapper.Map<VideoDto>(videoById);
         }
 
+        /// <summary>
+        /// Upload a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/video
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "Title": "",
+        ///             "Description": "",
+        ///             "Featured": false,
+        ///             "Shown": false,
+        ///             "Video": videoFile,
+        ///             "Image": imageFile
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<VideoDto>> PostVideo([FromBody] PostVideoDto postVideoDto)
         {
@@ -74,13 +119,41 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            postVideoDto.Video.Author = user.Channel;
-            await context.Video.AddAsync(postVideoDto.Video);
+            // TODO handle videos and thumbnails upload
+            var video = new Video { 
+                Author = user.Channel, 
+                Description = postVideoDto.Description, 
+                Title = postVideoDto.Title,
+                Featured = postVideoDto.Featured,
+                Shown = postVideoDto.Shown,
+                ThumbnailUrl = "",
+                Url = ""
+            };
+            await context.Video.AddAsync(video);
             await context.SaveChangesAsync();
 
             return mapper.Map<VideoDto>(postVideoDto.Video);
         }
 
+        /// <summary>
+        /// Update a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/video/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "Title": "",
+        ///             "Description": "",
+        ///             "Featured": false,
+        ///             "Shown": false,
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPut]
         public async Task<ActionResult<VideoDto>> UpdateVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -102,12 +175,32 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            originalVideo.Update(postVideoDto.Video);
+            originalVideo
+                .SetTitle(postVideoDto.Title)
+                .SetDescription(postVideoDto.Description)
+                .SetFeatured(postVideoDto.Featured)
+                .SetShown(postVideoDto.Shown);
+
             await context.SaveChangesAsync();
 
             return mapper.Map<VideoDto>(postVideoDto.Video);
         }
 
+        /// <summary>
+        /// Delete a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     DELETE /api/video/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpDelete]
         public async Task<ActionResult> DeleteVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -134,6 +227,21 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Show a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/video/show/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPut("show")]
         public async Task<ActionResult> ShowVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -161,6 +269,21 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Hide a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/video/hide/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPut("hide")]
         public async Task<ActionResult> HideVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -188,6 +311,21 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Like a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/video/like/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPut("like")]
         public async Task<ActionResult> LikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -223,7 +361,22 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
-        [HttpPut("undolike")]
+        /// <summary>
+        /// Undo like a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/video/undolike/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
+        [HttpPost("undolike")]
         public async Task<ActionResult> UndoLikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User.FindAsync(postVideoDto.UserId);
@@ -253,6 +406,21 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Dislike a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     PUT /api/video/dislike/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPut("dislike")]
         public async Task<ActionResult> DislikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -288,7 +456,22 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
-        [HttpPut("undodislike")]
+        /// <summary>
+        /// Undo dislike a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/video/undodislike/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
+        [HttpPost("undodislike")]
         public async Task<ActionResult> UndoDislikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User.FindAsync(postVideoDto.UserId);
@@ -318,34 +501,21 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
-        [HttpPost("addtoplaylist")]
-        public async Task<ActionResult> AddToPlaylist(int id, [FromBody] PostVideoDto postVideoDto)
-        {
-            var user = await context.User
-                .Include(u => u.Channel)
-                .ThenInclude(c => c.Playlists)
-                .FirstOrDefaultAsync(u => u.Id == postVideoDto.UserId);
-
-            if (user == null || user.Secret != Guid.Parse(postVideoDto.UserSecret))
-            {
-                return Unauthorized();
-            }
-
-            var video = await context.Video.FindAsync(id);
-            var playlist = await context.Playlist
-                .FirstOrDefaultAsync(p => p.Channel == user.Channel && p.Id == postVideoDto.PlaylistId);
-
-            if (playlist == null || video == null)
-            {
-                return NotFound();
-            }
-
-            await context.PlaylistVideo.AddAsync(new PlaylistVideo { Playlist = playlist, Video = video });
-            await context.SaveChangesAsync();
-            
-            return Ok();
-        }
-
+        /// <summary>
+        /// Add a video to WatchLater
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/video/addtowatchlater/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPost("addtowatchlater")]
         public async Task<ActionResult> AddToWatchLater(int id, [FromBody] PostVideoDto postVideoDto)
         {
@@ -375,6 +545,22 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Report a video
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/video/reportvideo/2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "Text": ""
+        ///         }
+        ///     }
+        /// </remarks>
         [HttpPost("reportvideo")]
         public async Task<ActionResult> ReportVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {

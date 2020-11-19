@@ -32,13 +32,27 @@ namespace YouTubeClone.Models
 
         public List<UserVideoWatchLater> UserVideoWatchLater { get; set; }
 
-        public Video Update(Video video)
+        public Video SetTitle(string title)
         {
-            Title = video.Title;
-            Description = video.Description;
-            Shown = video.Shown;
-            Featured = video.Featured;
+            Title = title;
+            return this;
+        }
 
+        public Video SetDescription(string description)
+        {
+            Description = description;
+            return this;
+        }
+
+        public Video SetFeatured(bool featured)
+        {
+            Featured = featured;
+            return this;
+        }
+
+        public Video SetShown(bool shown)
+        {
+            Shown = shown;
             return this;
         }
     }

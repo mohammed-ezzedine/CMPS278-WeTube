@@ -35,6 +35,24 @@ namespace YouTubeClone.Controllers
             public string Message { get; set; }
         }
 
+        /// <summary>
+        /// Post on a comment on a video given its ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/comment/
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "VideoId": 0,
+        ///             "Message": ""
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
         [HttpPost]
         public async Task<ActionResult<CommentDto>> PostCommentOnVideo([FromBody] PostCommentDto postCommentDto)
         {
@@ -55,7 +73,24 @@ namespace YouTubeClone.Controllers
             return mapper.Map<CommentDto>(comment.Entity);
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Like a comment given its ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/comment/like
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "CommentId": 0
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpPost("like")]
         public async Task<ActionResult> LikeComment([FromBody] PostCommentDto postCommentDto)
         {
             var user = await context.User.FindAsync(postCommentDto.UserId);
@@ -93,7 +128,24 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Dislike a comment given its ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/comment/dislike
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "CommentId": 0
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpPost("dislike")]
         public async Task<ActionResult> DislikeComment([FromBody] PostCommentDto postCommentDto)
         {
             var user = await context.User.FindAsync(postCommentDto.UserId);
@@ -131,7 +183,25 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Reply to a comment given its ID
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/comment/reply
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "CommentId": 0,
+        ///             "Message": ""
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpPost("reply")]
         public async Task<ActionResult<CommentReplyDto>> ReplyToComment([FromBody] PostCommentDto postCommentDto)
         {
             var user = await context.User.FindAsync(postCommentDto.UserId);

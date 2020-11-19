@@ -24,7 +24,24 @@ namespace YouTubeClone.Controllers
             this.mapper = mapper;
         }
 
-        // GET: api/Playlist/channel/4
+        public class PostPlaylistDto
+        {
+            public int UserId { get; set; }
+            public string UserSecret { get; set; }
+            public int VideoId { get; set; }
+            public int PlayListId { get; set; }
+            public string Name { get; set; }
+        }
+
+        /// <summary>
+        /// Get a channel's playlists
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/playlist/channel/2
+        /// 
+        /// </remarks>
         [HttpGet("channel/{channelId}")]
         public async Task<ActionResult<IEnumerable<PlaylistDto>>> GetChannelPlaylists(int channelId)
         {
@@ -38,7 +55,15 @@ namespace YouTubeClone.Controllers
             return results;
         }
 
-        // GET: api/Playlist/5
+        /// <summary>
+        /// Get a playlist
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/playlist/1
+        /// 
+        /// </remarks>
         [HttpGet("{id}")]
         public async Task<ActionResult<PlaylistDto>> GetPlaylist(int id)
         {
@@ -52,22 +77,49 @@ namespace YouTubeClone.Controllers
             return mapper.Map<PlaylistDto>(playlist);
         }
 
-        // PUT: api/Playlist/addVideo/5?videoId=2
-        [HttpPut("addVideo/{id}")]
-        public async Task<IActionResult> AddToPlaylist(int id, [FromRoute] int videoId)
+        /// <summary>
+        /// Add video to a playlist
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/playlist/addVideo
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "PlayListId": 0,
+        ///             "VideoId": 0
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpPost("addVideo")]
+        public async Task<IActionResult> AddToPlaylist([FromBody] PostPlaylistDto postPlaylistDto)
         {
             var playlist = await context.Playlist
+                .Include(p => p.Channel)
                 .Include(p => p.Videos)
-                .FirstOrDefaultAsync(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == postPlaylistDto.PlayListId);
 
             if (playlist == null)
             {
                 return NotFound();
             }
 
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Channel == playlist.Channel);
+            
+            if (user == null || user.Id != postPlaylistDto.UserId || user.Secret != Guid.Parse(postPlaylistDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
             var video = await context.Video
                 .Include(v => v.Playlists)
-                .FirstOrDefaultAsync(v => v.Id == videoId);
+                .FirstOrDefaultAsync(v => v.Id == postPlaylistDto.VideoId);
 
             if (video == null)
             {
@@ -78,21 +130,48 @@ namespace YouTubeClone.Controllers
             context.PlaylistVideo.Add(playlistVideo);
             await context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok();
         }
 
-        // PUT: api/Playlist/removeVideo/5?videoId=2
-        [HttpPut("removeVideo/{id}")]
-        public async Task<IActionResult> RemoveFromPlaylist(int id, [FromRoute] int videoId)
+        /// <summary>
+        /// Remove video from a playlist
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     DELETE /api/playlist/removeVideo
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "PlayListId": 0,
+        ///             "VideoId": 0
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpDelete("removeVideo/{id}")]
+        public async Task<IActionResult> RemoveFromPlaylist([FromBody] PostPlaylistDto postPlaylistDto)
         {
             var playlistVideo = await context.PlaylistVideo
                 .Include(pv => pv.Playlist)
+                .ThenInclude(pv => pv.Channel)
                 .Include(pv => pv.Video)
-                .FirstOrDefaultAsync(pv => pv.Playlist.Id == id && pv.Video.Id == videoId);
+                .FirstOrDefaultAsync(pv => pv.Playlist.Id == postPlaylistDto.PlayListId && pv.Video.Id == postPlaylistDto.VideoId);
 
             if (playlistVideo == null)
             {
                 return NoContent();
+            }
+
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Channel == playlistVideo.Playlist.Channel);
+
+            if (user == null || user.Id != postPlaylistDto.UserId || user.Secret != Guid.Parse(postPlaylistDto.UserSecret))
+            {
+                return Unauthorized();
             }
 
             context.PlaylistVideo.Remove(playlistVideo);
@@ -101,23 +180,65 @@ namespace YouTubeClone.Controllers
             return NoContent();
         }
 
-        // POST: api/Playlist
+        /// <summary>
+        /// Create a playlist
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/playlist
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "Name": ""
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
         [HttpPost]
-        public async Task<ActionResult<PlaylistDto>> PostPlaylist(Playlist playlist)
+        public async Task<ActionResult<PlaylistDto>> PostPlaylist([FromBody] PostPlaylistDto postPlaylistDto)
         {
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == postPlaylistDto.UserId && u.Secret == Guid.Parse(postPlaylistDto.UserSecret));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var playlist = new Playlist { Name = postPlaylistDto.Name, Channel = user.Channel };
             context.Playlist.Add(playlist);
             await context.SaveChangesAsync();
 
             return mapper.Map<PlaylistDto>(playlist);
         }
 
-        // DELETE: api/Playlist/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<PlaylistDto>> DeletePlaylist(int id, [FromRoute] int userId, [FromRoute] string userSecret)
+        /// <summary>
+        /// Delete a playlist
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     DELETE /api/playlist
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "PlaylistId": 0
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpDelete]
+        public async Task<ActionResult<PlaylistDto>> DeletePlaylist([FromBody] PostPlaylistDto postPlaylistDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
-                .FirstOrDefaultAsync(u => u.Id == userId && u.Secret == Guid.Parse(userSecret));
+                .FirstOrDefaultAsync(u => u.Id == postPlaylistDto.UserId && u.Secret == Guid.Parse(postPlaylistDto.UserSecret));
 
             if (user == null)
             {
@@ -126,7 +247,7 @@ namespace YouTubeClone.Controllers
 
             var playlist = await context.Playlist
                 .Include(p => p.Channel)
-                .FirstOrDefaultAsync(p => p.Id == id && p.Channel == user.Channel);
+                .FirstOrDefaultAsync(p => p.Id == postPlaylistDto.PlayListId && p.Channel == user.Channel);
 
             if (playlist == null)
             {

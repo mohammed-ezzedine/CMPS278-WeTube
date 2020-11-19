@@ -46,7 +46,22 @@ namespace YouTubeClone.Controllers
             public string Password { get; set; }
         }
 
-        // POST: api/Identity/signin
+        /// <summary>
+        /// Signin
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/identity/signin
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "Username": "",
+        ///             "Password": ""
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
         [HttpPost("signin")]
         public async Task<ActionResult<UserDto>> Signin(SigninDto _user)
         {
@@ -63,7 +78,24 @@ namespace YouTubeClone.Controllers
             return mapper.Map<UserDto>(user);
         }
 
-        // POST: api/Identity/signup
+        /// <summary>
+        /// Signup
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/identity/signin
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "FirstName": "",
+        ///             "LastName": "",
+        ///             "Username": "",
+        ///             "Password": ""
+        ///         }
+        ///     }
+        /// 
+        /// </remarks>
         [HttpPost("signup")]
         public async Task<ActionResult<UserDto>> Signup(SignupDto _user)
         {
@@ -92,7 +124,16 @@ namespace YouTubeClone.Controllers
             return mapper.Map<UserDto>(user);
         }
 
-        [HttpGet("watchLater")]
+        /// <summary>
+        /// Get the user's WatchLater videos
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/identity/watch-later?userId=0&userSecret=null
+        /// 
+        /// </remarks>
+        [HttpGet("watch-later")]
         public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserWatchLaterVideos([FromRoute] int userId, [FromRoute] string userSecret)
         {
             var user = await context.User
@@ -124,6 +165,15 @@ namespace YouTubeClone.Controllers
             return videos;
         }
 
+        /// <summary>
+        /// Get the user's history
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/identity/history?userId=0&userSecret=null
+        /// 
+        /// </remarks>
         [HttpGet("history")]
         public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserHistoryVideos([FromRoute] int userId, [FromRoute] string userSecret)
         {
