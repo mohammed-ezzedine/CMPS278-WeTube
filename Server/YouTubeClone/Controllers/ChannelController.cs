@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
 using YouTubeClone.Models.Dtos;
+using YouTubeClone.Services;
 
 namespace YouTubeClone.Controllers
 {
@@ -18,11 +20,13 @@ namespace YouTubeClone.Controllers
     {
         private readonly YouTubeContext context;
         private readonly IMapper mapper;
+        private readonly IWebHostEnvironment env;
 
-        public ChannelController(YouTubeContext context, IMapper mapper)
+        public ChannelController(YouTubeContext context, IMapper mapper, IWebHostEnvironment env)
         {
             this.context = context;
             this.mapper = mapper;
+            this.env = env;
         }
 
         public class PostChannelDto
@@ -113,7 +117,8 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var channel = new Channel { Description = postChannelDto.Description, ImageUrl = "" }; // TODO: handle images
+            var imagePath = await HelperFunctions.AddFileToSystemAsync(postChannelDto.Image, env);
+            var channel = new Channel { Description = postChannelDto.Description, ImageUrl = imagePath };
             user.Channel = channel;
             await context.Channel.AddAsync(channel);
             await context.SaveChangesAsync();

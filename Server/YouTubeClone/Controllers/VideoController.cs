@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
 using YouTubeClone.Models.Dtos;
+using YouTubeClone.Services;
 
 namespace YouTubeClone.Controllers
 {
@@ -18,17 +20,19 @@ namespace YouTubeClone.Controllers
     {
         private readonly YouTubeContext context;
         private readonly IMapper mapper;
+        private readonly IWebHostEnvironment env;
 
-        public VideoController(YouTubeContext context, IMapper mapper)
+        public VideoController(YouTubeContext context, IMapper mapper, IWebHostEnvironment env)
         {
             this.context = context;
             this.mapper = mapper;
+            this.env = env;
         }
 
         public class PostVideoDto
         {
             public IFormCollection Video { get; set; }
-            public IFormCollection Image { get; set; }
+            public IFormCollection Thubmnail { get; set; }
             public int UserId { get; set; }
             public string UserSecret { get; set; }
             public string Text { get; set; }
@@ -119,15 +123,17 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            // TODO handle videos and thumbnails upload
+            var videoPath = await HelperFunctions.AddFileToSystemAsync(postVideoDto.Video, env);
+            var imagePath = await HelperFunctions.AddFileToSystemAsync(postVideoDto.Thubmnail, env);
+
             var video = new Video { 
                 Author = user.Channel, 
                 Description = postVideoDto.Description, 
                 Title = postVideoDto.Title,
                 Featured = postVideoDto.Featured,
                 Shown = postVideoDto.Shown,
-                ThumbnailUrl = "",
-                Url = ""
+                ThumbnailUrl = imagePath,
+                Url = videoPath
             };
             await context.Video.AddAsync(video);
             await context.SaveChangesAsync();
