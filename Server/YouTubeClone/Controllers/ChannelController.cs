@@ -36,7 +36,6 @@ namespace YouTubeClone.Controllers
             public string UserSecret { get; set; }
             public int VideoId { get; set; }
             public string Description { get; set; }
-            public IFormCollection Image { get; set; }
         }
 
         /// <summary>
@@ -101,8 +100,7 @@ namespace YouTubeClone.Controllers
         ///         "body": {
         ///             "UserId": 0,
         ///             "UserSecret": "",
-        ///             "Description": "",
-        ///             "Image": ImageFile
+        ///             "Description": ""
         ///         }
         ///     }
         ///     
@@ -117,13 +115,50 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var imagePath = await HelperFunctions.AddFileToSystemAsync(postChannelDto.Image, env);
-            var channel = new Channel { Description = postChannelDto.Description, ImageUrl = imagePath };
+            var channel = new Channel { Description = postChannelDto.Description };
             user.Channel = channel;
             await context.Channel.AddAsync(channel);
             await context.SaveChangesAsync();
 
             return mapper.Map<ChannelDto>(channel);
+        }
+
+        /// <summary>
+        /// Set a channel's image
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     PUT /api/channel/1?userId=0,userSecret=secret image.jpg
+        ///     {
+        ///         "Content-Type": "multipart/form-data"
+        ///     }
+        /// 
+        /// </remarks>
+        [HttpPut]
+        public async Task<ActionResult> SetChannelImage(int id, IFormFile image, [FromRoute] int userId, [FromRoute] string userSecret)
+        {
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == userId && u.Secret == Guid.Parse(userSecret));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Channel.Id != id)
+            {
+                return Unauthorized();
+            }
+
+            if (user.Channel.ImageUrl != null)
+            {
+                System.IO.File.Delete(user.Channel.ImageUrl);
+            }
+
+            user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env);
+            return Ok();
         }
 
         /// <summary>

@@ -91,54 +91,56 @@ namespace YouTubeClone.Controllers
         }
 
         /// <summary>
-        /// Upload a video
+        /// Upload a video (without its details)
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/video
+        ///     POST /api/video?userId=0&userSecret=secret, video.mp4, image.jpg
         ///     {
-        ///         "Content-Type": "application/json",
-        ///         "body": {
-        ///             "UserId": 0,
-        ///             "UserSecret": "",
-        ///             "Title": "",
-        ///             "Description": "",
-        ///             "Featured": false,
-        ///             "Shown": false,
-        ///             "Video": videoFile,
-        ///             "Image": imageFile
-        ///         }
+        ///         "Content-Type": "multipart/form-data"
         ///     }
         /// </remarks>
         [HttpPost]
-        public async Task<ActionResult<VideoDto>> PostVideo([FromBody] PostVideoDto postVideoDto)
+        public async Task<ActionResult<VideoDto>> PostVideo([FromRoute] int userId, [FromRoute] string userSecret, IFormFileCollection files)
         {
             var user = await context.User
                 .Include(u => u.Channel)
-                .FirstOrDefaultAsync(u => u.Id == postVideoDto.UserId);
+                .FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null || user.Secret != Guid.Parse(postVideoDto.UserSecret))
+            if (user == null || user.Secret != Guid.Parse(userSecret))
             {
                 return Unauthorized();
             }
 
-            var videoPath = await HelperFunctions.AddFileToSystemAsync(postVideoDto.Video, env);
-            var imagePath = await HelperFunctions.AddFileToSystemAsync(postVideoDto.Thubmnail, env);
+            if (files.Count < 2)
+            {
+                return BadRequest("At least two files should be attached.");
+            }
+
+            string imagePath = null;
+            string videoPath = null;
+            for (int i = 0; i < 2; i++)
+            {
+                if (FileIsImage(files[i]))
+                {
+                    imagePath = await HelperFunctions.AddFileToSystemAsync(files[i], env);
+                }
+                else
+                {
+                    videoPath = await HelperFunctions.AddFileToSystemAsync(files[i], env);
+                }
+            }
 
             var video = new Video { 
                 Author = user.Channel, 
-                Description = postVideoDto.Description, 
-                Title = postVideoDto.Title,
-                Featured = postVideoDto.Featured,
-                Shown = postVideoDto.Shown,
                 ThumbnailUrl = imagePath,
                 Url = videoPath
             };
             await context.Video.AddAsync(video);
             await context.SaveChangesAsync();
 
-            return mapper.Map<VideoDto>(postVideoDto.Video);
+            return mapper.Map<VideoDto>(video);
         }
 
         /// <summary>
@@ -595,5 +597,7 @@ namespace YouTubeClone.Controllers
 
             return Ok();
         }
+
+        private bool FileIsImage(IFormFile file) => file.ContentType.ToLower().IndexOf("image") != -1;
     }
 }

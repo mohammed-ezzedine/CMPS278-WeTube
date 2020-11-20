@@ -84,7 +84,7 @@ namespace YouTubeClone.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/identity/signin
+        ///     POST /api/identity/signup
         ///     {
         ///         "Content-Type": "application/json",
         ///         "body": {
