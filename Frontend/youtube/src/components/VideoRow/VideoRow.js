@@ -6,7 +6,7 @@ function VideoRow({ views, description, timestamp, channel, title, image }) {
     <div className="videoRow">
       <img src={image} alt="" />
       <div className="videoRow__text">
-        <h3>{title}</h3>
+        <h3 className="videoRow__videoTitle">{title}</h3>
         <p className="videoRow__headline">
           {channel} • {views} views • {timestamp}
         </p>

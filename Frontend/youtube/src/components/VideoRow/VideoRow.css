@@ -4,6 +4,12 @@
   max-width: 700px;
 }
 
+/* @media (max-width: 1340px) {
+  .videoRow {
+    max-width: 100%;
+  }
+} */
+
 .videoRow > img {
   object-fit: contain;
   width: 246px;

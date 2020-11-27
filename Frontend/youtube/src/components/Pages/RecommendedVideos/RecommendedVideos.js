@@ -1,11 +1,11 @@
 import React from 'react';
 import './RecommendedVideos.css';
-import VideoCard from '../VideoCard/VideoCard';
+import VideoCard from '../../VideoCard/VideoCard';
 
-function Sidebar() {
+function RecommendedVideos() {
   return (
     <div className="recommendedVideos">
-      <h2>Recommended</h2>
+      <h2>Latest</h2>
       <div className="recommendedVideos__videos">
         <VideoCard
           title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
@@ -116,4 +116,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default RecommendedVideos;
