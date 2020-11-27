@@ -20,6 +20,18 @@
 .header__input {
   width: 40%;
   border: 1px solid lightgray;
+  min-width: max-content;
+}
+.search_link{
+  display: block;
+  height: 28px;
+  width: auto;
+}
+a.search_link > svg {
+  height: 100%;
+}
+.header__input > input {
+  line-height: 2;
 }
 
 .header__icon {
