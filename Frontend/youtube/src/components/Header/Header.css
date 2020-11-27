@@ -22,12 +22,12 @@
   border: 1px solid lightgray;
   min-width: max-content;
 }
-.search_link{
+.header__searchLink {
   display: block;
   height: 28px;
   width: auto;
 }
-a.search_link > svg {
+a.header__searchLink > svg {
   height: 100%;
 }
 .header__input > input {
