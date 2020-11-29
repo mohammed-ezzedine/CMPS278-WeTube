@@ -12,12 +12,12 @@ namespace YouTubeClone.Models.Dtos
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
-
-        public Guid Secret { get; set; }
     }
 
     public class UserDto : UserSummaryDto
     {
+        public Guid Secret { get; set; }
+
         public ChannelSummaryDto Channel { get; set; }
 
         public List<ChannelSummaryDto> Subscriptions { get; set; }

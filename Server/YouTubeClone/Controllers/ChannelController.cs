@@ -48,13 +48,13 @@ namespace YouTubeClone.Controllers
         ///     
         /// </remarks>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ChannelDto>>> GetChannels()
+        public async Task<ActionResult<IEnumerable<ChannelSummaryDto>>> GetChannels()
         {
             var channels = await context.Channel
                 .Include(c => c.Playlists)
                 .ThenInclude(p => p.Videos)
                 .Include(c => c.Videos)
-                .Select(c => mapper.Map<ChannelDto>(c))
+                .Select(c => mapper.Map<ChannelSummaryDto>(c))
                 .ToListAsync();
 
             return channels;
@@ -78,6 +78,7 @@ namespace YouTubeClone.Controllers
                 .ThenInclude(p => p.Videos)
                 .Include(c => c.Videos)
                 .Include(c => c.Subscribers)
+                .ThenInclude(s => s.User)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (channel == null)
@@ -108,11 +109,18 @@ namespace YouTubeClone.Controllers
         [HttpPost]
         public async Task<ActionResult<ChannelDto>> PostChannel([FromBody] PostChannelDto postChannelDto)
         {
-            var user = await context.User.FindAsync(postChannelDto.UserId);
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
 
             if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
             {
                 return Unauthorized();
+            }
+
+            if (user.Channel != null)
+            {
+                return BadRequest("User already has a channel.");
             }
 
             var channel = new Channel { Description = postChannelDto.Description };
