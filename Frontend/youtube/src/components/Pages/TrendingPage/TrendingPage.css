@@ -1,0 +1,14 @@
+.trending {
+  flex: 0.8;
+  padding: 40px 20px;
+}
+
+.trending > h2 {
+  margin-left: 5px;
+  margin-bottom: 20px;
+}
+
+.trending__videos {
+  display: flex;
+  flex-wrap: wrap;
+}

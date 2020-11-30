@@ -8,6 +8,8 @@ import SearchPage from './components/Pages/SearchPage/SearchPage';
 import SubscriptionPage from './components/Pages/SubscriptionPage/SubscriptionPage';
 import HistoryPage from './components/Pages/HistoryPage/HistoryPage';
 import WatchLaterPage from './components/Pages/WatchLaterPage/WatchLaterPage';
+import YourVideosPage from './components/Pages/YourVideosPage/YourVideosPage';
+import TrendingPage from './components/Pages/TrendingPage/TrendingPage';
 
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
@@ -19,13 +21,19 @@ function App() {
 
         <Switch>
           <Route path="/trending">
-            <Sidebar />
+            <div className="app__page">
+              <Sidebar />
+              <TrendingPage />
+            </div>
           </Route>
           <Route path="/playlists">
             <Sidebar />
           </Route>
           <Route path="/your-videos">
-            <Sidebar />
+            <div className="app__page">
+              <Sidebar />
+              <YourVideosPage />
+            </div>
           </Route>
           <Route path="/watch-later">
             <div className="app__page">

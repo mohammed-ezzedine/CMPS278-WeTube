@@ -11,7 +11,7 @@
 } */
 
 .videoRow > img {
-  object-fit: contain;
+  object-fit: cover;
   width: 246px;
   height: 138px;
 }
