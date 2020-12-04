@@ -1,19 +1,28 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
 
-import Header from './components/Header/Header';
-import Sidebar from './components/Sidebar/Sidebar';
-import RecommendedVideos from './components/Pages/RecommendedVideos/RecommendedVideos';
-import SearchPage from './components/Pages/SearchPage/SearchPage';
-import SubscriptionPage from './components/Pages/SubscriptionPage/SubscriptionPage';
-import HistoryPage from './components/Pages/HistoryPage/HistoryPage';
-import WatchLaterPage from './components/Pages/WatchLaterPage/WatchLaterPage';
-import YourVideosPage from './components/Pages/YourVideosPage/YourVideosPage';
-import TrendingPage from './components/Pages/TrendingPage/TrendingPage';
+import Header from "./components/Header/Header";
+import Sidebar from "./components/Sidebar/Sidebar";
+import RecommendedVideos from "./components/Pages/RecommendedVideos/RecommendedVideos";
+import SearchPage from "./components/Pages/SearchPage/SearchPage";
+import SubscriptionPage from "./components/Pages/SubscriptionPage/SubscriptionPage";
+import HistoryPage from "./components/Pages/HistoryPage/HistoryPage";
+import WatchLaterPage from "./components/Pages/WatchLaterPage/WatchLaterPage";
+import YourVideosPage from "./components/Pages/YourVideosPage/YourVideosPage";
+import TrendingPage from "./components/Pages/TrendingPage/TrendingPage";
 
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import AddVideo from "./components/Pages/AddVideo/AddVideo";
+import RegisterForm from "./components/Forms/Register/RegisterForm";
+import LoginForm from "./components/Forms/Login/LoginForm";
+import { AuthContext } from "./components/Auth/AuthContextProvider";
+import { useContext } from "react";
+
+
 
 function App() {
+  const [auth, setAuth] = useContext(AuthContext);
+  console.log(auth);
   return (
     <div className="app">
       <Router>
@@ -57,6 +66,24 @@ function App() {
             <div className="app__page">
               <Sidebar />
               <SearchPage />
+            </div>
+          </Route>
+          <Route path="/add-video">
+            <div className="app__page">
+              <Sidebar />
+              <AddVideo />
+            </div>
+          </Route>
+          <Route path="/register">
+            <div className="app__page">
+              <Sidebar />
+              <RegisterForm />
+            </div>
+          </Route>
+          <Route path="/login">
+            <div className="app__page">
+              <Sidebar />
+              <LoginForm />
             </div>
           </Route>
           <Route path="/">
