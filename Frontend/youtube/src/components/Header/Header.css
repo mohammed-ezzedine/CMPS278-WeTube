@@ -36,6 +36,12 @@ a.header__searchLink > svg {
 
 .header__icon {
   margin-right: 8px;
+  font-size: 100px;
+}
+
+.header__icon:hover {
+  background-color: lightgrey;
+  border-radius: 50%;
 }
 
 .header__inputButton {
