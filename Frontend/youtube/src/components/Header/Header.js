@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-import { Avatar } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import VideoCallIcon from '@material-ui/icons/VideoCall';
-import AppsIcon from '@material-ui/icons/Apps';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import { Avatar } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
+import SearchIcon from "@material-ui/icons/Search";
+import VideoCallIcon from "@material-ui/icons/VideoCall";
+import AppsIcon from "@material-ui/icons/Apps";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 
-import './Header.css';
+import "./Header.css";
 
 function Header() {
-  const [inputSearch, setInputSearch] = useState('');
+  const [inputSearch, setInputSearch] = useState("");
 
   const handleChange = (e) => {
     setInputSearch(e.target.value);
@@ -43,7 +43,9 @@ function Header() {
       </div>
 
       <div className="header__icons">
-        <VideoCallIcon className="header__icon" />
+        <Link to={`/add-video`}>
+          <VideoCallIcon className="header__icon" />
+        </Link>
         <AppsIcon className="header__icon" />
         <NotificationsIcon className="header__icon" />
         <Avatar

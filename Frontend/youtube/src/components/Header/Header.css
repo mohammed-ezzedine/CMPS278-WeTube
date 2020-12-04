@@ -43,6 +43,10 @@ a.header__searchLink > svg {
   background-color: lightgrey;
   border-radius: 50%;
 }
+.header__icons > a {
+  text-decoration: none;
+  color: unset;
+}
 
 .header__inputButton {
   width: 50px !important;
@@ -61,4 +65,8 @@ a.header__searchLink > svg {
   height: 25px;
   object-fit: contain;
   margin-left: 20px;
+}
+
+a{
+
 }
