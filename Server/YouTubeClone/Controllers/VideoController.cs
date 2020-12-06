@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using YouTubeClone.Data;
 using YouTubeClone.Models;
 using YouTubeClone.Models.Dtos;
@@ -138,6 +140,38 @@ namespace YouTubeClone.Controllers
             return mapper.Map<VideoDto>(videoById);
         }
 
+        [HttpGet("stream/{id}")]
+        public async Task<ActionResult> GetVideoStream(int id)
+        {
+            var videoById = await context.Video
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            if (videoById == null)
+            {
+                return NotFound();
+            }
+
+            FileStream content = System.IO.File.OpenRead(videoById.Url);
+            var response = File(content, "application/octet-stream");
+            return response;
+        }
+
+        [HttpGet("image-stream/{id}")]
+        public async Task<ActionResult> GetImageStream(int id)
+        {
+            var videoById = await context.Video
+                .FirstOrDefaultAsync(v => v.Id == id);
+
+            if (videoById == null)
+            {
+                return NotFound();
+            }
+
+            FileStream content = System.IO.File.OpenRead(videoById.ThumbnailUrl);
+            var response = File(content, "application/octet-stream");
+            return response;
+        }
+
         /// <summary>
         /// Upload a video (without its details)
         /// </summary>
@@ -172,11 +206,11 @@ namespace YouTubeClone.Controllers
             {
                 if (FileIsImage(files.Files.ElementAt(i)))
                 {
-                    imagePath = await HelperFunctions.AddFileToSystemAsync(files.Files.ElementAt(i), env.WebRootPath);
+                    imagePath = await HelperFunctions.AddFileToSystemAsync(files.Files.ElementAt(i), env);
                 }
                 else
                 {
-                    videoPath = await HelperFunctions.AddFileToSystemAsync(files.Files.ElementAt(i), env.WebRootPath);
+                    videoPath = await HelperFunctions.AddFileToSystemAsync(files.Files.ElementAt(i), env);
                 }
             }
 

@@ -311,7 +311,7 @@ namespace YouTubeClone.Controllers
                 System.IO.File.Delete(user.Channel.ImageUrl);
             }
 
-            user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env.WebRootPath);
+            user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env);
             return Ok();
         }
 
