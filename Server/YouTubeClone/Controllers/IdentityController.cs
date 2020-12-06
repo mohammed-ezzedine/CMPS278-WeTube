@@ -134,7 +134,7 @@ namespace YouTubeClone.Controllers
         /// 
         /// </remarks>
         [HttpGet("watch-later")]
-        public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserWatchLaterVideos([FromRoute] int userId, [FromRoute] string userSecret)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserWatchLaterVideos([FromQuery] int userId, [FromQuery] string userSecret)
         {
             var user = await context.User
                 .Include(u => u.WatchLater)
@@ -175,7 +175,7 @@ namespace YouTubeClone.Controllers
         /// 
         /// </remarks>
         [HttpGet("history")]
-        public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserHistoryVideos([FromRoute] int userId, [FromRoute] string userSecret)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserHistoryVideos([FromQuery] int userId, [FromQuery] string userSecret)
         {
             var user = await context.User
                 .Include(u => u.UserVideoViews)

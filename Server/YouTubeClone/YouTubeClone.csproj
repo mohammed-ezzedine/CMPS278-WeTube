@@ -23,5 +23,10 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\637428933248541220.mp4" />
+    <None Include="wwwroot\637428933259814664.mp4" />
+  </ItemGroup>
+
 
 </Project>

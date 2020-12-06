@@ -25,8 +25,6 @@ namespace YouTubeClone
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(p => p
@@ -34,6 +32,8 @@ namespace YouTubeClone
                     .AllowAnyMethod()
                     .AllowAnyOrigin());
             });
+
+            services.AddControllers();
 
             services.AddDbContext<YouTubeContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("YouTubeContext")));

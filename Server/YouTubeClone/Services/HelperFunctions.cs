@@ -20,7 +20,7 @@ namespace YouTubeClone.Services
             return Convert.ToBase64String(hashedBytes);
         }
 
-        public async static Task<string> AddFileToSystemAsync(IFormFile file, IWebHostEnvironment env)
+        public async static Task<string> AddFileToSystemAsync(IFormFile file, string rootPath)
         {
             if (file == null)
             {
@@ -30,7 +30,7 @@ namespace YouTubeClone.Services
             var extension = file.FileName.Substring(file.FileName.LastIndexOf('.') + 1);
             // Add unique name to avoid possible name conflicts
             var uniquefileName = DateTime.Now.Ticks + "." + extension;
-            var filePath = Path.Combine(env.WebRootPath, uniquefileName);
+            var filePath = Path.Combine(rootPath, uniquefileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
             {
@@ -38,7 +38,7 @@ namespace YouTubeClone.Services
                 await file.CopyToAsync(fileStream);
             }
 
-            return $"/{uniquefileName}";
+            return $"https://youtube278.scm.azurewebsites.net/api/vfs/site/wwwroot/wwwroot/{uniquefileName}";
         }
     }
 }

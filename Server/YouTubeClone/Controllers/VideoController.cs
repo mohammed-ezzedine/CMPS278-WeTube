@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
@@ -64,16 +66,56 @@ namespace YouTubeClone.Controllers
         }
 
         /// <summary>
+        /// Get list of videos by keyword search
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/video/search?q=hello+world?p=2
+        /// 
+        /// p is optional and defaults to 1
+        /// </remarks>      
+        [HttpGet("search")]
+        public async Task<ActionResult> GetVideosFromSearch([FromQuery] string q, [FromQuery] int p = 1)
+        {
+            var keywords = q.ToLower().Split();
+
+            var regexBody = keywords.Aggregate((current, next) => current + "|" + next);
+            var regex = new Regex("(" + regexBody + ")");
+
+            var videos = await context.Video
+                .Where(v => regex.IsMatch(v.Title.ToLower()))
+                .Select(v => mapper.Map<VideoDto>(v))
+                .ToListAsync();
+
+            var page = videos.Skip((p - 1) * 10)
+                .Take(10);
+                
+            return Ok(new {
+                PagesCount = Math.Ceiling(videos.Count / 10.0),
+                Videos = page
+            });
+        }
+
+        /// <summary>
         /// Get a video
         /// </summary>
         /// <remarks>
         /// Sample request:
         /// 
-        ///     GET /api/video/4
+        ///     POST /api/video/4
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
         /// 
+        /// UserId and UserSecrets are OPTIONAL.
         /// </remarks>
-        [HttpGet]
-        public async Task<ActionResult<VideoDto>> GetVideo(int id)
+        [HttpPost]
+        public async Task<ActionResult<VideoDto>> GetVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var videoById = await context.Video
                 .Include(v => v.Author)
@@ -86,7 +128,13 @@ namespace YouTubeClone.Controllers
             {
                 return NotFound();
             }
-            
+
+            var user = await context.User
+                .FirstOrDefaultAsync(u => u.Id == postVideoDto.UserId && u.Secret == Guid.Parse(postVideoDto.UserSecret));
+
+            context.UserVideoViews.Add(new UserVideoView { User = user, Video = videoById, DateTime = DateTime.Now });
+            await context.SaveChangesAsync();
+
             return mapper.Map<VideoDto>(videoById);
         }
 
@@ -96,13 +144,13 @@ namespace YouTubeClone.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/video?userId=0&userSecret=secret, video.mp4, image.jpg
+        ///     POST /api/video/upload?userId=0&userSecret=secret, video.mp4, image.jpg
         ///     {
         ///         "Content-Type": "multipart/form-data"
         ///     }
         /// </remarks>
-        [HttpPost]
-        public async Task<ActionResult<VideoDto>> PostVideo([FromRoute] int userId, [FromRoute] string userSecret, IFormFileCollection files)
+        [HttpPost("upload")]
+        public async Task<ActionResult<VideoDto>> PostVideo([FromQuery] int userId, [FromQuery] string userSecret, IFormCollection files)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -113,7 +161,7 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            if (files.Count < 2)
+            if (files.Files.Count < 2)
             {
                 return BadRequest("At least two files should be attached.");
             }
@@ -122,13 +170,13 @@ namespace YouTubeClone.Controllers
             string videoPath = null;
             for (int i = 0; i < 2; i++)
             {
-                if (FileIsImage(files[i]))
+                if (FileIsImage(files.Files.ElementAt(i)))
                 {
-                    imagePath = await HelperFunctions.AddFileToSystemAsync(files[i], env);
+                    imagePath = await HelperFunctions.AddFileToSystemAsync(files.Files.ElementAt(i), env.WebRootPath);
                 }
                 else
                 {
-                    videoPath = await HelperFunctions.AddFileToSystemAsync(files[i], env);
+                    videoPath = await HelperFunctions.AddFileToSystemAsync(files.Files.ElementAt(i), env.WebRootPath);
                 }
             }
 

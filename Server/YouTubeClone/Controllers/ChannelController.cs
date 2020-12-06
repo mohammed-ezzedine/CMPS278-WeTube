@@ -61,6 +61,43 @@ namespace YouTubeClone.Controllers
         }
 
         /// <summary>
+        /// Get the list of user's subscribed channels
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST /api/channel/subscriptions
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        ///     
+        /// </remarks>
+        [HttpPost("subscriptions")]
+        public async Task<ActionResult<IEnumerable<ChannelSummaryDto>>> GetUserSubscriptions([FromBody] PostChannelDto postChannelDto)
+        {
+            var user = await context.User
+                .FindAsync(postChannelDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            var usersubscriptions = await context.UserChannelSubscription
+                .Include(ucs => ucs.Channel)
+                .Include(ucs => ucs.User)
+                .Where(ucs => ucs.User.Id == user.Id)
+                .Select(ucs => mapper.Map<ChannelSummaryDto>(ucs.Channel))
+                .ToListAsync();
+
+            return usersubscriptions;
+        }
+
+        /// <summary>
         /// Get a channel given its ID
         /// </summary>
         /// <remarks>
@@ -87,6 +124,115 @@ namespace YouTubeClone.Controllers
             }
 
             return mapper.Map<ChannelDto>(channel);
+        }
+
+        /// <summary>
+        /// Get a channel's hidden videos
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST /api/channel/hidden/3
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
+        [HttpPost("hidden")]
+        public async Task<ActionResult<IEnumerable<VideoSummaryDto>>> GetHiddenVideos(int id, [FromBody] PostChannelDto postChannelDto)
+        {
+            var user = await context.User
+                .Include(u => u.Channel)
+                .ThenInclude(c => c.Videos)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
+
+            if (user == null || user.Channel.Id != id)
+            {
+                return Unauthorized();
+            }
+
+            var result = user.Channel.Videos
+                .Where(v => !v.Shown)
+                .Select(v => mapper.Map<VideoSummaryDto>(v))
+                .ToList();
+
+            return result;
+        }
+
+
+        /// <summary>
+        /// Get a channel's stats
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST /api/channel/stats/3
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
+        /// <returns>
+        /// {
+        ///     "LastMonthViews": 0,
+        ///     "TotalViews": 0,
+        ///     "TopVideosInTwoDays": [],
+        ///     "TopVideosAllTime": []
+        /// }
+        /// </returns>
+        [HttpPost("stats")]
+        public async Task<ActionResult> PostChannel(int id, [FromBody] PostChannelDto postChannelDto)
+        {
+            var user = await context.User
+                .Include(u => u.Channel)
+                .ThenInclude(c => c.Videos)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
+
+            if (user == null 
+                || user.Secret != Guid.Parse(postChannelDto.UserSecret)
+                || user.Channel.Id != id)
+            {
+                return Unauthorized();
+            }
+
+            var channelVideosIds = user.Channel.Videos.Select(v => v.Id);
+
+            var lastMonthViewsCount = context.UserVideoViews
+                .Where(uv =>
+                    channelVideosIds.Contains(uv.Video.Id)
+                    && uv.DateTime.Subtract(DateTime.Now).TotalDays < 30)
+                .Count();
+
+            var totalViewsCount = context.UserVideoViews
+                .Where(uv => channelVideosIds.Contains(uv.Video.Id))
+                .Count();
+
+            var topVideosInTwoDays = context.UserVideoViews
+                .Include(uv => uv.Video)
+                .Where(uv => channelVideosIds.Contains(uv.Video.Id)
+                    && uv.DateTime.Subtract(DateTime.Now).TotalHours < 48)
+                .Select(uv => mapper.Map<VideoSummaryDto>(uv.Video))
+                .Take(10);
+
+            var topVideosAllTime = context.UserVideoViews
+               .Include(uv => uv.Video)
+               .Where(uv => channelVideosIds.Contains(uv.Video.Id))
+               .Select(uv => mapper.Map<VideoSummaryDto>(uv.Video))
+               .Take(10);
+
+            return Ok(new
+            {
+                LastMonthViews = lastMonthViewsCount,
+                TotalViews = totalViewsCount,
+                TopVideosInTwoDays = topVideosInTwoDays,
+                TopVideosAllTime = topVideosAllTime
+            });
         }
 
         /// <summary>
@@ -144,7 +290,7 @@ namespace YouTubeClone.Controllers
         /// 
         /// </remarks>
         [HttpPut]
-        public async Task<ActionResult> SetChannelImage(int id, IFormFile image, [FromRoute] int userId, [FromRoute] string userSecret)
+        public async Task<ActionResult> SetChannelImage(int id, IFormFile image, [FromQuery] int userId, [FromQuery] string userSecret)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -165,7 +311,7 @@ namespace YouTubeClone.Controllers
                 System.IO.File.Delete(user.Channel.ImageUrl);
             }
 
-            user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env);
+            user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env.WebRootPath);
             return Ok();
         }
 
@@ -189,14 +335,31 @@ namespace YouTubeClone.Controllers
         [HttpPost("subscribe")]
         public async Task<ActionResult> Subscribe([FromBody] PostChannelDto postChannelDto)
         {
-            var user = await context.User.FindAsync(postChannelDto.UserId);
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
 
             if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
             {
                 return Unauthorized();
             }
 
+            if (user.Channel.Id == postChannelDto.ChannelId)
+            {
+                return BadRequest("User cannot subscribe to his own channel.");
+            }
+
             var channel = await context.Channel.FindAsync(postChannelDto.ChannelId);
+            var previousSuscription = await context.UserChannelSubscription
+                .Include(ucs => ucs.Channel)
+                .Include(ucs => ucs.User)
+                .FirstOrDefaultAsync(ucs => ucs.Channel.Id == channel.Id && ucs.User.Id == user.Id);
+
+            if (previousSuscription != null)
+            {
+                return BadRequest("User is already subscribed to this channel.");
+            }
+
             await context.UserChannelSubscription.AddAsync(new UserChannelSubscription { User = user, Channel = channel });
             await context.SaveChangesAsync();
             return Ok();
