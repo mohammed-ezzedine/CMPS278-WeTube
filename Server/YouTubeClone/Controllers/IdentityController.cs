@@ -68,7 +68,8 @@ namespace YouTubeClone.Controllers
             var hashedPassword = _user.Password.HashPassword(settings.Salt);
 
             var user = await context.User
-                .FirstOrDefaultAsync(u => u.Username == _user.Username && u.HashedPassword == hashedPassword);
+                .FirstOrDefaultAsync(u => u.Username == _user.Username && u.HashedPassword == hashedPassword)
+                .Include(u => mapper.Map<ChannelDto>(u.Channel));
 
             if (user == null)
             {
