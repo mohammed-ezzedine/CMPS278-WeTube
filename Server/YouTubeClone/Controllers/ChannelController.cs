@@ -289,7 +289,7 @@ namespace YouTubeClone.Controllers
         ///     }
         /// 
         /// </remarks>
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult> SetChannelImage(int id, IFormFile image, [FromQuery] int userId, [FromQuery] string userSecret)
         {
             var user = await context.User
