@@ -80,7 +80,7 @@ const EditChannel = () => {
         data.append("image", files[0].file);
         try {
              let response = await put(
-                `https://youtube278.azurewebsites.net/api/channel/3?userId=${userId}&userSecret=${userSecret}`,
+                `https://youtube278.azurewebsites.net/api/channel/${id}?userId=${userId}&userSecret=${userSecret}`,
                 data,
                 {
                   headers: {
