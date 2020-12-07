@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "./App.css";
 
 import Header from "./components/Header/Header";
@@ -15,14 +15,15 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import AddVideo from "./components/Pages/AddVideo/AddVideo";
 import RegisterForm from "./components/Forms/Register/RegisterForm";
 import LoginForm from "./components/Forms/Login/LoginForm";
+import CreateChannel from "./components/Forms/Channel/CreateChannel";
 import { AuthContext } from "./components/Auth/AuthContextProvider";
-import { useContext } from "react";
+import EditChannel from "./components/Forms/Channel/EditChannel";
 
 
 
 function App() {
+
   const [auth, setAuth] = useContext(AuthContext);
-  console.log(auth);
   return (
     <div className="app">
       <Router>
@@ -84,6 +85,18 @@ function App() {
             <div className="app__page">
               <Sidebar />
               <LoginForm />
+            </div>
+          </Route>
+          <Route path="/createChannel">
+            <div className="app__page">
+              <Sidebar />
+              <CreateChannel />
+            </div>
+          </Route>
+          <Route path="/editChannel">
+            <div className="app__page">
+              <Sidebar />
+              <EditChannel />
             </div>
           </Route>
           <Route path="/">

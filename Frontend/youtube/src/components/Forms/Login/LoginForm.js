@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 //Material UI
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -20,10 +20,12 @@ import { useStyles } from "../Register/styles.js";
 import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
+import { AuthContext } from "../../Auth/AuthContextProvider.js";
 
 export default function LoginForm() {
   const classes = useStyles();
   const [UserName, setUserName] = useState("");
+  const [auth, setAuth] = useContext(AuthContext);
   const [Password, setPassword] = useState("");
   const [errorMessage, seterrorMessage] = useState("");
   const [open, setOpen] = useState(false);
@@ -72,7 +74,7 @@ export default function LoginForm() {
                 window.localStorage.setItem("CurrentUser", JSON.stringify(response));
                 setSuccess(true);
                 setOpen(false);
-
+                setAuth(true);
               })()
             : (async () => {
                 if (response.status === 404) {
@@ -83,11 +85,13 @@ export default function LoginForm() {
                 }
                 setSuccess(false);
                 setOpen(true);
+                setAuth(true);
               })();
         } catch (error) {
           seterrorMessage('Critical error occured, check your internet connection');
           setSuccess(false);
           setOpen(true);
+          setAuth(false);
         }
       }, 100);
     },

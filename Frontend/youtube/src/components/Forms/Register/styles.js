@@ -13,6 +13,12 @@ export const useStyles = makeStyles((theme) => ({
       flexDirection: 'column',
       alignItems: 'center',
     },
+    paperLessMargin: {
+      marginTop: theme.spacing(4),
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
     avatar: {
       margin: theme.spacing(1),
       backgroundColor: theme.palette.secondary.main,
@@ -27,4 +33,7 @@ export const useStyles = makeStyles((theme) => ({
     textarea: {
       resize: "both"
     },
+    marginBottom:{
+      marginBottom: theme.spacing(3),
+    }
   }));

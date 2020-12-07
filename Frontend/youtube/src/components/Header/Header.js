@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { Avatar } from "@material-ui/core";
+import { Avatar, Button } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
@@ -9,10 +9,11 @@ import AppsIcon from "@material-ui/icons/Apps";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 
 import "./Header.css";
+import { AuthContext } from "../Auth/AuthContextProvider";
 
 function Header() {
+  const [auth] = useContext(AuthContext)
   const [inputSearch, setInputSearch] = useState("");
-
   const handleChange = (e) => {
     setInputSearch(e.target.value);
   };
@@ -29,7 +30,7 @@ function Header() {
           />
         </Link>
       </div>
-
+  
       <div className="header__input">
         <input
           onChange={(e) => handleChange(e)}
@@ -42,6 +43,7 @@ function Header() {
         </Link>
       </div>
 
+    { auth ?
       <div className="header__icons">
         <Link to={`/add-video`}>
           <VideoCallIcon className="header__icon" />
@@ -53,6 +55,10 @@ function Header() {
           src="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
         />
       </div>
+      : 
+      <Link to="/login"><Button variant="contained" color="primary"> Log In </Button></Link>
+
+}
     </div>
   );
 }

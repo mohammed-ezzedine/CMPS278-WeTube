@@ -188,7 +188,9 @@ function RegisterForm() {
           <Button
           fullWidth
           type="submit"
+          variant="contained"
           className={classes.submit}
+          color="primary"
           >
               Register
           </Button>
