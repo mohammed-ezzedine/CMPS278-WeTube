@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -313,6 +314,22 @@ namespace YouTubeClone.Controllers
 
             user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env);
             return Ok();
+        }
+
+        [HttpGet("image-stream/{id}")]
+        public async Task<ActionResult> GetImageStream(int id)
+        {
+            var channel = await context.Channel
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (channel == null)
+            {
+                return NotFound();
+            }
+
+            FileStream content = System.IO.File.OpenRead(channel.ImageUrl);
+            var response = File(content, "application/octet-stream");
+            return response;
         }
 
         /// <summary>
