@@ -1,7 +1,15 @@
 import React from 'react';
 import './VideoRow.css';
 
-function VideoRow({ views, description, timestamp, channel, title, image }) {
+function VideoRow({
+  views,
+  description,
+  timestamp,
+  channel,
+  title,
+  image,
+  isShown,
+}) {
   return (
     <div className="videoRow">
       <img src={image} alt="" />
@@ -10,7 +18,14 @@ function VideoRow({ views, description, timestamp, channel, title, image }) {
         <p className="videoRow__headline">
           {channel} • {views} views • {timestamp}
         </p>
-        <p className="videoRow__description">{description}</p>
+        <p
+          className="videoRow__description"
+          style={{
+            display: isShown ? 'block' : 'none',
+          }}
+        >
+          {description}
+        </p>
       </div>
     </div>
   );

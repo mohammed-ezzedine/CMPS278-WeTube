@@ -1,0 +1,35 @@
+.interactions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.interactions__mainInteractionSection {
+  width: 100%;
+  display: flex;
+  gap: 0 30px;
+  padding: 0 10%;
+  margin-bottom: 30px;
+}
+
+.interactions__title {
+  flex: 0.8;
+}
+
+.interactions__interactiveSection {
+  display: flex;
+  font-size: 10px;
+  flex: 0.2;
+}
+
+.interactions__interactiveSection svg {
+  margin-left: 12px;
+  color: grey;
+}
+
+.interactions__thumbsUp:hover {
+  color: #1277a5;
+}
+.interactions__thumbsDown:hover {
+  color: #a51212;
+}
