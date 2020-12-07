@@ -1,24 +1,24 @@
-import React, { useState } from "react";
-import "./App.css";
+import React, { useState } from 'react';
+import './App.css';
 
-import Header from "./components/Header/Header";
-import Sidebar from "./components/Sidebar/Sidebar";
-import RecommendedVideos from "./components/Pages/RecommendedVideos/RecommendedVideos";
-import SearchPage from "./components/Pages/SearchPage/SearchPage";
-import SubscriptionPage from "./components/Pages/SubscriptionPage/SubscriptionPage";
-import HistoryPage from "./components/Pages/HistoryPage/HistoryPage";
-import WatchLaterPage from "./components/Pages/WatchLaterPage/WatchLaterPage";
-import YourVideosPage from "./components/Pages/YourVideosPage/YourVideosPage";
-import TrendingPage from "./components/Pages/TrendingPage/TrendingPage";
+import Header from './components/Header/Header';
+import Sidebar from './components/Sidebar/Sidebar';
+import RecommendedVideos from './components/Pages/RecommendedVideos/RecommendedVideos';
+import SearchPage from './components/Pages/SearchPage/SearchPage';
+import SubscriptionPage from './components/Pages/SubscriptionPage/SubscriptionPage';
+import HistoryPage from './components/Pages/HistoryPage/HistoryPage';
+import WatchLaterPage from './components/Pages/WatchLaterPage/WatchLaterPage';
+import YourVideosPage from './components/Pages/YourVideosPage/YourVideosPage';
+import TrendingPage from './components/Pages/TrendingPage/TrendingPage';
+import PlaylistPage from './components/Pages/PlaylistPage/PlaylistPage';
+import VideoPlayerPage from './components/Pages/VideoPlayerPage/VideoPlayerPage';
 
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import AddVideo from "./components/Pages/AddVideo/AddVideo";
-import RegisterForm from "./components/Forms/Register/RegisterForm";
-import LoginForm from "./components/Forms/Login/LoginForm";
-import { AuthContext } from "./components/Auth/AuthContextProvider";
-import { useContext } from "react";
-
-
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import AddVideo from './components/Pages/AddVideo/AddVideo';
+import RegisterForm from './components/Forms/Register/RegisterForm';
+import LoginForm from './components/Forms/Login/LoginForm';
+import { AuthContext } from './components/Auth/AuthContextProvider';
+import { useContext } from 'react';
 
 function App() {
   const [auth, setAuth] = useContext(AuthContext);
@@ -29,6 +29,12 @@ function App() {
         <Header />
 
         <Switch>
+          <Route path="/video">
+            <div className="app__page">
+              <Sidebar />
+              <VideoPlayerPage />
+            </div>
+          </Route>
           <Route path="/trending">
             <div className="app__page">
               <Sidebar />
@@ -36,7 +42,10 @@ function App() {
             </div>
           </Route>
           <Route path="/playlists">
-            <Sidebar />
+            <div className="app__page">
+              <Sidebar />
+              <PlaylistPage />
+            </div>
           </Route>
           <Route path="/your-videos">
             <div className="app__page">

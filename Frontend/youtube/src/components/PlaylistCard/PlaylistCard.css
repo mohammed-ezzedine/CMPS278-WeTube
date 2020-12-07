@@ -1,0 +1,78 @@
+.playlistCard {
+  margin-bottom: 40px;
+  width: 270px;
+}
+
+.playlistCard__thumbnailContainer {
+  position: relative;
+  height: 140px;
+  width: 250px;
+}
+
+.playlistCard__playOverlay {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 3;
+  height: 100%;
+  width: 100%;
+  font-size: 20px;
+  color: white;
+  opacity: 0;
+
+  transition: all 200ms ease-in-out;
+}
+
+.playlistCard__playOverlay:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 1;
+}
+
+.playlistCard__overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 2;
+  height: 100%;
+  width: 40%;
+  right: 0;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+
+  transition: all 250ms ease-in-out;
+}
+
+.playlistCard__Icons {
+  color: white;
+  font-size: 2rem !important;
+}
+
+.playlistCard__thumbnail {
+  object-fit: cover;
+  height: 140px;
+  width: 250px;
+}
+
+.playlistCard__info {
+  display: flex;
+  padding-right: 30px;
+  margin-top: 10px;
+}
+
+.playlistCard__text > h4 {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.playlistCard__text > p {
+  font-size: 14px;
+  color: grey;
+}
+
+.playlistCard__avatar {
+  height: 30px !important;
+  width: 30px !important;
+}

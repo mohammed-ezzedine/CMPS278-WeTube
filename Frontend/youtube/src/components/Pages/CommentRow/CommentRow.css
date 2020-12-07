@@ -1,0 +1,21 @@
+.commentRow {
+  display: flex;
+  gap: 0 10px;
+  align-items: center;
+
+  margin-bottom: 50px;
+}
+
+.commentRow__info {
+  padding-right: 200px;
+}
+
+.commentRow__authorInfo {
+  display: flex;
+  flex-direction: row;
+  gap: 0 10px;
+}
+
+.commentRow__timestamp {
+  color: grey;
+}
