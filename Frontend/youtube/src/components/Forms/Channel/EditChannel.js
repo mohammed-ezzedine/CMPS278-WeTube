@@ -30,11 +30,11 @@ const EditChannel = () => {
     let {id, imageUrl} = currentUser.channel;
     const [readerRes, setReaderRes] = useState(null)
     const [profilePic, setProfilePic] = useState(imageUrl ? `https://youtube278.azurewebsites.net/api/channel/image-stream/${id}` : null);
-    const [Description, setDescription] = useState("");
     const [auth, setAuth] = useContext(AuthContext);
     const [errorMessage, seterrorMessage] = useState("");
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
+    console.log(readerRes);
     
     const handleClose = (event, reason) => {
         if (reason === "clickaway") {
@@ -93,7 +93,7 @@ const EditChannel = () => {
                 imageUrl = `https://youtube278.azurewebsites.net/api/channel/image-stream/${id}`;
                 currentUser.channel.imageUrl = imageUrl;
                 window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
-                setProfilePic(imageUrl);
+                setProfilePic(profilePic);
                 seterrorMessage("profile pic has been updated successfully");
                 setSuccess(true);
                 setOpen(true);
