@@ -23,9 +23,10 @@ import { CardMedia, Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../../Auth/AuthContextProvider.js";
+import { useEditChannelStyles } from "./styles.js";
 
 const EditChannel = () => {
-    const classes = useStyles();
+    const classes = useEditChannelStyles();
     const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
     let {id, imageUrl} = currentUser.channel;
     const [readerRes, setReaderRes] = useState(null)
