@@ -60,11 +60,12 @@ namespace YouTubeClone.Controllers
         public async Task<ActionResult<IEnumerable<VideoDto>>> GetChannelVideos(int channelId)
         {
             var videos = await context.Video
+                .Include(v => v.Author)
                 .Where(v => v.Author.Id == channelId)
-                .Select(v => mapper.Map<VideoDto>(v))
                 .ToListAsync();
-                
-            return videos;
+
+            videos.ForEach(v => v.Author.Name = GetChannelName(v));
+            return videos.Select(v => mapper.Map<VideoDto>(v)).ToList();
         }
 
         /// <summary>
@@ -87,10 +88,14 @@ namespace YouTubeClone.Controllers
 
             var videos = await context.Video
                 .Where(v => regex.IsMatch(v.Title.ToLower()))
-                .Select(v => mapper.Map<VideoDto>(v))
+                .Include(v => v.Author)
                 .ToListAsync();
 
-            var page = videos.Skip((p - 1) * 10)
+            videos.ForEach(v => v.Author.Name = GetChannelName(v));
+
+            var page = videos.Select(v => mapper.Map<VideoDto>(v))
+                .ToList()
+                .Skip((p - 1) * 10)
                 .Take(10);
                 
             return Ok(new {
@@ -125,6 +130,8 @@ namespace YouTubeClone.Controllers
                 .Include(v => v.UserVideoReactions)
                 .Include(v => v.UserVideoViews)
                 .FirstOrDefaultAsync(v => v.Id == id);
+
+            videoById.Author.Name = GetChannelName(videoById);
 
             if (videoById == null)
             {
@@ -699,10 +706,10 @@ namespace YouTubeClone.Controllers
                 var videos = await context.Video
                     .Include(v => v.Author)
                     .Take(10)
-                    .Select(v => mapper.Map<VideoDto>(v))
                     .ToListAsync();
 
-                return videos;
+                videos.ForEach(v => v.Author.Name = GetChannelName(v));
+                return videos.Select(v => mapper.Map<VideoDto>(v)).ToList();
             }
             else
             {
@@ -710,7 +717,6 @@ namespace YouTubeClone.Controllers
                       .Include(v => v.Author)
                       .Where(v => v.Author.Id == channelId)
                       .Take(10)
-                      .Select(v => mapper.Map<VideoDto>(v))
                       .ToListAsync();
 
                 if (videos.Count != 10)
@@ -718,17 +724,24 @@ namespace YouTubeClone.Controllers
                     var extraVideos = await context.Video
                         .Include(v => v.Author)
                         .Take(10 - videos.Count)
-                        .Select(v => mapper.Map<VideoDto>(v))
                         .ToListAsync();
 
                     videos.AddRange(extraVideos);
-
                 }
 
-                return videos;
+                videos.ForEach(v => v.Author.Name = GetChannelName(v));
+
+                return videos.Select(v => mapper.Map<VideoDto>(v)).ToList();
             }
         }
 
         private bool FileIsImage(IFormFile file) => file.ContentType.ToLower().IndexOf("image") != -1;
+
+        private string GetChannelName(Video v)
+        {
+            var user = context.User.FirstOrDefault(u => u.Channel.Id == v.Author.Id);
+
+            return user.FirstName + " " + user.LastName;
+        }
     }
 }

@@ -9,6 +9,8 @@ namespace YouTubeClone.Models.Dtos
         public string Description { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public string Name { get; set; }
     }
 
     public class ChannelDto : ChannelSummaryDto

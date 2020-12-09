@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20201209205128_AddChannelUser.cs" />
+    <Compile Remove="Migrations\20201209205128_AddChannelUser.Designer.cs" />
+    <Compile Remove="Migrations\20201209205432_AddChannelUser.cs" />
+    <Compile Remove="Migrations\20201209205432_AddChannelUser.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
