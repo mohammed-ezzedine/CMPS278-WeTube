@@ -79,15 +79,17 @@ namespace YouTubeClone.Controllers
         [HttpGet("search")]
         public async Task<ActionResult> GetVideosFromSearch([FromQuery] string q, [FromQuery] int p = 1)
         {
-            var keywords = q.ToLower().Split();
+            //var keywords = q != null? q.ToLower().Split() : new string[] { "." };
 
-            var regexBody = keywords.Aggregate((current, next) => current + "|" + next);
-            var regex = new Regex("(" + regexBody + ")");
+            //var regexBody = keywords.Aggregate((current, next) => current + "|" + next);
+            //var regex = new Regex("(" + regexBody + ")");
 
             var videos = await context.Video
-                .Where(v => regex.IsMatch(v.Title.ToLower()))
                 .Include(v => v.Author)
+                .Where(v => q == null || v.Title.ToLower().Contains(q.ToLower()))
                 .ToListAsync();
+
+            //videos = videos.Where(v => regex.IsMatch(v.Title.ToLower())).ToList();
 
             videos.ForEach(v => v.Author.Name = GetChannelName(v));
 
@@ -97,6 +99,58 @@ namespace YouTubeClone.Controllers
                 .Take(10);
                 
             return Ok(new {
+                PagesCount = Math.Ceiling(videos.Count / 10.0),
+                Videos = page
+            });
+        }
+
+        /// <summary>
+        /// Get videos from subscribed channels
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     POST /api/video/from-subscriptions?p=2
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// 
+        /// p is optional and defaults to 1
+        /// </remarks>
+        [HttpPost("from-subscriptions")]
+        public async Task<ActionResult> GetVideosFromSubscriptions([FromBody] PostVideoDto postVideoDto, [FromQuery] int p = 1)
+        {
+            var user = await context.User
+                .Include(u => u.Subscriptions)
+                .ThenInclude(us => us.Channel)
+                .ThenInclude(c => c.Videos)
+                .FirstOrDefaultAsync(u => u.Id == postVideoDto.UserId && u.Secret == Guid.Parse(postVideoDto.UserSecret));
+
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            var subscriptionsIds = user.Subscriptions.Select(us => us.Channel.Id);
+
+            var videos = await context.Video
+                .Include(v => v.Author)
+                .Where(v => subscriptionsIds.Contains(v.Author.Id))
+                .ToListAsync();
+
+            videos.ForEach(v => v.Author.Name = GetChannelName(v));
+
+            var page = videos.Select(v => mapper.Map<VideoDto>(v))
+                .ToList()
+                .Skip((p - 1) * 10)
+                .Take(10);
+
+            return Ok(new
+            {
                 PagesCount = Math.Ceiling(videos.Count / 10.0),
                 Videos = page
             });
