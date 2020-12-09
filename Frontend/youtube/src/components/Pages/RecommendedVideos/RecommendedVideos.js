@@ -25,10 +25,10 @@ function RecommendedVideos() {
             <VideoCard
               title={video.title}
               views={video.views.length}
-              timestamp=""
-              channelImg={video.author.imageUrl}
-              channel=""
-              image={video.thumbnailUrl}
+              timestamp={video.uploadDate}
+              channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
+              channel={video.author.name}
+              image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
             />
           );
         })}
