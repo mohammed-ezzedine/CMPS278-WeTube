@@ -245,7 +245,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<VideoDto>> UpdateVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
