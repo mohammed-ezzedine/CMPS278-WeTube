@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace YouTubeClone.Models.Dtos
 {
@@ -17,6 +18,8 @@ namespace YouTubeClone.Models.Dtos
         public string ThumbnailUrl { get; set; }
 
         public bool Featured { get; set; }
+
+        public DateTime UploadDate { get; set; }
     }
 
     public class VideoDto : VideoSummaryDto

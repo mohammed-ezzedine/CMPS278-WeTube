@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace YouTubeClone.Models
 {
@@ -19,6 +20,8 @@ namespace YouTubeClone.Models
         public Channel Author { get; set; }
 
         public bool Featured { get; set; }
+
+        public DateTime UploadDate { get; set; }
 
         public List<PlaylistVideo> Playlists { get; set; }
 

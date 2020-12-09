@@ -78,7 +78,7 @@ namespace YouTubeClone.Controllers
         ///     
         /// </remarks>
         [HttpPost("subscriptions")]
-        public async Task<ActionResult<IEnumerable<ChannelSummaryDto>>> GetUserSubscriptions([FromBody] PostChannelDto postChannelDto)
+        public async Task<ActionResult<IEnumerable<ChannelDto>>> GetUserSubscriptions([FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User
                 .FindAsync(postChannelDto.UserId);
@@ -90,9 +90,10 @@ namespace YouTubeClone.Controllers
 
             var usersubscriptions = await context.UserChannelSubscription
                 .Include(ucs => ucs.Channel)
+                .ThenInclude(c => c.Videos)
                 .Include(ucs => ucs.User)
                 .Where(ucs => ucs.User.Id == user.Id)
-                .Select(ucs => mapper.Map<ChannelSummaryDto>(ucs.Channel))
+                .Select(ucs => mapper.Map<ChannelDto>(ucs.Channel))
                 .ToListAsync();
 
             return usersubscriptions;

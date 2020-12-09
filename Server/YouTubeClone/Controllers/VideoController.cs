@@ -217,7 +217,8 @@ namespace YouTubeClone.Controllers
             var video = new Video { 
                 Author = user.Channel, 
                 ThumbnailUrl = imagePath,
-                Url = videoPath
+                Url = videoPath,
+                UploadDate = DateTime.Now
             };
             await context.Video.AddAsync(video);
             await context.SaveChangesAsync();
@@ -691,14 +692,14 @@ namespace YouTubeClone.Controllers
         /// </remarks>
         /// <param name="channelId">OPIONAL. Case of null, latest videos across channels are returned.</param>
         [HttpGet("recommendation")]
-        public async Task<ActionResult<IEnumerable<VideoSummaryDto>>> GetRecommendedVideos([FromQuery] int? channelId)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetRecommendedVideos([FromQuery] int? channelId)
         {
             if (channelId == null)
             {
                 var videos = await context.Video
                     .Include(v => v.Author)
                     .Take(10)
-                    .Select(v => mapper.Map<VideoSummaryDto>(v))
+                    .Select(v => mapper.Map<VideoDto>(v))
                     .ToListAsync();
 
                 return videos;
@@ -709,7 +710,7 @@ namespace YouTubeClone.Controllers
                       .Include(v => v.Author)
                       .Where(v => v.Author.Id == channelId)
                       .Take(10)
-                      .Select(v => mapper.Map<VideoSummaryDto>(v))
+                      .Select(v => mapper.Map<VideoDto>(v))
                       .ToListAsync();
 
                 if (videos.Count != 10)
@@ -717,7 +718,7 @@ namespace YouTubeClone.Controllers
                     var extraVideos = await context.Video
                         .Include(v => v.Author)
                         .Take(10 - videos.Count)
-                        .Select(v => mapper.Map<VideoSummaryDto>(v))
+                        .Select(v => mapper.Map<VideoDto>(v))
                         .ToListAsync();
 
                     videos.AddRange(extraVideos);
