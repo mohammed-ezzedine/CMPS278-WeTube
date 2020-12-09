@@ -28,9 +28,9 @@ namespace YouTubeClone
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(p => p
+                    .AllowAnyOrigin()
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowAnyOrigin());
+                    .AllowAnyMethod());
             });
 
             services.AddControllers();

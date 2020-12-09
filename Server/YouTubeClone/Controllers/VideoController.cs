@@ -35,8 +35,6 @@ namespace YouTubeClone.Controllers
 
         public class PostVideoDto
         {
-            public IFormCollection Video { get; set; }
-            public IFormCollection Thubmnail { get; set; }
             public int UserId { get; set; }
             public string UserSecret { get; set; }
             public string Text { get; set; }
@@ -252,7 +250,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPut]
+        [HttpPut("{id}")]
         public async Task<ActionResult<VideoDto>> UpdateVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
@@ -281,7 +279,7 @@ namespace YouTubeClone.Controllers
 
             await context.SaveChangesAsync();
 
-            return mapper.Map<VideoDto>(postVideoDto.Video);
+            return mapper.Map<VideoDto>(originalVideo);
         }
 
         /// <summary>
