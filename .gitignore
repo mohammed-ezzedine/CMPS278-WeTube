@@ -3,3 +3,4 @@ obj/
 bin/
 *.user
 PublishProfiles/
+node_modules/

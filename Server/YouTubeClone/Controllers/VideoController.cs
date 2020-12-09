@@ -680,6 +680,54 @@ namespace YouTubeClone.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Get a list of recommended videos
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/videos/recommendation?channelId=1
+        /// 
+        /// </remarks>
+        /// <param name="channelId">OPIONAL. Case of null, latest videos across channels are returned.</param>
+        [HttpGet("recommendation")]
+        public async Task<ActionResult<IEnumerable<VideoSummaryDto>>> GetRecommendedVideos([FromQuery] int? channelId)
+        {
+            if (channelId == null)
+            {
+                var videos = await context.Video
+                    .Include(v => v.Author)
+                    .Take(10)
+                    .Select(v => mapper.Map<VideoSummaryDto>(v))
+                    .ToListAsync();
+
+                return videos;
+            }
+            else
+            {
+                var videos = await context.Video
+                      .Include(v => v.Author)
+                      .Where(v => v.Author.Id == channelId)
+                      .Take(10)
+                      .Select(v => mapper.Map<VideoSummaryDto>(v))
+                      .ToListAsync();
+
+                if (videos.Count != 10)
+                {
+                    var extraVideos = await context.Video
+                        .Include(v => v.Author)
+                        .Take(10 - videos.Count)
+                        .Select(v => mapper.Map<VideoSummaryDto>(v))
+                        .ToListAsync();
+
+                    videos.AddRange(extraVideos);
+
+                }
+
+                return videos;
+            }
+        }
+
         private bool FileIsImage(IFormFile file) => file.ContentType.ToLower().IndexOf("image") != -1;
     }
 }
