@@ -291,8 +291,10 @@ namespace YouTubeClone.Controllers
         /// 
         /// </remarks>
         [HttpPut("{id}")]
-        public async Task<ActionResult> SetChannelImage(int id, IFormFile image, [FromQuery] int userId, [FromQuery] string userSecret)
+        public async Task<ActionResult> SetChannelImage(int id, IFormCollection files, [FromQuery] int userId, [FromQuery] string userSecret)
         {
+            var image = files.Files.ElementAt(0);
+
             var user = await context.User
                 .Include(u => u.Channel)
                 .FirstOrDefaultAsync(u => u.Id == userId && u.Secret == Guid.Parse(userSecret));
@@ -313,6 +315,7 @@ namespace YouTubeClone.Controllers
             }
 
             user.Channel.ImageUrl = await HelperFunctions.AddFileToSystemAsync(image, env);
+            await context.SaveChangesAsync();
             return Ok();
         }
 
