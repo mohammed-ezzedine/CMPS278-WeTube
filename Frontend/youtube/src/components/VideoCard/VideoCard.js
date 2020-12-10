@@ -1,11 +1,22 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import './VideoCard.css';
+import { Link } from 'react-router-dom';
 
-function VideoCard({ image, title, channel, views, timestamp, channelImg }) {
+function VideoCard({
+  image,
+  title,
+  channel,
+  views,
+  timestamp,
+  channelImg,
+  path,
+}) {
   return (
     <div className="videoCard">
-      <img className="videoCard__thumbnail" src={image} alt="" />
+      <Link to={`/video/${path}`}>
+        <img className="videoCard__thumbnail" src={image} alt="" />
+      </Link>
       <div className="videoCard__info">
         <Avatar className="videoCard__avatar" alt={channel} src={channelImg} />
         <div className="videoCard__text">
