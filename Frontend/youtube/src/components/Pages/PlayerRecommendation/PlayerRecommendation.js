@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VideoRow from '../../VideoRow/VideoRow';
+import { Link } from 'react-router-dom';
 
 import './PlayerRecommendation.css';
 
@@ -20,21 +21,22 @@ function PlayerRecommendation({channelId}) {
     }
   }, [channelId]);
 
-  console.log(videos);
   return (
     <div className="playerRecommendation">
       {videos?.map((video) => {
           return (
-            <VideoRow
-              title={video.title}
-              views={video.views.length}
-              description={video.description}
-              timestamp={video.uploadDate.split('T')[0]}
-              channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
-              channel={video.author.name}
-              image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
-              isShown={0}
-            />
+            <Link to={`/video/${video.id}`}>
+              <VideoRow
+                title={video.title}
+                views={video.views.length}
+                description={video.description}
+                timestamp={video.uploadDate.split('T')[0]}
+                channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
+                channel={video.author.name}
+                image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+                isShown={0}
+              />
+            </Link>
           );
         })}
     </div>

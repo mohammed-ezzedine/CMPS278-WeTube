@@ -14,6 +14,7 @@ import { AuthContext } from "../Auth/AuthContextProvider";
 function Header() {
   const [auth] = useContext(AuthContext)
   const [inputSearch, setInputSearch] = useState("");
+  const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
   const handleChange = (e) => {
     setInputSearch(e.target.value);
   };
@@ -52,7 +53,7 @@ function Header() {
         <NotificationsIcon className="header__icon" />
         <Avatar
           alt="Firas Harb"
-          src="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
+          src={currentUser.channel?.imageUrl}
         />
       </div>
       : 
