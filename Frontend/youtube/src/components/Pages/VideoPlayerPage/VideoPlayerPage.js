@@ -1,6 +1,4 @@
-import { render } from '@testing-library/react';
 import React from 'react';
-import ReactPlayer from 'react-player/file';
 import PlayerRecommendation from '../PlayerRecommendation/PlayerRecommendation';
 import InteractionSection from '../InteractionSection/InteractionSection';
 
@@ -11,7 +9,7 @@ function VideoPlayerPage() {
     <div className="videoPlayer">
       <div className="videoPlayer__body">
         <div className="videoPlayer__player">
-          <ReactPlayer url="testVideo.mp4" controls="true" />
+          <video src="testVideo.mp4" autoPlay controls></video>
         </div>
         <div className="videoPlayer__interactions">
           <InteractionSection />

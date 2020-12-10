@@ -6,24 +6,37 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import ReportIcon from '@material-ui/icons/Report';
 import CommentList from '../CommentList/CommentList';
 import SnackBar from '@material-ui/core/Snackbar';
-import Button from '@material-ui/core/Button';
+import Slide from '@material-ui/core/Slide';
+
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 
 import './InteractionSection.css';
+import { Button } from '@material-ui/core';
 
 function InteractionSection() {
+  const [selectedThumb, setSelectedThumb] = useState(null);
   const [open, setOpen] = useState(false);
+  const [transition, setTransition] = useState(undefined);
 
-  //handling ThumbsUp & ThumbsDown events
-  const handleClick = () => {
-    console.log(open);
-    setOpen(true);
+  function TransitionUp(props) {
+    return <Slide {...props} direction="up" />;
+  }
+
+  const handleClick = (thumb, Transition) => {
+    setTimeout(() => {
+      setTransition(() => Transition);
+      if (thumb === 'thumbsUp') setSelectedThumb('Video Liked');
+      else if (thumb === 'thumbsDown') setSelectedThumb('Video Disliked');
+      else if (thumb === 'subscribe') setSelectedThumb('Subscribe To Channel');
+      setOpen(true);
+    }, 500);
   };
-  const handleClose = (reason) => {
-    if (reason == 'clickaway') {
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
       return;
     }
+
     setOpen(false);
   };
 
@@ -33,9 +46,9 @@ function InteractionSection() {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         open={open}
         autoHideDuration={4000}
-        //TODO: Handle onClose bug preventing SnackBar from opening..
-        // onClose={handleClose}
-        message="Video Liked"
+        onClose={handleClose}
+        message={selectedThumb}
+        TransitionComponent={transition}
         action={
           <React.Fragment>
             <IconButton
@@ -56,11 +69,22 @@ function InteractionSection() {
             <p>830,000 views • Jan 29, 2013</p>
           </div>
           <div className="interactions__interactiveSection">
+            <Button
+              className="interactions__subscribe"
+              size="small"
+              variant="contained"
+              onClick={() => handleClick('subscribe', TransitionUp)}
+            >
+              Subscribe
+            </Button>
             <ThumbUpIcon
               className="interactions__thumbsUp"
-              onClick={handleClick}
+              onClick={() => handleClick('thumbsUp', TransitionUp)}
             />
-            <ThumbDownAltIcon className="interactions__thumbsDown" />
+            <ThumbDownAltIcon
+              className="interactions__thumbsDown"
+              onClick={() => handleClick('thumbsDown', TransitionUp)}
+            />
             <ShareIcon />
             <PlaylistAddIcon />
             <ReportIcon />

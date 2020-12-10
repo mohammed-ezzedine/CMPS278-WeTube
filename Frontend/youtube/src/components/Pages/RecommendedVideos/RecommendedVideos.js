@@ -4,18 +4,20 @@ import VideoCard from '../../VideoCard/VideoCard';
 
 function RecommendedVideos() {
   const [videos, setvideos] = useState([]);
-  
+
   useEffect(() => {
-    fetch("https://youtube278.azurewebsites.net/api/video/recommendation", {
-      method: "GET",
+    fetch('https://youtube278.azurewebsites.net/api/video/recommendation', {
+      method: 'GET',
       headers: {
-        "Access-Control-Allow-Origin": "*"
-      }
+        'Access-Control-Allow-Origin': '*',
+      },
     })
-    .then (r => r.json())
-    .then (d => setvideos(d));
+      .then((r) => r.json())
+      .then((d) => {
+        setvideos(d);
+      });
   }, []);
-  
+
   return (
     <div className="recommendedVideos">
       <h2>Latest</h2>

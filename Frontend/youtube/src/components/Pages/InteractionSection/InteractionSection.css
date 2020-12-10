@@ -18,6 +18,7 @@
 
 .interactions__interactiveSection {
   display: flex;
+  align-items: center;
   font-size: 10px;
   flex: 0.2;
 }
@@ -25,6 +26,11 @@
 .interactions__interactiveSection svg {
   margin-left: 12px;
   color: grey;
+}
+
+.interactions__subscribe {
+  color: white !important;
+  background-color: #c00 !important;
 }
 
 .interactions__thumbsUp:hover {
