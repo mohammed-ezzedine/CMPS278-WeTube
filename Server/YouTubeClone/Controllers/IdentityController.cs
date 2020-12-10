@@ -75,6 +75,8 @@ namespace YouTubeClone.Controllers
                     .ThenInclude(p => p.Videos)
                 .Include(u => u.Channel)
                     .ThenInclude(c => c.Subscribers)
+                .Include(u => u.Subscriptions)
+                    .ThenInclude(s => s.Channel)
                 .FirstOrDefaultAsync(u => u.Username == _user.Username && u.HashedPassword == hashedPassword);
 
             if (user == null)
@@ -209,7 +211,12 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var videos = user.UserVideoViews.Select(uv => mapper.Map<VideoDto>(uv.Video)).ToList();
+            var videos = user.UserVideoViews
+                .OrderByDescending(v => v.DateTime)
+                .Select(uv => mapper.Map<VideoDto>(uv.Video))
+                .Distinct()
+                .Take(10)
+                .ToList();
             return videos;
         }
     }

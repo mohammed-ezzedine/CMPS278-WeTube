@@ -148,7 +148,6 @@ namespace YouTubeClone.Controllers
         {
             var user = await context.User
                 .Include(u => u.Channel)
-                .ThenInclude(c => c.Videos)
                 .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
 
             if (user == null || user.Channel.Id != id)
@@ -156,10 +155,21 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var result = user.Channel.Videos
-                .Where(v => !v.Shown)
+            var result = await context.Video
+                .Include(v => v.Author)
+                .Where(v => !v.Shown && v.Author.Id == user.Channel.Id)
+                .Include(v => v.UserVideoViews)
+                .ThenInclude(v => v.User)
+                .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
+                .OrderByDescending(v => v.UploadDate)
+                .ThenByDescending(v => v.UserVideoViews.Count)
+                .ThenByDescending(v => v.UserVideoReactions.Count)
+                .ThenByDescending(v => v.UserVideoComments.Count)
                 .Select(v => mapper.Map<VideoSummaryDto>(v))
-                .ToList();
+                .ToListAsync();
 
             return result;
         }
