@@ -365,7 +365,7 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            if (user.Channel.Id == postChannelDto.ChannelId)
+            if (user.Channel?.Id == postChannelDto.ChannelId)
             {
                 return BadRequest("User cannot subscribe to his own channel.");
             }

@@ -58,6 +58,7 @@ namespace YouTubeClone.Controllers
         public async Task<ActionResult<IEnumerable<VideoDto>>> GetChannelVideos(int channelId)
         {
             var videos = await context.Video
+                .Include(v => v.UserVideoViews)
                 .Include(v => v.Author)
                 .Where(v => v.Author.Id == channelId)
                 .ToListAsync();
@@ -105,6 +106,36 @@ namespace YouTubeClone.Controllers
         }
 
         /// <summary>
+        /// Get list of videos by keyword search
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        /// 
+        ///     GET /api/video/trending
+        /// 
+        /// </remarks>      
+        [HttpGet("trending")]
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetVideosFromTrending()
+        {
+            var videos = await context.Video
+                .Include(v => v.UserVideoViews)
+                .Include(v => v.UserVideoReactions)
+                .Include(v => v.UserVideoComments)
+                .OrderBy(v => v.UserVideoViews.Count)
+                .ThenBy(v => v.UserVideoReactions.Count)
+                .ThenBy(v => v.UserVideoComments.Count)
+                .Take(10)
+                .Include(v => v.Author)
+                .ToListAsync();
+
+            videos.ForEach(v => v.Author.Name = GetChannelName(v));
+
+            var result = videos.Select(v => mapper.Map<VideoDto>(v)).ToList();
+
+            return result;
+        }
+
+        /// <summary>
         /// Get videos from subscribed channels
         /// </summary>
         /// <remarks>
@@ -125,6 +156,7 @@ namespace YouTubeClone.Controllers
         public async Task<ActionResult> GetVideosFromSubscriptions([FromBody] PostVideoDto postVideoDto, [FromQuery] int p = 1)
         {
             var user = await context.User
+                .Include(v => v.UserVideoViews)
                 .Include(u => u.Subscriptions)
                 .ThenInclude(us => us.Channel)
                 .ThenInclude(c => c.Videos)
@@ -756,6 +788,7 @@ namespace YouTubeClone.Controllers
             if (channelId == null)
             {
                 var videos = await context.Video
+                    .Include(v => v.UserVideoViews)
                     .Include(v => v.Author)
                     .Take(10)
                     .ToListAsync();
@@ -766,6 +799,7 @@ namespace YouTubeClone.Controllers
             else
             {
                 var videos = await context.Video
+                      .Include(v => v.UserVideoViews)
                       .Include(v => v.Author)
                       .Where(v => v.Author.Id == channelId)
                       .Take(10)
@@ -774,6 +808,7 @@ namespace YouTubeClone.Controllers
                 if (videos.Count != 10)
                 {
                     var extraVideos = await context.Video
+                        .Include(v => v.UserVideoViews)
                         .Include(v => v.Author)
                         .Take(10 - videos.Count)
                         .ToListAsync();
