@@ -12,7 +12,7 @@ function VideoCard({ image, title, channel, views, timestamp, channelImg }) {
           <h4>{title}</h4>
           <p>{channel}</p>
           <p>
-            {views} • {timestamp?.split('T')[0]} {timestamp?.split('T')[1]?.split('.')[0]}
+            {views} Views • {timestamp?.split('T')[0]}
           </p>
         </div>
       </div>
