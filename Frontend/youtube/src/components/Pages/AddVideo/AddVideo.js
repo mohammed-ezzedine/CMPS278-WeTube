@@ -88,6 +88,8 @@ const AddVideo = () => {
         data.append("Thumbnail", Thumbnail);
         data.append("Video", Video);
         try {
+                setDescription(values.Description)
+                setTitle(values.Title)
           let response = await post(`https://youtube278.azurewebsites.net/api/Video/upload?userId=${userId}&userSecret=${userSecret}`, data,
           {
             headers: {
@@ -103,13 +105,13 @@ const AddVideo = () => {
                   }
                   }
                 });
-          setDescription(values.Description)
-          setTitle(values.Title)
+                
+                console.log(`${Description} {//} ${Title} `);
           let sample = await put(`https://youtube278.azurewebsites.net/api/Video/${response.data.id}`, {
             "UserId": userId,
             "UserSecret": userSecret,
-            "Title": Title,
-            "Description": Description,
+            "Title": values.Title,
+            "Description": values.Description,
             "Featured": false,
             "Shown": true,
           }, {
