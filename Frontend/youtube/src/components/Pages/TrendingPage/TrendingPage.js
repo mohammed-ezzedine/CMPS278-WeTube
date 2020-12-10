@@ -1,61 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Router } from 'react-router';
 import VideoCard from '../../VideoCard/VideoCard';
 
 import './TrendingPage.css';
 
 function TrendingPage() {
+  const [videos, setVideos] = useState([]);
+
+  useEffect(() => {
+    fetch("https://youtube278.azurewebsites.net/api/video/trending")
+      .then(response => response.json())
+      .then(result => setVideos(result))
+      .catch(error => console.log('error', error));
+  }, []);
+
   return (
     <div className="trending">
       <h2>Trending</h2>
       <div className="trending__videos">
-        <VideoCard
-          title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
-          views="12K"
-          timestamp="1 hour ago"
-          channelImg="https://yt3.ggpht.com/a-/AOh14GhxwFqIBW-4SE9Xl-gwYpXZnymeEIsiyXudRQ=s68-c-k-c0x00ffffff-no-rj-mo"
-          channel="Easy Swish Sniper"
-          image="http://i3.ytimg.com/vi/lKicPe0guoo/maxresdefault.jpg"
-        />
-        <VideoCard
-          title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
-          views="12K"
-          timestamp="1 hour ago"
-          channelImg="https://yt3.ggpht.com/a-/AOh14GhxwFqIBW-4SE9Xl-gwYpXZnymeEIsiyXudRQ=s68-c-k-c0x00ffffff-no-rj-mo"
-          channel="Easy Swish Sniper"
-          image="http://i3.ytimg.com/vi/lKicPe0guoo/maxresdefault.jpg"
-        />
-        <VideoCard
-          title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
-          views="12K"
-          timestamp="1 hour ago"
-          channelImg="https://yt3.ggpht.com/a-/AOh14GhxwFqIBW-4SE9Xl-gwYpXZnymeEIsiyXudRQ=s68-c-k-c0x00ffffff-no-rj-mo"
-          channel="Easy Swish Sniper"
-          image="http://i3.ytimg.com/vi/lKicPe0guoo/maxresdefault.jpg"
-        />
-        <VideoCard
-          title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
-          views="12K"
-          timestamp="1 hour ago"
-          channelImg="https://yt3.ggpht.com/a-/AOh14GhxwFqIBW-4SE9Xl-gwYpXZnymeEIsiyXudRQ=s68-c-k-c0x00ffffff-no-rj-mo"
-          channel="Easy Swish Sniper"
-          image="http://i3.ytimg.com/vi/lKicPe0guoo/maxresdefault.jpg"
-        />
-        <VideoCard
-          title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
-          views="12K"
-          timestamp="1 hour ago"
-          channelImg="https://yt3.ggpht.com/a-/AOh14GhxwFqIBW-4SE9Xl-gwYpXZnymeEIsiyXudRQ=s68-c-k-c0x00ffffff-no-rj-mo"
-          channel="Easy Swish Sniper"
-          image="http://i3.ytimg.com/vi/lKicPe0guoo/maxresdefault.jpg"
-        />
-        <VideoCard
-          title="CRAZIEST AND MOST DELUDED FEMINIST I HAVE EVER SEEN!"
-          views="12K"
-          timestamp="1 hour ago"
-          channelImg="https://yt3.ggpht.com/a-/AOh14GhxwFqIBW-4SE9Xl-gwYpXZnymeEIsiyXudRQ=s68-c-k-c0x00ffffff-no-rj-mo"
-          channel="Easy Swish Sniper"
-          image="http://i3.ytimg.com/vi/lKicPe0guoo/maxresdefault.jpg"
-        />
+        {videos.map((video) => {
+          return (
+            <VideoCard
+              title={video.title}
+              views={video.views.length}
+              timestamp={video.uploadDate}
+              channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
+              channel={video.author.name}
+              image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+            />
+          );
+        })}
       </div>
     </div>
   );
