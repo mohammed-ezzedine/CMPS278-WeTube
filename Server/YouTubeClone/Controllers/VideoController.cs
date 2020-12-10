@@ -226,19 +226,11 @@ namespace YouTubeClone.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/video/4
-        ///     {
-        ///         "Content-Type": "application/json",
-        ///         "body": {
-        ///             "UserId": 0,
-        ///             "UserSecret": ""
-        ///         }
-        ///     }
+        ///     GET /api/video/4
         /// 
-        /// UserId and UserSecrets are OPTIONAL.
         /// </remarks>
-        [HttpPost]
-        public async Task<ActionResult<VideoDto>> GetVideo(int id, [FromBody] PostVideoDto postVideoDto)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<VideoDto>> GetVideo(int id)
         {
             var videoById = await context.Video
                 .Include(v => v.Author)
@@ -257,17 +249,16 @@ namespace YouTubeClone.Controllers
                 return NotFound();
             }
 
-            var user = await context.User
-                .FirstOrDefaultAsync(u => u.Id == postVideoDto.UserId && u.Secret == Guid.Parse(postVideoDto.UserSecret));
-
-            context.UserVideoViews.Add(new UserVideoView { User = user, Video = videoById, DateTime = DateTime.Now });
-            await context.SaveChangesAsync();
-
             return mapper.Map<VideoDto>(videoById);
         }
 
+        /// <summary>
+        /// Get Video Stream
+        /// 
+        /// UserId and UserSecrets are OPTIONAL.
+        /// </summary>
         [HttpGet("stream/{id}")]
-        public async Task<ActionResult> GetVideoStream(int id)
+        public async Task<ActionResult> GetVideoStream(int id, [FromQuery] int userId, [FromQuery] string userSecret)
         {
             var videoById = await context.Video
                 .FirstOrDefaultAsync(v => v.Id == id);
@@ -276,6 +267,12 @@ namespace YouTubeClone.Controllers
             {
                 return NotFound();
             }
+
+            var user = await context.User
+               .FirstOrDefaultAsync(u => u.Id == userId && u.Secret == Guid.Parse(userSecret));
+
+            context.UserVideoViews.Add(new UserVideoView { User = user, Video = videoById, DateTime = DateTime.Now });
+            await context.SaveChangesAsync();
 
             FileStream content = System.IO.File.OpenRead(videoById.Url);
             var response = File(content, "application/octet-stream");
