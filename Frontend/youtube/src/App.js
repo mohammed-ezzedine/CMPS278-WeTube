@@ -29,7 +29,7 @@ function App() {
         <Header />
 
         <Switch>
-          <Route path="/video">
+          <Route path="/video/:id" component={VideoPlayerPage}>
             <div className="app__page">
               <Sidebar />
               <VideoPlayerPage />

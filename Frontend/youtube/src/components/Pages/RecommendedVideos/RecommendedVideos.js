@@ -4,18 +4,22 @@ import VideoCard from '../../VideoCard/VideoCard';
 
 function RecommendedVideos() {
   const [videos, setvideos] = useState([]);
-  
+
   useEffect(() => {
-    fetch("https://youtube278.azurewebsites.net/api/video/recommendation", {
-      method: "GET",
+    fetch('https://youtube278.azurewebsites.net/api/video/recommendation', {
+      method: 'GET',
       headers: {
-        "Access-Control-Allow-Origin": "*"
-      }
+        'Access-Control-Allow-Origin': '*',
+      },
     })
-    .then (r => r.json())
-    .then (d => setvideos(d));
+      .then((r) => r.json())
+      .then((d) => {
+        setvideos(d);
+      });
   }, []);
-  
+
+  console.log(videos);
+
   return (
     <div className="recommendedVideos">
       <h2>Latest</h2>
@@ -29,6 +33,7 @@ function RecommendedVideos() {
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
               channel={video.author.name}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+              path={video.id}
             />
           );
         })}
