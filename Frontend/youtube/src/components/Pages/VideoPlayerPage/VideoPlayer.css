@@ -1,10 +1,11 @@
 .videoPlayer {
   display: flex;
+  flex: 0.8;
 }
 
 .videoPlayer__body {
-  flex: 0.7;
   display: flex;
+  flex: 0.7;
   flex-direction: column;
 }
 

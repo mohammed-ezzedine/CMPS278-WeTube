@@ -19,18 +19,53 @@ function InteractionSection() {
   const [open, setOpen] = useState(false);
   const [transition, setTransition] = useState(undefined);
 
+  const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
+
+  //Liking/Dislinking/Subscribing methods
+  function LikeVideo() {
+    fetch('https://youtube278.azurewebsites.net/api/video/like/12', {
+      method: 'PUT',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        mode: 'no-cors',
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        userSecret: currentUser.secret,
+      }),
+    }).catch((error) => console.log(error));
+  }
+
+  function DislikeVideo() {
+    fetch('https://youtube278.azurewebsites.net/api/video/undolike/12', {
+      method: 'POST',
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+        mode: 'no-cors',
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        userSecret: currentUser.secret,
+      }),
+    }).catch((error) => console.log(error));
+  }
+
   function TransitionUp(props) {
     return <Slide {...props} direction="up" />;
   }
 
   const handleClick = (thumb, Transition) => {
-    setTimeout(() => {
-      setTransition(() => Transition);
-      if (thumb === 'thumbsUp') setSelectedThumb('Video Liked');
-      else if (thumb === 'thumbsDown') setSelectedThumb('Video Disliked');
-      else if (thumb === 'subscribe') setSelectedThumb('Subscribe To Channel');
-      setOpen(true);
-    }, 500);
+    setTransition(() => Transition);
+    if (thumb === 'thumbsUp') {
+      LikeVideo();
+      setSelectedThumb('Video Liked');
+    } else if (thumb === 'thumbsDown') {
+      DislikeVideo();
+      setSelectedThumb('Video Disliked');
+    } else if (thumb === 'subscribe') setSelectedThumb('Subscribe To Channel');
+    setOpen(true);
   };
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
