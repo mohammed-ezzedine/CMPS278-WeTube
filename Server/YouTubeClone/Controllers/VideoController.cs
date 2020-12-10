@@ -59,6 +59,10 @@ namespace YouTubeClone.Controllers
         {
             var videos = await context.Video
                 .Include(v => v.UserVideoViews)
+                .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
                 .Include(v => v.Author)
                 .Where(v => v.Author.Id == channelId)
                 .ToListAsync();
@@ -86,8 +90,12 @@ namespace YouTubeClone.Controllers
             //var regex = new Regex("(" + regexBody + ")");
 
             var videos = await context.Video
-                .Include(v => v.Author)
                 .Where(v => q == null || v.Title.ToLower().Contains(q.ToLower()))
+                .Include(v => v.Author)
+                .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
                 .ToListAsync();
 
             //videos = videos.Where(v => regex.IsMatch(v.Title.ToLower())).ToList();
@@ -120,7 +128,9 @@ namespace YouTubeClone.Controllers
             var videos = await context.Video
                 .Include(v => v.UserVideoViews)
                 .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
                 .OrderBy(v => v.UserVideoViews.Count)
                 .ThenBy(v => v.UserVideoReactions.Count)
                 .ThenBy(v => v.UserVideoComments.Count)
@@ -157,6 +167,10 @@ namespace YouTubeClone.Controllers
         {
             var user = await context.User
                 .Include(v => v.UserVideoViews)
+                .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
                 .Include(u => u.Subscriptions)
                 .ThenInclude(us => us.Channel)
                 .ThenInclude(c => c.Videos)
@@ -210,8 +224,10 @@ namespace YouTubeClone.Controllers
         {
             var videoById = await context.Video
                 .Include(v => v.Author)
-                .Include(v => v.UserVideoComments)
                 .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
                 .Include(v => v.UserVideoViews)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
@@ -383,7 +399,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
@@ -424,7 +440,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPut("show")]
+        [HttpPut("show/{id}")]
         public async Task<ActionResult> ShowVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
@@ -466,7 +482,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPut("hide")]
+        [HttpPut("hide/{id}")]
         public async Task<ActionResult> HideVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
@@ -508,7 +524,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPut("like")]
+        [HttpPut("like/{id}")]
         public async Task<ActionResult> LikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User.FindAsync(postVideoDto.UserId);
@@ -532,6 +548,7 @@ namespace YouTubeClone.Controllers
             if (userVideoReaction == null)
             {
                 userVideoReaction = new UserVideoReaction { User = user, Video = video, Like = true };
+                await context.UserVideoReaction.AddAsync(userVideoReaction);
             }
             else
             {
@@ -558,7 +575,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPost("undolike")]
+        [HttpPost("undolike/{id}")]
         public async Task<ActionResult> UndoLikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User.FindAsync(postVideoDto.UserId);
@@ -603,7 +620,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPut("dislike")]
+        [HttpPut("dislike/{id}")]
         public async Task<ActionResult> DislikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User.FindAsync(postVideoDto.UserId);
@@ -627,6 +644,7 @@ namespace YouTubeClone.Controllers
             if (userVideoReaction == null)
             {
                 userVideoReaction = new UserVideoReaction { User = user, Video = video, Like = false };
+                await context.UserVideoReaction.AddAsync(userVideoReaction);
             }
             else
             {
@@ -653,7 +671,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPost("undodislike")]
+        [HttpPost("undodislike/{id}")]
         public async Task<ActionResult> UndoDislikeVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User.FindAsync(postVideoDto.UserId);
@@ -698,7 +716,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPost("addtowatchlater")]
+        [HttpPost("addtowatchlater/{id}")]
         public async Task<ActionResult> AddToWatchLater(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
@@ -743,7 +761,7 @@ namespace YouTubeClone.Controllers
         ///         }
         ///     }
         /// </remarks>
-        [HttpPost("reportvideo")]
+        [HttpPost("reportvideo/{id}")]
         public async Task<ActionResult> ReportVideo(int id, [FromBody] PostVideoDto postVideoDto)
         {
             var user = await context.User
@@ -789,6 +807,10 @@ namespace YouTubeClone.Controllers
             {
                 var videos = await context.Video
                     .Include(v => v.UserVideoViews)
+                    .Include(v => v.UserVideoReactions)
+                    .ThenInclude(r => r.User)
+                    .Include(v => v.UserVideoComments)
+                    .ThenInclude(v => v.User)
                     .Include(v => v.Author)
                     .Take(10)
                     .ToListAsync();
@@ -800,6 +822,10 @@ namespace YouTubeClone.Controllers
             {
                 var videos = await context.Video
                       .Include(v => v.UserVideoViews)
+                      .Include(v => v.UserVideoReactions)
+                      .ThenInclude(r => r.User)
+                      .Include(v => v.UserVideoComments)
+                      .ThenInclude(v => v.User)
                       .Include(v => v.Author)
                       .Where(v => v.Author.Id == channelId)
                       .Take(10)
@@ -809,6 +835,10 @@ namespace YouTubeClone.Controllers
                 {
                     var extraVideos = await context.Video
                         .Include(v => v.UserVideoViews)
+                        .Include(v => v.UserVideoReactions)
+                        .ThenInclude(r => r.User)
+                        .Include(v => v.UserVideoComments)
+                        .ThenInclude(v => v.User)
                         .Include(v => v.Author)
                         .Take(10 - videos.Count)
                         .ToListAsync();
