@@ -21,8 +21,9 @@ function InteractionSection({ views, channelName, video }) {
   const [open, setOpen] = useState(false);
   const [transition, setTransition] = useState(undefined);
   const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
-
-  console.log();
+  const [likes, setLikes] = useState(video.reactions.filter(reaction => !!reaction.like).length)
+  const [dislikes, setDislikes] = useState(video.reactions.filter(reaction => !reaction.like).length)
+  const [subscribed, setSubscribed] = useState(currentUser.subscriptions.filter(channel => channel.id === video.author.id))
 
   //Liking/Disliking/Subscribing methods
   function LikeVideo() {
@@ -140,7 +141,7 @@ function InteractionSection({ views, channelName, video }) {
             <span className="reaction-counter">{video.reactions?.filter(r => r.like)?.length}</span>
             <ThumbUpIcon
               className="interactions__thumbsUp"
-              onClick={() => handleClick("thumbsUp", TransitionUp)}
+              onClick={() => {handleClick("thumbsUp", TransitionUp)}}
             />
             <span className="reaction-counter">{video.reactions?.filter(r => !r.like)?.length}</span>
             <ThumbDownAltIcon

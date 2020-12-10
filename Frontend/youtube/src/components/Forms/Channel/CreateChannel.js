@@ -53,11 +53,12 @@ export default function CreateChannel() {
     onSubmit: async (values) => {
         try {
           let { Description } = values;
-          let { id, secret } = JSON.parse(
+          let currentUser = JSON.parse(
             window.localStorage.getItem("CurrentUser")
           );
+          let { id, secret } = currentUser;
           console.log(id);
-          let { status } = await post(
+          let { status, data } = await post(
             "https://youtube278.azurewebsites.net/api/channel",
             JSON.stringify({
               "userId":id,
@@ -74,6 +75,8 @@ export default function CreateChannel() {
                 seterrorMessage("Channel has been created successfully");
                 setSuccess(true);
                 setOpen(true);
+                currentUser.channel = data;
+                window.localStorage.setItem("CurrentUser", currentUser);
               })()
             
         } 
