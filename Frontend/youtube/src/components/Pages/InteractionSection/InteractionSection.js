@@ -1,34 +1,34 @@
-import React, { useState } from 'react';
-import ThumbUpIcon from '@material-ui/icons/ThumbUp';
-import ThumbDownAltIcon from '@material-ui/icons/ThumbDownAlt';
-import ShareIcon from '@material-ui/icons/Share';
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-import ReportIcon from '@material-ui/icons/Report';
-import CommentList from '../CommentList/CommentList';
-import SnackBar from '@material-ui/core/Snackbar';
-import Slide from '@material-ui/core/Slide';
+import React, { useState } from "react";
+import ThumbUpIcon from "@material-ui/icons/ThumbUp";
+import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
+import ShareIcon from "@material-ui/icons/Share";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import ReportIcon from "@material-ui/icons/Report";
+import CommentList from "../CommentList/CommentList";
+import SnackBar from "@material-ui/core/Snackbar";
+import Slide from "@material-ui/core/Slide";
 
-import IconButton from '@material-ui/core/IconButton';
-import CloseIcon from '@material-ui/icons/Close';
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from "@material-ui/icons/Close";
 
-import './InteractionSection.css';
-import { Button } from '@material-ui/core';
+import "./InteractionSection.css";
+import { Button } from "@material-ui/core";
+import { post } from "axios";
 
-function InteractionSection() {
+function InteractionSection({ views, channelName, video }) {
   const [selectedThumb, setSelectedThumb] = useState(null);
   const [open, setOpen] = useState(false);
   const [transition, setTransition] = useState(undefined);
+  const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
 
-  const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
-
-  //Liking/Dislinking/Subscribing methods
+  //Liking/Disliking/Subscribing methods
   function LikeVideo() {
-    fetch('https://youtube278.azurewebsites.net/api/video/like/12', {
-      method: 'PUT',
+    fetch(`https://youtube278.azurewebsites.net/api/video/like/${video.id}`, {
+      method: "PUT",
       headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        mode: 'no-cors',
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        mode: "no-cors",
       },
       body: JSON.stringify({
         userId: currentUser.id,
@@ -38,19 +38,36 @@ function InteractionSection() {
   }
 
   function DislikeVideo() {
-    fetch('https://youtube278.azurewebsites.net/api/video/undolike/12', {
-      method: 'POST',
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-        mode: 'no-cors',
-      },
-      body: JSON.stringify({
-        userId: currentUser.id,
-        userSecret: currentUser.secret,
-      }),
-    }).catch((error) => console.log(error));
+    fetch(
+      `https://youtube278.azurewebsites.net/api/video/undolike/${video.id}`,
+      {
+        method: "POST",
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          mode: "no-cors",
+        },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          userSecret: currentUser.secret,
+        }),
+      }
+    ).catch((error) => console.log(error));
   }
+  const SubscribeChannel = async () => {
+    try {
+      let response = await post(
+        `https://youtube278.azurewebsites.net/api/channel/subscribe`,
+        {
+          UserId: currentUser.id,
+          UserSecret: currentUser.secret,
+          ChannelId: video.author.id,
+        }
+      );
+    } catch (error) {
+      //////////////////
+    }
+  };
 
   function TransitionUp(props) {
     return <Slide {...props} direction="up" />;
@@ -58,17 +75,20 @@ function InteractionSection() {
 
   const handleClick = (thumb, Transition) => {
     setTransition(() => Transition);
-    if (thumb === 'thumbsUp') {
+    if (thumb === "thumbsUp") {
       LikeVideo();
-      setSelectedThumb('Video Liked');
-    } else if (thumb === 'thumbsDown') {
+      setSelectedThumb("Video Liked");
+    } else if (thumb === "thumbsDown") {
       DislikeVideo();
-      setSelectedThumb('Video Disliked');
-    } else if (thumb === 'subscribe') setSelectedThumb('Subscribe To Channel');
+      setSelectedThumb("Video Disliked");
+    } else if (thumb === "subscribe") {
+      SubscribeChannel();
+      setSelectedThumb(`Subscribed To ${video.author.name}`);
+    }
     setOpen(true);
   };
   const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -78,7 +98,7 @@ function InteractionSection() {
   return (
     <div className="interactions">
       <SnackBar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
         open={open}
         autoHideDuration={4000}
         onClose={handleClose}
@@ -100,31 +120,35 @@ function InteractionSection() {
       <div className="interactions__info">
         <div className="interactions__mainInteractionSection">
           <div className="interactions__title">
-            <h4>Friends "Skidmark still got a way with the ladies"</h4>
-            <p>830,000 views • Jan 29, 2013</p>
+            <h4>{video.title}</h4>
+            <p>
+              {views} views • {video?.uploadDate?.split("T")[0]}
+            </p>
           </div>
           <div className="interactions__interactiveSection">
             <Button
               className="interactions__subscribe"
               size="small"
               variant="contained"
-              onClick={() => handleClick('subscribe', TransitionUp)}
+              onClick={() => handleClick("subscribe", TransitionUp)}
             >
               Subscribe
             </Button>
+            {/* {video.reactions.filter(reaction=> reaction.like).length} */}
             <ThumbUpIcon
               className="interactions__thumbsUp"
-              onClick={() => handleClick('thumbsUp', TransitionUp)}
+              onClick={() => handleClick("thumbsUp", TransitionUp)}
             />
             <ThumbDownAltIcon
               className="interactions__thumbsDown"
-              onClick={() => handleClick('thumbsDown', TransitionUp)}
+              onClick={() => handleClick("thumbsDown", TransitionUp)}
             />
             <ShareIcon />
             <PlaylistAddIcon />
             <ReportIcon />
           </div>
         </div>
+        <div>{video.description}</div>
         <div className="interactions__commentSection">
           <div className="interactions__commentSection">
             <CommentList />

@@ -5,12 +5,24 @@ import InteractionSection from '../InteractionSection/InteractionSection';
 import './VideoPlayer.css';
 import { useParams } from 'react-router-dom';
 
-function VideoPlayerPage({ match }) {
-  const [video, setVideo] = useState(null);
+function VideoPlayerPage() {
+  const [video, setVideo] = useState({});
+  const [views, setViews] = useState(0);
+  const [channelName, setChannelName] = useState('');
   let { id } = useParams();
+  const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
+
+  const loadVideoData = async () => {
+    const response = await fetch(
+      `https://youtube278.azurewebsites.net/api/Video/${id}`);
+    const responseJSON = await response.json();
+    setVideo(responseJSON);
+    setViews(responseJSON.views.length);
+    setChannelName(responseJSON.author.name);
+  };
 
   useEffect(() => {
-    setVideo(id);
+    loadVideoData();
   }, []);
 
   return (
@@ -18,13 +30,13 @@ function VideoPlayerPage({ match }) {
       <div className="videoPlayer__body">
         <div className="videoPlayer__player">
           <video
-            src={`https://youtube278.azurewebsites.net/api/video/stream/${id}`}
+            src={`https://youtube278.azurewebsites.net/api/video/stream/${id}?userId=${currentUser.id}&userSecret=${currentUser.secret}`}
             autoPlay
             controls
           ></video>
         </div>
         <div className="videoPlayer__interactions">
-          <InteractionSection />
+          <InteractionSection views={views} channelName={channelName} video={video} />
         </div>
       </div>
       <div className="videoPlayer__playerRecommendations">
