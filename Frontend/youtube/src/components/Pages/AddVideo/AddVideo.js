@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
 import VideoCard from '../../VideoCard/VideoCard';
-import {post, put} from 'axios';
+import { post, put } from 'axios';
 
 import './AddVideo.css';
 import {
@@ -44,18 +44,18 @@ const AddVideo = () => {
 
     setOpen(false);
   };
-  
-  
+
   const validationSchema = yup.object({
     Title: yup
       .string()
       .min(2, 'Title must contain at least 2 characters')
       .max(100, 'Title must contain max 100 characters')
       .required('Title is required'),
-    Description: yup.string()
-    .min(2, 'Description must contain at least 2 characters')
-    .max(100, 'Description must contain max 100 characters')
-    .required('Description is required'),
+    Description: yup
+      .string()
+      .min(2, 'Description must contain at least 2 characters')
+      .max(100, 'Description must contain max 100 characters')
+      .required('Description is required'),
   });
 
   const formik = useFormik({
@@ -64,103 +64,115 @@ const AddVideo = () => {
       Description: Description || '',
     },
     validationSchema: validationSchema,
-    onSubmit: async(values)=>{
-      setTimeout(async() => {
+    onSubmit: async (values) => {
+      setTimeout(async () => {
         let data = new FormData();
         let userId = currentUser.id;
         let userSecret = currentUser.secret;
         setPercent(0);
         console.log(Video);
-          
+
         if (Video === null) {
-          seterrorMessage("Insert a Video!")
-          setSuccess(false)
+          seterrorMessage('Insert a Video!');
+          setSuccess(false);
           setOpen(true);
           return;
         }
-        if(Thumbnail === null){
-          seterrorMessage("Insert a Thumbnail!")
-          setSuccess(false)
+        if (Thumbnail === null) {
+          seterrorMessage('Insert a Thumbnail!');
+          setSuccess(false);
           setOpen(true);
           return;
         }
 
-        data.append("Thumbnail", Thumbnail);
-        data.append("Video", Video);
+        data.append('Thumbnail', Thumbnail);
+        data.append('Video', Video);
         try {
-          let response = await post(`https://youtube278.azurewebsites.net/api/Video/upload?userId=${userId}&userSecret=${userSecret}`, data,
-          {
-            headers: {
-                  'content-type': 'multipart/form-data',
-                  "mode": 'no-cors'
+          let response = await post(
+            `https://youtube278.azurewebsites.net/api/Video/upload?userId=${userId}&userSecret=${userSecret}`,
+            data,
+            {
+              headers: {
+                'content-type': 'multipart/form-data',
+                mode: 'no-cors',
+              },
+              onUploadProgress: (progressEvent) => {
+                const totalLength = progressEvent.lengthComputable
+                  ? progressEvent.total
+                  : progressEvent.target.getResponseHeader('content-length') ||
+                    progressEvent.target.getResponseHeader(
+                      'x-decompressed-content-length'
+                    );
+                console.log('onUploadProgress', totalLength);
+                if (totalLength !== null) {
+                  setPercent(
+                    Math.round((progressEvent.loaded * 100) / totalLength)
+                  );
+                }
+              },
+            }
+          );
+          setDescription(values.Description);
+          setTitle(values.Title);
 
-                },
-                onUploadProgress: (progressEvent) => {
-                  const totalLength = progressEvent.lengthComputable ? progressEvent.total : progressEvent.target.getResponseHeader('content-length') || progressEvent.target.getResponseHeader('x-decompressed-content-length');
-                  console.log("onUploadProgress", totalLength);
-                  if (totalLength !== null) {
-                      setPercent(Math.round( (progressEvent.loaded * 100) / totalLength ));
-                  }
-                  }
-                });
-          setDescription(values.Description)
-          setTitle(values.Title)
-          let sample = await put(`https://youtube278.azurewebsites.net/api/Video/${response.data.id}`, {
-            "UserId": userId,
-            "UserSecret": userSecret,
-            "Title": Title,
-            "Description": Description,
-            "Featured": false,
-            "Shown": true,
-          }, {
-            headers: {
-              "content-type": 'application/json',
+          await put(
+            `https://youtube278.azurewebsites.net/api/Video/${response.data.id}`,
+            {
+              UserId: userId,
+              UserSecret: userSecret,
+              Title: Title,
+              Description: Description,
+              Featured: false,
+              Shown: true,
             },
-          })
+            {
+              headers: {
+                'content-type': 'application/json',
+              },
+            }
+          );
           seterrorMessage('Video has been uploaded successfully');
           setSuccess(true);
           setOpen(true);
-
         } catch (error) {
           if (error.response) {
-            seterrorMessage(`An error has occurred ${error.response} `)
+            seterrorMessage(`An error has occurred ${error.response} `);
             setSuccess(false);
             setOpen(true);
           }
         }
-        }, 2000);
-        }
+      }, 2000);
+    },
   });
   const handleChangeStatusThumbnail = ({ meta, file }, status) => {
     if (status === 'removed') {
       setThumbnail(null);
     }
     if (status === 'done') {
-      setThumbnail(file)
+      setThumbnail(file);
+    }
+    console.log(status, meta, file);
   };
-  console.log(status, meta, file);
-}
 
   const handleChangeStatusVideo = ({ meta, file }, status) => {
     console.log(status, meta, file);
     if (status === 'removed') {
-      setVideo(null)
-      setPercent(null)
+      setVideo(null);
+      setPercent(null);
     }
     if (status === 'done') {
-      setVideo(file)
+      setVideo(file);
     }
   };
   const getUploadParams = ({ meta }) => {
     return { url: 'https://httpbin.org/post' };
   };
 
-  const handleSubmit = async(props)=>{
+  const handleSubmit = async (props) => {
     console.log(props);
   };
 
   return (
-    
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
@@ -175,9 +187,9 @@ const AddVideo = () => {
         <Typography component="h1" variant="h5">
           Upload{' '}
         </Typography>{' '}
-      <form className={classes.form} onSubmit={formik.handleSubmit}>
+        <form className={classes.form} onSubmit={formik.handleSubmit}>
           <Grid container spacing={3}>
-          <Grid item xs={12}>
+            <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
@@ -215,26 +227,46 @@ const AddVideo = () => {
               />
             </Grid>{' '}
             <Grid item xs={12}>
-            <Dropzone
-              getUploadParams={getUploadParams}
-              onChangeStatus={handleChangeStatusThumbnail}
-              maxFiles={1}
-              accept="image/*"
-              inputContent="Drop Thumbnail"
-              disabled={files => files.some(f => ['preparing', 'getting_upload_params', 'uploading'].includes(f.meta.status))}
+              <Dropzone
+                getUploadParams={getUploadParams}
+                onChangeStatus={handleChangeStatusThumbnail}
+                maxFiles={1}
+                accept="image/*"
+                inputContent="Drop Thumbnail"
+                disabled={(files) =>
+                  files.some((f) =>
+                    [
+                      'preparing',
+                      'getting_upload_params',
+                      'uploading',
+                    ].includes(f.meta.status)
+                  )
+                }
               />
             </Grid>
             <Grid item xs={12}>
-            <Dropzone
-              onChangeStatus={handleChangeStatusVideo}
-              maxFiles={1}
-              accept="video/*"
-              inputContent="Drop Video"
-              disabled={files => files.some(f => ['preparing', 'getting_upload_params', 'uploading'].includes(f.meta.status))}
+              <Dropzone
+                onChangeStatus={handleChangeStatusVideo}
+                maxFiles={1}
+                accept="video/*"
+                inputContent="Drop Video"
+                disabled={(files) =>
+                  files.some((f) =>
+                    [
+                      'preparing',
+                      'getting_upload_params',
+                      'uploading',
+                    ].includes(f.meta.status)
+                  )
+                }
               />
             </Grid>
           </Grid>{' '}
-          {percent !== null ? <LinearProgress variant="buffer" value={percent} valueBuffer={10} /> : ""  }
+          {percent !== null ? (
+            <LinearProgress variant="buffer" value={percent} valueBuffer={10} />
+          ) : (
+            ''
+          )}
           <Button
             type="submit"
             fullWidth
@@ -244,7 +276,7 @@ const AddVideo = () => {
           >
             Upload{' '}
           </Button>{' '}
-          </form>
+        </form>
       </div>{' '}
       <Box mt={5}>
         <Copyright />
@@ -255,4 +287,3 @@ const AddVideo = () => {
 };
 
 export default AddVideo;
-

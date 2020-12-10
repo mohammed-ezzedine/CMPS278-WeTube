@@ -14,7 +14,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import './InteractionSection.css';
 import { Button } from '@material-ui/core';
 
-function InteractionSection() {
+function InteractionSection({ views, channelName }) {
   const [selectedThumb, setSelectedThumb] = useState(null);
   const [open, setOpen] = useState(false);
   const [transition, setTransition] = useState(undefined);
@@ -64,7 +64,8 @@ function InteractionSection() {
     } else if (thumb === 'thumbsDown') {
       DislikeVideo();
       setSelectedThumb('Video Disliked');
-    } else if (thumb === 'subscribe') setSelectedThumb('Subscribe To Channel');
+    } else if (thumb === 'subscribe')
+      setSelectedThumb(`Subscribed To ${channelName}`);
     setOpen(true);
   };
   const handleClose = (event, reason) => {
@@ -101,7 +102,7 @@ function InteractionSection() {
         <div className="interactions__mainInteractionSection">
           <div className="interactions__title">
             <h4>Friends "Skidmark still got a way with the ladies"</h4>
-            <p>830,000 views • Jan 29, 2013</p>
+            <p>{views} views • Jan 29, 2013</p>
           </div>
           <div className="interactions__interactiveSection">
             <Button

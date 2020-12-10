@@ -5,12 +5,39 @@ import InteractionSection from '../InteractionSection/InteractionSection';
 import './VideoPlayer.css';
 import { useParams } from 'react-router-dom';
 
-function VideoPlayerPage({ match }) {
-  const [video, setVideo] = useState(null);
+function VideoPlayerPage() {
+  const [video, setVideo] = useState({});
+  const [views, setViews] = useState(0);
+  const [channelName, setChannelName] = useState('');
   let { id } = useParams();
+  const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
+  console.log(currentUser.id);
+  console.log(currentUser.secret);
+
+  const loadVideoData = async () => {
+    const response = await fetch(
+      `https://youtube278.azurewebsites.net/api/Video?id=${id}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+          mode: 'no-cors',
+        },
+        body: JSON.stringify({
+          userId: currentUser.id,
+          userSecret: currentUser.secret,
+        }),
+      }
+    );
+    const responseJSON = await response.json();
+    setVideo(responseJSON);
+    setViews(responseJSON.views.length);
+    setChannelName(responseJSON.author.name);
+  };
 
   useEffect(() => {
-    setVideo(id);
+    loadVideoData();
   }, []);
 
   return (
@@ -24,7 +51,7 @@ function VideoPlayerPage({ match }) {
           ></video>
         </div>
         <div className="videoPlayer__interactions">
-          <InteractionSection />
+          <InteractionSection views={views} channelName={channelName} />
         </div>
       </div>
       <div className="videoPlayer__playerRecommendations">
