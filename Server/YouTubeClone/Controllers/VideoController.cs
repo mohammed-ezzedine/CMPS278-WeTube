@@ -59,12 +59,17 @@ namespace YouTubeClone.Controllers
         {
             var videos = await context.Video
                 .Include(v => v.UserVideoViews)
+                .ThenInclude(v => v.User)
                 .Include(v => v.UserVideoReactions)
                 .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoComments)
                 .ThenInclude(v => v.User)
                 .Include(v => v.Author)
                 .Where(v => v.Author.Id == channelId)
+                .OrderByDescending(v => v.UploadDate)
+                .ThenByDescending(v => v.UserVideoViews.Count)
+                .ThenByDescending(v => v.UserVideoReactions.Count)
+                .ThenByDescending(v => v.UserVideoComments.Count)
                 .ToListAsync();
 
             videos.ForEach(v => v.Author.Name = GetChannelName(v));
@@ -96,6 +101,12 @@ namespace YouTubeClone.Controllers
                 .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoComments)
                 .ThenInclude(v => v.User)
+                .Include(v => v.UserVideoViews)
+                .ThenInclude(v => v.User)
+                .OrderByDescending(v => v.UploadDate)
+                .ThenByDescending(v => v.UserVideoViews.Count)
+                .ThenByDescending(v => v.UserVideoReactions.Count)
+                .ThenByDescending(v => v.UserVideoComments.Count)
                 .ToListAsync();
 
             //videos = videos.Where(v => regex.IsMatch(v.Title.ToLower())).ToList();
@@ -127,13 +138,15 @@ namespace YouTubeClone.Controllers
         {
             var videos = await context.Video
                 .Include(v => v.UserVideoViews)
+                .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoReactions)
                 .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoComments)
                 .ThenInclude(v => v.User)
-                .OrderBy(v => v.UserVideoViews.Count)
-                .ThenBy(v => v.UserVideoReactions.Count)
-                .ThenBy(v => v.UserVideoComments.Count)
+                .OrderByDescending(v => v.UserVideoViews.Count)
+                .ThenByDescending(v => v.UserVideoReactions.Count)
+                .ThenByDescending(v => v.UserVideoComments.Count)
+                .ThenByDescending(v => v.UploadDate)
                 .Take(10)
                 .Include(v => v.Author)
                 .ToListAsync();
@@ -166,11 +179,6 @@ namespace YouTubeClone.Controllers
         public async Task<ActionResult> GetVideosFromSubscriptions([FromBody] PostVideoDto postVideoDto, [FromQuery] int p = 1)
         {
             var user = await context.User
-                .Include(v => v.UserVideoViews)
-                .Include(v => v.UserVideoReactions)
-                .ThenInclude(r => r.User)
-                .Include(v => v.UserVideoComments)
-                .ThenInclude(v => v.User)
                 .Include(u => u.Subscriptions)
                 .ThenInclude(us => us.Channel)
                 .ThenInclude(c => c.Videos)
@@ -186,6 +194,16 @@ namespace YouTubeClone.Controllers
             var videos = await context.Video
                 .Include(v => v.Author)
                 .Where(v => subscriptionsIds.Contains(v.Author.Id))
+                .Include(v => v.UserVideoViews)
+                .ThenInclude(r => r.Video)
+                .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
+                .OrderByDescending(v => v.UploadDate)
+                .ThenByDescending(v => v.UserVideoViews.Count)
+                .ThenByDescending(v => v.UserVideoReactions.Count)
+                .ThenByDescending(v => v.UserVideoComments.Count)
                 .ToListAsync();
 
             videos.ForEach(v => v.Author.Name = GetChannelName(v));
@@ -229,6 +247,7 @@ namespace YouTubeClone.Controllers
                 .Include(v => v.UserVideoComments)
                 .ThenInclude(v => v.User)
                 .Include(v => v.UserVideoViews)
+                .ThenInclude(v => v.User)
                 .FirstOrDefaultAsync(v => v.Id == id);
 
             videoById.Author.Name = GetChannelName(videoById);
@@ -807,11 +826,16 @@ namespace YouTubeClone.Controllers
             {
                 var videos = await context.Video
                     .Include(v => v.UserVideoViews)
+                    .ThenInclude(r => r.User)
                     .Include(v => v.UserVideoReactions)
                     .ThenInclude(r => r.User)
                     .Include(v => v.UserVideoComments)
                     .ThenInclude(v => v.User)
                     .Include(v => v.Author)
+                    .OrderByDescending(v => v.UploadDate)
+                    .ThenByDescending(v => v.UserVideoViews.Count)
+                    .ThenByDescending(v => v.UserVideoReactions.Count)
+                    .ThenByDescending(v => v.UserVideoComments.Count)
                     .Take(10)
                     .ToListAsync();
 
@@ -822,12 +846,17 @@ namespace YouTubeClone.Controllers
             {
                 var videos = await context.Video
                       .Include(v => v.UserVideoViews)
+                      .ThenInclude(r => r.User)
                       .Include(v => v.UserVideoReactions)
                       .ThenInclude(r => r.User)
                       .Include(v => v.UserVideoComments)
                       .ThenInclude(v => v.User)
                       .Include(v => v.Author)
                       .Where(v => v.Author.Id == channelId)
+                      .OrderByDescending(v => v.UploadDate)
+                      .ThenByDescending(v => v.UserVideoViews.Count)
+                      .ThenByDescending(v => v.UserVideoReactions.Count)
+                      .ThenByDescending(v => v.UserVideoComments.Count)
                       .Take(10)
                       .ToListAsync();
 
@@ -835,11 +864,16 @@ namespace YouTubeClone.Controllers
                 {
                     var extraVideos = await context.Video
                         .Include(v => v.UserVideoViews)
+                        .ThenInclude(r => r.User)
                         .Include(v => v.UserVideoReactions)
                         .ThenInclude(r => r.User)
                         .Include(v => v.UserVideoComments)
                         .ThenInclude(v => v.User)
                         .Include(v => v.Author)
+                        .OrderByDescending(v => v.UploadDate)
+                        .ThenByDescending(v => v.UserVideoViews.Count)
+                        .ThenByDescending(v => v.UserVideoReactions.Count)
+                        .ThenByDescending(v => v.UserVideoComments.Count)
                         .Take(10 - videos.Count)
                         .ToListAsync();
 
