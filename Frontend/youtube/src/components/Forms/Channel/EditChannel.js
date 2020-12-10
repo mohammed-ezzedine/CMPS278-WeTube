@@ -28,7 +28,8 @@ import { useEditChannelStyles } from './styles.js';
 const EditChannel = () => {
   const classes = useEditChannelStyles();
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
-  let { id, imageUrl } = currentUser.channel;
+  console.log(currentUser);
+  let { id, imageUrl } = currentUser?.channel;
   const [readerRes, setReaderRes] = useState(null);
   const [profilePic, setProfilePic] = useState(
     imageUrl

@@ -7,6 +7,7 @@ import ReportIcon from "@material-ui/icons/Report";
 import CommentList from "../CommentList/CommentList";
 import SnackBar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
+import Avatar from '@material-ui/core/Avatar';
 
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -20,6 +21,8 @@ function InteractionSection({ views, channelName, video }) {
   const [open, setOpen] = useState(false);
   const [transition, setTransition] = useState(undefined);
   const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
+
+  console.log();
 
   //Liking/Disliking/Subscribing methods
   function LikeVideo() {
@@ -65,7 +68,7 @@ function InteractionSection({ views, channelName, video }) {
         }
       );
     } catch (error) {
-      //////////////////
+      
     }
   };
 
@@ -134,11 +137,12 @@ function InteractionSection({ views, channelName, video }) {
             >
               Subscribe
             </Button>
-            {/* {video.reactions.filter(reaction=> reaction.like).length} */}
+            <span className="reaction-counter">{video.reactions?.filter(r => r.like)?.length}</span>
             <ThumbUpIcon
               className="interactions__thumbsUp"
               onClick={() => handleClick("thumbsUp", TransitionUp)}
             />
+            <span className="reaction-counter">{video.reactions?.filter(r => !r.like)?.length}</span>
             <ThumbDownAltIcon
               className="interactions__thumbsDown"
               onClick={() => handleClick("thumbsDown", TransitionUp)}
@@ -148,10 +152,15 @@ function InteractionSection({ views, channelName, video }) {
             <ReportIcon />
           </div>
         </div>
-        <div>{video.description}</div>
+        <div className="channel-info">
+          <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/${video?.author?.id}`} />
+          <h4 className="channel-name">{video?.author?.name}</h4>
+        </div>
+        <div className="video-descr">{video.description}</div> <hr />
+
         <div className="interactions__commentSection">
           <div className="interactions__commentSection">
-            <CommentList />
+            <CommentList comments={video.comments}/>
           </div>
         </div>
       </div>

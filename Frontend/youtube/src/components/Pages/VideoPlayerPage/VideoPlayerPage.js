@@ -24,7 +24,6 @@ function VideoPlayerPage() {
   useEffect(() => {
     loadVideoData();
   }, []);
-
   return (
     <div className="videoPlayer">
       <div className="videoPlayer__body">
@@ -40,7 +39,7 @@ function VideoPlayerPage() {
         </div>
       </div>
       <div className="videoPlayer__playerRecommendations">
-        <PlayerRecommendation />
+        <PlayerRecommendation channelId={video?.author?.id}/>
       </div>
     </div>
   );

@@ -18,8 +18,6 @@ function RecommendedVideos() {
       });
   }, []);
 
-  console.log(videos);
-
   return (
     <div className="recommendedVideos">
       <h2>Latest</h2>

@@ -4,6 +4,10 @@
   justify-content: center;
 }
 
+.interactions__info {
+  width: 100%;
+}
+
 .interactions__mainInteractionSection {
   width: 100%;
   display: flex;
@@ -28,6 +32,10 @@
   color: grey;
 }
 
+.reaction-counter {
+  margin-left: 20px;
+}
+
 .interactions__subscribe {
   color: white !important;
   background-color: #c00 !important;
@@ -38,4 +46,21 @@
 }
 .interactions__thumbsDown:hover {
   color: #a51212;
+}
+
+.channel-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.channel-info .channel-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 20px;
+}
+
+.video-descr {
+  margin-left: 60px;
+  margin-bottom: 20px;
 }

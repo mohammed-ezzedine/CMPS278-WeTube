@@ -1,12 +1,10 @@
 import React from 'react';
 import CommentRow from '../CommentRow/CommentRow';
 
-function CommentList() {
+function CommentList({comments}) {
   return (
     <div className="commentList">
-      <CommentRow />
-      <CommentRow />
-      <CommentRow />
+      {comments?.map((comment) => <CommentRow comment={comment} />)}
     </div>
   );
 }
