@@ -9,9 +9,13 @@ function VideoPlayerPage() {
   const [video, setVideo] = useState({});
   const [views, setViews] = useState(0);
   const [channelName, setChannelName] = useState('');
-  let { id } = useParams();
+  let { id, playlistId } = useParams();
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
   const query = (currentUser == null)? "" : `?userId=${currentUser.id}&userSecret=${currentUser.secret}`;
+
+  const recommendationLink = (playlistId == null) ?
+  `https://youtube278.azurewebsites.net/api/video/recommendation?channelId=${video?.author?.id}` :
+  `https://youtube278.azurewebsites.net/api/playlist/${playlistId}`;
 
   const loadVideoData = async () => {
     const response = await fetch(
@@ -21,10 +25,11 @@ function VideoPlayerPage() {
     setViews(responseJSON.views.length);
     setChannelName(responseJSON.author.name);
   };
+
   useEffect(() => {
-    
     loadVideoData();
   }, [id]);
+
   return (
     <div className="videoPlayer">
       <div className="videoPlayer__body">
@@ -40,7 +45,7 @@ function VideoPlayerPage() {
         </div>
       </div>
       <div className="videoPlayer__playerRecommendations">
-        <PlayerRecommendation channelId={video?.author?.id}/>
+        <PlayerRecommendation recommendationLink={recommendationLink}/>
       </div>
     </div>
   );

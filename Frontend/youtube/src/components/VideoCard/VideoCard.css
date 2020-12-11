@@ -4,9 +4,10 @@
 }
 
 .videoCard__thumbnail {
+  object-fit: contain;
   height: 140px;
   width: 250px;
-  /* background-color: black; */
+  background-color: black;
 }
 
 .videoCard__info {

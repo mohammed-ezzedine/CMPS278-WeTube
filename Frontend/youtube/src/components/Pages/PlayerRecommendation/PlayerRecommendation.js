@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import './PlayerRecommendation.css';
 
-function PlayerRecommendation({channelId}) {
+function PlayerRecommendation({recommendationLink}) {
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
@@ -14,12 +14,12 @@ function PlayerRecommendation({channelId}) {
     };
 
     if (channelId !== undefined) {
-      fetch(`https://youtube278.azurewebsites.net/api/video/recommendation?channelId=${channelId}`, requestOptions)
+      fetch(recommendationLink, requestOptions)
         .then(response => response.json())
         .then(result => setVideos(result))
         .catch(error => console.log('error', error));
     }
-  }, [channelId]);
+  }, [recommendationLink]);
 
   return (
     <div className="playerRecommendation">

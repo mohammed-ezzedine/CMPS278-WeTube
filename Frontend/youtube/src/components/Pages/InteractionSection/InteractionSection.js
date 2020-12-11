@@ -231,7 +231,7 @@ function InteractionSection({ views, channelName, video }) {
               size="small"
               variant="contained"
               onClick={() => {
-                subscribed ? handleClick("unsubscribe", TransitionUp)   : handleClick("subscribe", TransitionUp)
+                subscribed ? handleClick("unsubscribe", TransitionUp) : handleClick("subscribe", TransitionUp)
               }}
             >
               {subscribed ? "Subscribed" :"Subscribe"}

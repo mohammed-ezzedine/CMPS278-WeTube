@@ -36,7 +36,7 @@ function App() {
               <ChannelInfoPage />
             </div>
           </Route>
-          <Route path="/video/:id" component={VideoPlayerPage}>
+          <Route path="/video/:id/:playlistId" component={VideoPlayerPage}>
             <div className="app__page">
               <Sidebar />
               <VideoPlayerPage />

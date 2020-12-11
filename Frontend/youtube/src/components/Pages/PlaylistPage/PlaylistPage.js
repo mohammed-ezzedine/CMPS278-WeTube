@@ -1,43 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import './PlaylistPage.css';
 import PlaylistCard from '../../PlaylistCard/PlaylistCard';
+import { Link } from 'react-router-dom';
 
 function PlaylistPage() {
+  const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
+  const [myPlaylists, setMyPlaylists] = useState([]);
+
+  useEffect(() => {
+    fetch(`https://youtube278.azurewebsites.net/api/playlist/channel/${currentUser.channel?.id}`)
+    .then(d => d.json())
+    .then(d => {
+        setMyPlaylists(d);
+    })
+    .catch((error) => console.log(error));
+  }, [currentUser])
+
   return (
     <div className="playlist">
       <h2>Playlist</h2>
       <div className="playlist__videos">
-        <PlaylistCard
-          thumbnail="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
-          numOfVideos="13"
-          channel="Asaad Sex Dungeon"
-          title="How to sex me"
-        />
-        <PlaylistCard
-          thumbnail="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
-          numOfVideos="13"
-          channel="Asaad Sex Dungeon"
-          title="How to sex me"
-        />
-        <PlaylistCard
-          thumbnail="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
-          numOfVideos="13"
-          channel="Asaad Sex Dungeon"
-          title="How to sex me"
-        />
-        <PlaylistCard
-          thumbnail="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
-          numOfVideos="13"
-          channel="Asaad Sex Dungeon"
-          title="How to sex me"
-        />
-        <PlaylistCard
-          thumbnail="https://media-exp1.licdn.com/dms/image/C4E03AQEOXFZLu5cS_g/profile-displayphoto-shrink_200_200/0?e=1611187200&v=beta&t=-80oZ6xgokRpwsu1-qCQnhRoWXgdzk7zu6vIrrQ2gFk"
-          numOfVideos="13"
-          channel="Asaad Sex Dungeon"
-          title="How to sex me"
-        />
+        {myPlaylists.map(p =>
+          <Link to={`/video/${p.videos[p.videos.length-1]?.id}/${p.id}`}>
+            <PlaylistCard
+              thumbnail={ `https://youtube278.azurewebsites.net/api/video/image-stream/${p.videos[p.videos.length-1]?.id}`}
+              numOfVideos={p.videos?.length}
+              title={p.name}
+            />
+          </Link>
+        )}
       </div>
     </div>
   );
