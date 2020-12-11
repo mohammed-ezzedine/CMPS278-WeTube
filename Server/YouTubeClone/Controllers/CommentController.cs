@@ -70,6 +70,7 @@ namespace YouTubeClone.Controllers
             }
 
             var comment = await context.UserVideoComment.AddAsync(new UserVideoComment { User = user, Video = video, DateTime = DateTime.Now, Text = postCommentDto.Message });
+            await context.SaveChangesAsync();
             return mapper.Map<CommentDto>(comment.Entity);
         }
 

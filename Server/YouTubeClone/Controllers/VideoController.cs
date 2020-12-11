@@ -240,6 +240,9 @@ namespace YouTubeClone.Controllers
                 .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoComments)
                 .ThenInclude(v => v.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(c => c.UserCommentReplies)
+                .ThenInclude(r => r.User)
                 .Include(v => v.UserVideoViews)
                 .ThenInclude(v => v.User)
                 .FirstOrDefaultAsync(v => v.Id == id && v.Shown);
