@@ -64,3 +64,29 @@
   margin-left: 60px;
   margin-bottom: 20px;
 }
+
+.add-comment, .add-reply {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.add-comment textarea, .add-reply textarea {
+  flex: 1;
+  margin-right: 10px;
+  padding: 5px;
+  border: none;
+  border-bottom: 1px solid rgb(148, 173, 219);
+  outline: none;
+  resize: none;
+}
+
+.add-comment submit-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-comment Button {
+  background-color: rgb(148, 173, 219);
+}
