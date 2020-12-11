@@ -71,7 +71,7 @@ function App() {
               <SubscriptionPage />
             </div>
           </Route>
-          <Route path="/search/:searchTerm">
+          <Route path="/search/:searchTerm/:page?">
             <div className="app__page">
               <Sidebar />
               <SearchPage />

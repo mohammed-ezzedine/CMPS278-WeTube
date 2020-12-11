@@ -203,7 +203,7 @@ function InteractionSection({ views, channelName, video }) {
           <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video?.author?.id}`} />
           <h4 className="channel-name">{video?.author?.name}</h4>
         </div>
-        <div className="video-descr">{video.description}</div> <hr />
+        <div className="video-descr">{video.description}</div> 
 
         <div className="interactions__commentSection">
           <div className="interactions__commentSection">
