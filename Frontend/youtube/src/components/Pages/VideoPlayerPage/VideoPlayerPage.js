@@ -11,6 +11,7 @@ function VideoPlayerPage() {
   const [channelName, setChannelName] = useState('');
   let { id } = useParams();
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
+  const query = (currentUser == null)? "" : `?userId=${currentUser.id}&userSecret=${currentUser.secret}`;
 
   const loadVideoData = async () => {
     const response = await fetch(
@@ -29,7 +30,7 @@ function VideoPlayerPage() {
       <div className="videoPlayer__body">
         <div className="videoPlayer__player">
           <video
-            src={`https://youtube278.azurewebsites.net/api/video/stream/${id}?userId=${currentUser.id}&userSecret=${currentUser.secret}`}
+            src={`https://youtube278.azurewebsites.net/api/video/stream/${id}${query}`}
             autoPlay
             controls
           ></video>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VideoRow from '../../VideoRow/VideoRow';
+import { Link } from 'react-router-dom';
 
 import './PlayerRecommendation.css';
 
@@ -20,7 +21,6 @@ function PlayerRecommendation({channelId}) {
     }
   }, [channelId]);
 
-  console.log(videos);
   return (
     <div className="playerRecommendation">
       {videos?.map((video) => {

@@ -36,6 +36,55 @@ function InteractionSection({ views, channelName, video }) {
       setDisliked(video.reactions.filter(reaction => reaction.user.id === currentUser.id && !reaction.like))
     }
   }, [video])
+  const [inputComment, setInputComment] = useState("");
+  // const [likes, setLikes] = useState(video.reactions.filter(reaction => !!reaction.like).length)
+  // const [dislikes, setDislikes] = useState(video.reactions.filter(reaction => !reaction.like).length)
+  // const [subscribed, setSubscribed] = useState(currentUser.subscriptions.filter(channel => channel.id === video.author.id))
+
+  const handleCommentChange = (e) => {
+    setInputComment(e.target.value);
+  }
+
+  function sendComment() {
+    if(inputComment == "" || currentUser == null) {
+      return;
+    }
+
+    fetch(`https://youtube278.azurewebsites.net/api/comment`, {
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        mode: "no-cors",
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        userSecret: currentUser.secret,
+        videoId: video.id,
+        message: inputComment
+      }),
+    })
+    .then(d => d.json())
+    .then(d => {
+      video.comments.push(d);
+      setInputComment("");
+    })
+    .catch((error) => console.log(error));
+  }
+
+  const addCommentSection = (currentUser == null)? "" :
+    <div className="add-comment">
+      <textarea 
+      rows="1" 
+      placeholder="Add a comment..."
+      onChange={(e) => handleCommentChange(e)} />
+      <div className="submit-wrapper">
+        <Button 
+          variant="contained"
+          onClick={() => sendComment()}
+        >Send Comment</Button>
+      </div>
+    </div>
 
   //Liking/Disliking/Subscribing methods
   function LikeVideo() {
@@ -202,13 +251,14 @@ function InteractionSection({ views, channelName, video }) {
           </div>
         </div>
         <div className="channel-info">
-          <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/${video?.author?.id}`} />
+          <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video?.author?.id}`} />
           <h4 className="channel-name">{video?.author?.name}</h4>
         </div>
-        <div className="video-descr">{video.description}</div> <hr />
+        <div className="video-descr">{video.description}</div> 
 
         <div className="interactions__commentSection">
           <div className="interactions__commentSection">
+            {addCommentSection}
             <CommentList comments={video.comments}/>
           </div>
         </div>

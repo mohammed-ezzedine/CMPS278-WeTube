@@ -22,3 +22,16 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
+.pagination-link {
+  padding: 5px 10px;
+  background-color: crimson;
+  color: white;
+  margin: 5px;
+  transition-duration: .1s;
+  box-shadow: 1px 1px 1px gray;
+}
+
+.pagination-link:hover {
+  background-color: gray;
+}
