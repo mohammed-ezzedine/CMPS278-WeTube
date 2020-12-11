@@ -71,7 +71,12 @@ namespace YouTubeClone.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<PlaylistDto>> GetPlaylist(int id)
         {
-            var playlist = await context.Playlist.FindAsync(id);
+            var playlist = await context.Playlist
+                .Include(p => p.Channel)
+                .Include(p => p.Videos)
+                .ThenInclude(pv => pv.Video)
+                .ThenInclude(v => v.Author)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (playlist == null)
             {
