@@ -37,10 +37,13 @@ function YourVideosPage() {
               <VideoCard
                 title={video.title}
                 views={video.views?.length}
-                path={`/video/${video.id}`}
+                path={`${video.id}`}
                 timestamp={video.uploadDate.split('T')[0] + " | " + video.uploadDate.split('T')[1].split('.')[0]}
                 channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
                 channel={video.author.name}
+                adminView={true}
+                featured={video.featured}
+                channelId={video.author.id}
                 image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
               />
             );
@@ -54,10 +57,12 @@ function YourVideosPage() {
               <VideoCard
                 title={video.title}
                 views={video.views?.length}
-                path={`/video/${video.id}`}
+                path={`${video.id}`}
                 timestamp={video.uploadDate.split('T')[0] + " | " + video.uploadDate.split('T')[1].split('.')[0]}
                 channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author?.id}`}
                 channel={video.author?.name}
+                hidden={true}
+                adminView={true}
                 image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
               />
             );
