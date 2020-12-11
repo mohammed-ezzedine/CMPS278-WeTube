@@ -47,10 +47,14 @@ namespace YouTubeClone.Controllers
         {
             var results = await context.Playlist
                 .Include(p => p.Channel)
-                .Include(p => p.Videos)
                 .Where(p => p.Channel.Id == channelId)
+                .Include(p => p.Videos)
+                .ThenInclude(pv => pv.Video)
+                .ThenInclude(v => v.Author)
                 .Select(p => mapper.Map<PlaylistDto>(p))
                 .ToListAsync();
+
+            results.ForEach(r => r.Videos = r.Videos.Where(v => v.Shown).ToList());
 
             return results;
         }

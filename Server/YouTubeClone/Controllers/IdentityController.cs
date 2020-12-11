@@ -160,6 +160,8 @@ namespace YouTubeClone.Controllers
                     .ThenInclude(v => v.UserVideoReactions)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
+            user.WatchLater.ForEach(uv => uv.Video.Author.Name = GetChannelName(uv.Video));
+
             if (user == null)
             {
                 return NotFound();
@@ -218,6 +220,13 @@ namespace YouTubeClone.Controllers
                 .Take(10)
                 .ToList();
             return videos;
+        }
+
+        private string GetChannelName(Video v)
+        {
+            var user = context.User.FirstOrDefault(u => u.Channel.Id == v.Author.Id);
+
+            return user.FirstName + " " + user.LastName;
         }
     }
 }
