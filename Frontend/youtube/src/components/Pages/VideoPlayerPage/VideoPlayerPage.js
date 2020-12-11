@@ -13,9 +13,10 @@ function VideoPlayerPage() {
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
   const query = (currentUser == null)? "" : `?userId=${currentUser.id}&userSecret=${currentUser.secret}`;
 
-  const recommendationLink = (playlistId == null) ?
-  `https://youtube278.azurewebsites.net/api/video/recommendation?channelId=${video?.author?.id}` :
-  `https://youtube278.azurewebsites.net/api/playlist/${playlistId}`;
+  const recommendationLink = (playlistId != null) ?
+  `https://youtube278.azurewebsites.net/api/playlist/${playlistId}` :
+  (video?.author?.id != undefined && video?.author?.id != null)?
+  `https://youtube278.azurewebsites.net/api/video/recommendation?channelId=${video?.author?.id}` : "";
 
   const loadVideoData = async () => {
     const response = await fetch(
