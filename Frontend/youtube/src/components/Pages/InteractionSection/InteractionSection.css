@@ -5,7 +5,8 @@
 }
 
 .interactions__info {
-  width: 100%;
+  width: 90%;
+  margin: 0 auto;
 }
 
 .interactions__mainInteractionSection {

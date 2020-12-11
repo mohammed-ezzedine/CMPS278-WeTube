@@ -3,6 +3,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { Button } from "@material-ui/core";
 
 import './CommentRow.css';
+import ReplyList from '../ReplyList/ReplyList';
 
 function CommentRow({comment}) {
   const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
@@ -33,9 +34,8 @@ function CommentRow({comment}) {
     })
     .then(d => d.json())
     .then(d => {
-      console.log(d);
-      comment.userCommentReplies.push(d);
       setInputReply("");
+      comment.userCommentReplies.push(d);
     })
     .catch((error) => console.log(error));
   }
@@ -56,7 +56,7 @@ function CommentRow({comment}) {
 
   return (
     <div className="commentRow">
-      <Avatar />
+      {/* <Avatar /> */}
       <div className="commentRow__info">
         <div className="commentRow__authorInfo">
           <h4>{comment.user.firstName} {comment.user.lastName}</h4>
@@ -67,6 +67,7 @@ function CommentRow({comment}) {
             {comment.text}
           </p>
           {addReplySection}
+          <ReplyList replies={comment.userCommentReplies} />
         </div>
       </div>
     </div>
