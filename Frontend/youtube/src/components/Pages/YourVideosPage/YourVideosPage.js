@@ -96,6 +96,7 @@ function YourVideosPage() {
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
               channel={video.author.name}
               adminView={true}
+              description={video.description}
               featured={video.featured}
               channelId={video.author.id}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
@@ -117,6 +118,7 @@ function YourVideosPage() {
                 ' | ' +
                 video.uploadDate.split('T')[1].split('.')[0]
               }
+              description={video.description}
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author?.id}`}
               channel={video.author?.name}
               hidden={true}

@@ -34,3 +34,11 @@
   height: 30px !important;
   width: 30px !important;
 }
+
+.admin-operations {
+  background-color: rgb(243, 243, 243);
+  text-align: center;
+  columns: 2;
+  width: 250px;
+  margin-top: 10px;
+}

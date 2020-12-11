@@ -129,74 +129,93 @@ function AddToPlaylist({videoId}) {
             })
     }
 
-    return (
-        <div className="add-playlist-container">
-            <PopupState variant="popover" popupId="demo-popup-menu">
-                {(popupState) => (
-                    <React.Fragment>
-                    <Button {...bindTrigger(popupState)}>
-                        <PlaylistAddIcon />
-                    </Button>
-                    <Menu {...bindMenu(popupState)}>
-                        <MenuItem onClick={(e) => {
-                            popupState.close();
-                            addToWatchLater()
-                        }}>Add to Watch Later</MenuItem>
-                        {myPlaylists.map(p => 
+    if (currentUser?.channel != null) {
+        return (
+            <div className="add-playlist-container">
+                <PopupState variant="popover" popupId="demo-popup-menu">
+                    {(popupState) => (
+                        <React.Fragment>
+                        <Button {...bindTrigger(popupState)}>
+                            <PlaylistAddIcon />
+                        </Button>
+                        <Menu {...bindMenu(popupState)}>
                             <MenuItem onClick={(e) => {
                                 popupState.close();
-                                addToPlaylist(p)
-                            }}>Add To Playlist: {p.name}</MenuItem>
-                        )}
-                        <MenuItem>
-                            <PopupState variant="popover" popupId="demo-popup-menu-2">
-                                {(popupState) => (
-                                    <React.Fragment>
-                                    <Button {...bindTrigger(popupState)}>
-                                        Add to new playlist
-                                    </Button>
-                                    <Menu {...bindMenu(popupState)}>
-                                        <MenuItem>
-                                            <TextField 
-                                                placeholder="Playlist name"
-                                                onChange={(e) => handlePlaylistNameChange(e)}
-                                            />
-                                            <Button onClick={(e) => {
-                                                popupState.close();
-                                                addToNewPlaylist()
-                                            }}>Add</Button>
-                                        </MenuItem>
-                                    </Menu>
-                                    </React.Fragment>
-                                )}
-                            </PopupState>
-                        </MenuItem>
-                    </Menu>
+                                addToWatchLater()
+                            }}>Add to Watch Later</MenuItem>
+                            {myPlaylists.map(p => 
+                                <MenuItem onClick={(e) => {
+                                    popupState.close();
+                                    addToPlaylist(p)
+                                }}>Add To Playlist: {p.name}</MenuItem>
+                            )}
+                            <MenuItem>
+                                <PopupState variant="popover" popupId="demo-popup-menu-2">
+                                    {(popupState) => (
+                                        <React.Fragment>
+                                        <Button {...bindTrigger(popupState)}>
+                                            Add to new playlist
+                                        </Button>
+                                        <Menu {...bindMenu(popupState)}>
+                                            <MenuItem>
+                                                <TextField 
+                                                    placeholder="Playlist name"
+                                                    onChange={(e) => handlePlaylistNameChange(e)}
+                                                />
+                                                <Button onClick={(e) => {
+                                                    popupState.close();
+                                                    addToNewPlaylist()
+                                                }}>Add</Button>
+                                            </MenuItem>
+                                        </Menu>
+                                        </React.Fragment>
+                                    )}
+                                </PopupState>
+                            </MenuItem>
+                        </Menu>
+                        </React.Fragment>
+                    )}
+                </PopupState>
+                <SnackBar
+                    open={open}
+                    autoHideDuration={4000}
+                    onClose={handleClose}
+                    message={message}
+                    TransitionComponent={transition}
+                    action={
+                    <React.Fragment>
+                        <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleClose}
+                        >
+                        <CloseIcon fontSize="small" />
+                        </IconButton>
                     </React.Fragment>
-                )}
-            </PopupState>
-            <SnackBar
-                // anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-                open={open}
-                autoHideDuration={4000}
-                onClose={handleClose}
-                message={message}
-                TransitionComponent={transition}
-                action={
-                <React.Fragment>
-                    <IconButton
-                    size="small"
-                    aria-label="close"
-                    color="inherit"
-                    onClick={handleClose}
-                    >
-                    <CloseIcon fontSize="small" />
-                    </IconButton>
-                </React.Fragment>
-                }
-            />
-        </div>
-    );
+                    }
+                />
+            </div>
+        );
+    } else {
+        // User is not signed in, or he doesn;t have a channel --> he can't add the video to a playlist
+        return (
+            <div className="add-playlist-container">
+                <PopupState variant="popover" popupId="demo-popup-menu">
+                    {(popupState) => (
+                        <React.Fragment>
+                        <Button {...bindTrigger(popupState)}>
+                            <PlaylistAddIcon />
+                        </Button>
+                        <Menu {...bindMenu(popupState)}>
+                            <MenuItem onClick={popupState.close}>You should sign in and have a channel first</MenuItem>
+                        </Menu>
+                        </React.Fragment>
+                    )}
+                </PopupState>
+            </div>
+        );
+    }
 }
 
 export default AddToPlaylist;
