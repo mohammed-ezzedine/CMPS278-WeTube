@@ -525,6 +525,7 @@ namespace YouTubeClone.Controllers
             }
 
             video.Shown = false;
+            video.Featured = false;
             await context.SaveChangesAsync();
 
             return Ok();

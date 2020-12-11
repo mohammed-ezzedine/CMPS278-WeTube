@@ -134,7 +134,7 @@ namespace YouTubeClone.Controllers
         /// <remarks>
         /// Sample request:
         ///     
-        ///     POST /api/channel/hidden/3
+        ///     POST /api/channel/hidden?id=3
         ///     {
         ///         "Content-Type": "application/json",
         ///         "body": {
@@ -174,6 +174,51 @@ namespace YouTubeClone.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Get a channel's featured videos
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST /api/channel/featured/3
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": ""
+        ///         }
+        ///     }
+        /// </remarks>
+        [HttpPost("featured/{id}")]
+        public async Task<ActionResult<IEnumerable<VideoSummaryDto>>> GetFeaturedVideos(int id, [FromBody] PostChannelDto postChannelDto)
+        {
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
+
+            if (user == null || user.Channel.Id != id)
+            {
+                return Unauthorized();
+            }
+
+            var result = await context.Video
+                .Include(v => v.Author)
+                .Where(v => v.Featured && v.Author.Id == user.Channel.Id)
+                .Include(v => v.UserVideoViews)
+                .ThenInclude(v => v.User)
+                .Include(v => v.UserVideoReactions)
+                .ThenInclude(r => r.User)
+                .Include(v => v.UserVideoComments)
+                .ThenInclude(v => v.User)
+                .OrderByDescending(v => v.UploadDate)
+                .ThenByDescending(v => v.UserVideoViews.Count)
+                .ThenByDescending(v => v.UserVideoReactions.Count)
+                .ThenByDescending(v => v.UserVideoComments.Count)
+                .Select(v => mapper.Map<VideoSummaryDto>(v))
+                .ToListAsync();
+
+            return result;
+        }
 
         /// <summary>
         /// Get a channel's stats
