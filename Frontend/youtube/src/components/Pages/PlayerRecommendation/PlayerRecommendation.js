@@ -13,7 +13,7 @@ function PlayerRecommendation({channelId}) {
       redirect: 'follow'
     };
 
-    if (channelId != undefined) {
+    if (channelId !== undefined) {
       fetch(`https://youtube278.azurewebsites.net/api/video/recommendation?channelId=${channelId}`, requestOptions)
         .then(response => response.json())
         .then(result => setVideos(result))
@@ -25,18 +25,17 @@ function PlayerRecommendation({channelId}) {
     <div className="playerRecommendation">
       {videos?.map((video) => {
           return (
-            <Link to={`/video/${video.id}`}>
-              <VideoRow
-                title={video.title}
-                views={video.views.length}
-                description={video.description}
-                timestamp={video.uploadDate.split('T')[0]}
-                channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
-                channel={video.author.name}
-                image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
-                isShown={0}
-              />
-            </Link>
+            <VideoRow
+              title={video.title}
+              videoId={video.id}
+              views={video.views.length}
+              description={video.description}
+              timestamp={video.uploadDate.split('T')[0]}
+              channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
+              channel={video.author}
+              image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+              isShown={0}
+            />
           );
         })}
     </div>

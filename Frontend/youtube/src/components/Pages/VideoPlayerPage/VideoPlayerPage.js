@@ -13,16 +13,16 @@ function VideoPlayerPage() {
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
   const query = (currentUser == null)? "" : `?userId=${currentUser.id}&userSecret=${currentUser.secret}`;
 
-  
+  const loadVideoData = async () => {
+    const response = await fetch(
+      `https://youtube278.azurewebsites.net/api/Video/${id}`);
+    const responseJSON = await response.json();
+    setVideo(responseJSON);
+    setViews(responseJSON.views.length);
+    setChannelName(responseJSON.author.name);
+  };
   useEffect(() => {
-    const loadVideoData = async () => {
-      const response = await fetch(
-        `https://youtube278.azurewebsites.net/api/Video/${id}`);
-      const responseJSON = await response.json();
-      setVideo(responseJSON);
-      setViews(responseJSON.views.length);
-      setChannelName(responseJSON.author.name);
-    };
+    
     loadVideoData();
   }, [id]);
   return (
