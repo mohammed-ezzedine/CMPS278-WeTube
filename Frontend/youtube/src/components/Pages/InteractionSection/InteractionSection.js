@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
 import ShareIcon from "@material-ui/icons/Share";
@@ -21,9 +21,70 @@ function InteractionSection({ views, channelName, video }) {
   const [open, setOpen] = useState(false);
   const [transition, setTransition] = useState(undefined);
   const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
-  const [likes, setLikes] = useState(video.reactions.filter(reaction => !!reaction.like).length)
-  const [dislikes, setDislikes] = useState(video.reactions.filter(reaction => !reaction.like).length)
-  const [subscribed, setSubscribed] = useState(currentUser.subscriptions.filter(channel => channel.id === video.author.id))
+  const [likes, setLikes] = useState(null)
+  const [dislikes, setDislikes] = useState(null)
+  const [subscribed, setSubscribed] = useState(null)
+  const [liked, setLiked] = useState(null)
+  const [disliked, setDisliked] = useState(null)
+
+  useEffect(() => {
+    if (video && video.reactions) {
+      setLikes(video.reactions.filter(reaction => !!reaction.like).length)
+      setDislikes(video.reactions.filter(reaction => !reaction.like).length)
+      setSubscribed((currentUser.subscriptions.filter(channel => channel.id === video.author.id).length > 0))
+      setLiked(video.reactions.filter(reaction => reaction.user.id === currentUser.id && reaction.like))
+      setDisliked(video.reactions.filter(reaction => reaction.user.id === currentUser.id && !reaction.like))
+    }
+  }, [video])
+  const [inputComment, setInputComment] = useState("");
+  // const [likes, setLikes] = useState(video.reactions.filter(reaction => !!reaction.like).length)
+  // const [dislikes, setDislikes] = useState(video.reactions.filter(reaction => !reaction.like).length)
+  // const [subscribed, setSubscribed] = useState(currentUser.subscriptions.filter(channel => channel.id === video.author.id))
+
+  const handleCommentChange = (e) => {
+    setInputComment(e.target.value);
+  }
+
+  function sendComment() {
+    if(inputComment == "" || currentUser == null) {
+      return;
+    }
+
+    fetch(`https://youtube278.azurewebsites.net/api/comment`, {
+      method: "POST",
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+        mode: "no-cors",
+      },
+      body: JSON.stringify({
+        userId: currentUser.id,
+        userSecret: currentUser.secret,
+        videoId: video.id,
+        message: inputComment
+      }),
+    })
+    .then(d => d.json())
+    .then(d => {
+      video.comments.push(d);
+      setInputComment("");
+    })
+    .catch((error) => console.log(error));
+  }
+
+  const addCommentSection = (currentUser == null)? "" :
+    <div className="add-comment">
+      <textarea 
+      rows="1" 
+      placeholder="Add a comment..."
+      onChange={(e) => handleCommentChange(e)} />
+      <div className="submit-wrapper">
+        <Button 
+          variant="contained"
+          onClick={() => sendComment()}
+        >Send Comment</Button>
+      </div>
+    </div>
 
   //Liking/Disliking/Subscribing methods
   function LikeVideo() {
@@ -38,7 +99,22 @@ function InteractionSection({ views, channelName, video }) {
         userId: currentUser.id,
         userSecret: currentUser.secret,
       }),
-    }).catch((error) => console.log(error));
+    })
+    .then((response) => {
+      if (response.ok && response.status === 200) {
+        setLikes(likes +1)
+        if(disliked) {
+          setDisliked(false)
+          setDislikes(dislikes -1)
+            
+        }
+          setLiked(true)
+          setLikes(likes +1)
+          
+      }
+      }
+    )
+    .catch((error) => console.log(error));
   }
 
   function DislikeVideo() {
@@ -56,7 +132,20 @@ function InteractionSection({ views, channelName, video }) {
           userSecret: currentUser.secret,
         }),
       }
-    ).catch((error) => console.log(error));
+    ).then((response) => {
+      if (response.ok && response.status === 200) {
+        if(liked) {
+          setLiked(false)
+          setLikes(likes -1)
+            
+        }
+          setDisliked(true)
+          setDislikes(dislikes +1)
+          
+      }
+    }
+    )
+    .catch((error) => console.log(error));
   }
   const SubscribeChannel = async () => {
     try {
@@ -82,12 +171,16 @@ function InteractionSection({ views, channelName, video }) {
     if (thumb === "thumbsUp") {
       LikeVideo();
       setSelectedThumb("Video Liked");
+
     } else if (thumb === "thumbsDown") {
       DislikeVideo();
-      setSelectedThumb("Video Disliked");
+      setSelectedThumb("Video Disliked"); 
+
+      
     } else if (thumb === "subscribe") {
       SubscribeChannel();
       setSelectedThumb(`Subscribed To ${video.author.name}`);
+
     }
     setOpen(true);
   };
@@ -134,18 +227,22 @@ function InteractionSection({ views, channelName, video }) {
               className="interactions__subscribe"
               size="small"
               variant="contained"
-              onClick={() => handleClick("subscribe", TransitionUp)}
+              onClick={() => {
+                subscribed ? handleClick("unsubscribe", TransitionUp)   : handleClick("subscribe", TransitionUp)
+              }}
             >
-              Subscribe
+              {subscribed ? "Subscribed" :"Subscribe"}
             </Button>
-            <span className="reaction-counter">{video.reactions?.filter(r => r.like)?.length}</span>
+            <span className="reaction-counter">{likes}</span>
             <ThumbUpIcon
               className="interactions__thumbsUp"
+              color={liked ? "primary" : "inherit"}
               onClick={() => {handleClick("thumbsUp", TransitionUp)}}
             />
-            <span className="reaction-counter">{video.reactions?.filter(r => !r.like)?.length}</span>
+            <span className="reaction-counter">{dislikes}</span>
             <ThumbDownAltIcon
               className="interactions__thumbsDown"
+              color={disliked ? "secondary" : "inherit"}
               onClick={() => handleClick("thumbsDown", TransitionUp)}
             />
             <ShareIcon />
@@ -157,10 +254,11 @@ function InteractionSection({ views, channelName, video }) {
           <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video?.author?.id}`} />
           <h4 className="channel-name">{video?.author?.name}</h4>
         </div>
-        <div className="video-descr">{video.description}</div> <hr />
+        <div className="video-descr">{video.description}</div> 
 
         <div className="interactions__commentSection">
           <div className="interactions__commentSection">
+            {addCommentSection}
             <CommentList comments={video.comments}/>
           </div>
         </div>

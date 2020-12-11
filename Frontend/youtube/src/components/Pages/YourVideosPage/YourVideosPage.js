@@ -6,6 +6,7 @@ import './YourVideosPage.css';
 function YourVideosPage() {
   const [videos, setVideos] = useState([]);
   const [hiddenVideos, setHiddenVideos] = useState([]);
+  const [featuredVideos, setFeaturedVideos] = useState([]);
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
 
   useEffect(() => {
@@ -33,18 +34,60 @@ function YourVideosPage() {
       .then((response) => response.json())
       .then((result) => setHiddenVideos(result))
       .catch((error) => console.log('error', error));
+
+    var raw = JSON.stringify({
+      userId: currentUser?.id,
+      userSecret: currentUser?.secret,
+    });
+    fetch(
+      `https://youtube278.azurewebsites.net/api/channel/featured/${currentUser.channel.id}`,
+      {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json',
+        },
+        body: raw,
+      }
+    )
+      .then((response) => response.json())
+      .then((result) => setFeaturedVideos(result))
+      .catch((error) => console.log('error', error));
   }, [currentUser.id]);
 
   return (
     <div className="yourVideos">
-      <h2>Your Videos</h2>
+      <h2>Featured Videos</h2>
+      <div className="yourVideos__videos">
+        {featuredVideos.map((video) => {
+          return (
+            <VideoCard
+              title={video.title}
+              views={video.views?.length}
+              path={`${video.id}`}
+              timestamp={
+                video.uploadDate.split('T')[0] +
+                ' | ' +
+                video.uploadDate.split('T')[1].split('.')[0]
+              }
+              channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author?.id}`}
+              channel={video.author?.name}
+              adminView={true}
+              featured={video.featured}
+              channelId={video.author?.id}
+              image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+            />
+          );
+        })}
+      </div>
+
+      <h2>Shown Videos</h2>
       <div className="yourVideos__videos">
         {videos.map((video) => {
           return (
             <VideoCard
               title={video.title}
               views={video.views?.length}
-              path={video.id}
+              path={`${video.id}`}
               timestamp={
                 video.uploadDate.split('T')[0] +
                 ' | ' +
@@ -52,6 +95,9 @@ function YourVideosPage() {
               }
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
               channel={video.author.name}
+              adminView={true}
+              featured={video.featured}
+              channelId={video.author.id}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
             />
           );
@@ -65,7 +111,7 @@ function YourVideosPage() {
             <VideoCard
               title={video.title}
               views={video.views?.length}
-              path={video.id}
+              path={`${video.id}`}
               timestamp={
                 video.uploadDate.split('T')[0] +
                 ' | ' +
@@ -73,6 +119,8 @@ function YourVideosPage() {
               }
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author?.id}`}
               channel={video.author?.name}
+              hidden={true}
+              adminView={true}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
             />
           );

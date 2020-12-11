@@ -13,7 +13,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0.4;
+  /* flex: 0.4; */
   margin: 30px;
 }
 .videoPlayer__interactions {
@@ -29,4 +29,10 @@
 .videoPlayer__playerRecommendations img {
   object-fit: contain;
   width: 200px;
+}
+
+video {
+  max-height: 600px;
+  width: 100%;
+  background-color: black;
 }

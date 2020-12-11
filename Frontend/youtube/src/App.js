@@ -20,6 +20,7 @@ import LoginForm from './components/Forms/Login/LoginForm';
 import CreateChannel from './components/Forms/Channel/CreateChannel';
 import { AuthContext } from './components/Auth/AuthContextProvider';
 import EditChannel from './components/Forms/Channel/EditChannel';
+import ChannelInfoPage from './components/Pages/ChannelInfoPage/ChannelInfoPage';
 
 function App() {
   const [auth, setAuth] = useContext(AuthContext);
@@ -29,6 +30,12 @@ function App() {
         <Header />
 
         <Switch>
+        <Route path="/channel/:id" component={ChannelInfoPage}>
+            <div className="app__page">
+              <Sidebar />
+              <ChannelInfoPage />
+            </div>
+          </Route>
           <Route path="/video/:id" component={VideoPlayerPage}>
             <div className="app__page">
               <Sidebar />
@@ -71,7 +78,7 @@ function App() {
               <SubscriptionPage />
             </div>
           </Route>
-          <Route path="/search/:searchTerm">
+          <Route path="/search/:searchTerm/:page?">
             <div className="app__page">
               <Sidebar />
               <SearchPage />
