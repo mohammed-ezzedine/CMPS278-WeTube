@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
 import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
 import ShareIcon from "@material-ui/icons/Share";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import ReportIcon from "@material-ui/icons/Report";
 import CommentList from "../CommentList/CommentList";
 import SnackBar from "@material-ui/core/Snackbar";
@@ -13,8 +12,10 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 
 import "./InteractionSection.css";
-import { Button } from "@material-ui/core";
+import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
+import { Button, Menu, MenuItem } from "@material-ui/core";
 import { post } from "axios";
+import TextField from '@material-ui/core/TextField';
 
 function InteractionSection({ views, channelName, video }) {
   const [selectedThumb, setSelectedThumb] = useState(null);
@@ -59,10 +60,12 @@ function InteractionSection({ views, channelName, video }) {
 
   const addCommentSection = (currentUser == null)? "" :
     <div className="add-comment">
-      <textarea 
-      rows="1" 
-      placeholder="Add a comment..."
-      onChange={(e) => handleCommentChange(e)} />
+      <TextField 
+        className="comment-textarea"
+        rows="1" 
+        placeholder="Add a comment..."
+        onChange={(e) => handleCommentChange(e)} />
+      
       <div className="submit-wrapper">
         <Button 
           variant="contained"
@@ -195,7 +198,7 @@ function InteractionSection({ views, channelName, video }) {
               onClick={() => handleClick("thumbsDown", TransitionUp)}
             />
             <ShareIcon />
-            <PlaylistAddIcon />
+            <AddToPlaylist videoId={video.id}/>
             <ReportIcon />
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import { Button } from "@material-ui/core";
+import TextField from '@material-ui/core/TextField';
 
 import './CommentRow.css';
 import ReplyList from '../ReplyList/ReplyList';
@@ -42,10 +43,11 @@ function CommentRow({comment}) {
 
   const addReplySection = (currentUser == null)? "" :
     <div className="add-reply">
-      <textarea 
-      rows="1" 
-      placeholder="Add a reply..."
-      onChange={(e) => handleReplyChange(e)} />
+      <TextField 
+        className="reply-textarea"
+        rows="1" 
+        placeholder="Add a reply..."
+        onChange={(e) => handleReplyChange(e)} />
       <div className="submit-wrapper">
         <Button 
           variant="contained"
