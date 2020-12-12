@@ -15,8 +15,13 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import "./InteractionSection.css";
 import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
+<<<<<<< HEAD
+import { Button, Menu, MenuItem } from "@material-ui/core";
+import { post, put } from "axios";
+=======
 import { Button, Checkbox, FormControlLabel, Menu, MenuItem } from "@material-ui/core";
 import { post } from "axios";
+>>>>>>> 917f212c048edc7df1003731ab717181e47cbcff
 import TextField from '@material-ui/core/TextField';
 
 function InteractionSection({ views, channelName, video }) {
@@ -267,8 +272,7 @@ function InteractionSection({ views, channelName, video }) {
             </p>
           </div>
           <div className="interactions__interactiveSection">
-            { (video.author.id) ? "" : (
-            <Button
+            { (video.author.id === currentUser.id) ? "" : (<Button
               className="interactions__subscribe"
               size="small"
               variant="contained"
@@ -278,6 +282,8 @@ function InteractionSection({ views, channelName, video }) {
             >
               {subscribed ? "Subscribed" :"Subscribe"}
             </Button>
+            )
+}
             <FormControlLabel
               control={<Checkbox icon={<ThumbUpAltOutlinedIcon />} 
               checkedIcon={<ThumbUpIcon />} 
