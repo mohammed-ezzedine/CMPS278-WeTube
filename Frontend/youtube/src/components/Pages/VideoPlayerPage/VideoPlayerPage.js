@@ -24,8 +24,8 @@ function VideoPlayerPage() {
       `https://youtube278.azurewebsites.net/api/Video/${id}`);
     const responseJSON = await response.json();
     setVideo(responseJSON);
-    setViews(responseJSON.views.length);
-    setChannelName(responseJSON.author.name);
+    setViews(responseJSON.views?.length);
+    setChannelName(responseJSON.author?.name);
   };
 
   useEffect(() => {

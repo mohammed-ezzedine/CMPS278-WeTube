@@ -30,7 +30,7 @@ function App() {
         <Header />
 
         <Switch>
-        <Route path="/channel/:id" component={ChannelInfoPage}>
+          <Route path="/channel/:id" component={ChannelInfoPage}>
             <div className="app__page">
               <Sidebar />
               <ChannelInfoPage />
