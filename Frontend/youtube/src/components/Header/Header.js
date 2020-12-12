@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
-import { Avatar, Button } from "@material-ui/core";
+import { Avatar, Button, IconButton, Menu, MenuItem, Slide, TextField } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
@@ -10,12 +11,19 @@ import "./Header.css";
 import { AuthContext } from "../Auth/AuthContextProvider";
 
 function Header() {
-  const [auth] = useContext(AuthContext)
+  const [auth, setAuth] = useContext(AuthContext)
   const [inputSearch, setInputSearch] = useState("");
-  const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
+  var currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
+  
   const handleChange = (e) => {
     setInputSearch(e.target.value);
   };
+
+  function logout() {
+    window.localStorage.setItem("CurrentUser", null);
+    currentUser = null;
+    setAuth(false);
+  }
 
   return (
     <div className="header">
@@ -47,12 +55,30 @@ function Header() {
         <Link to={`/add-video`}>
           <VideoCallIcon className="header__icon" />
         </Link>
-        <Link to={`/editChannel`}>
-          <Avatar
-            alt={currentUser.firstName + " " + currentUser.lastName}
-            src={currentUser.channel?.imageUrl}
-          />
-        </Link>
+        <PopupState variant="popover" popupId="demo-popup-menu">
+            {(popupState) => (
+                <React.Fragment>
+                <Button {...bindTrigger(popupState)}>
+                  <Avatar
+                    alt={currentUser?.firstName + " " + currentUser?.lastName}
+                    src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${currentUser?.channel?.id}`}
+                  />
+                </Button>
+                <Menu {...bindMenu(popupState)}>
+                    <MenuItem onClick={popupState.close}>
+                      <Link to={`/editChannel`}>
+                        Change Photo
+                      </Link></MenuItem>
+                    <MenuItem onClick={popupState.close}>
+                      <Button
+                        onClick={logout}>
+                        Logout
+                      </Button>
+                    </MenuItem>
+                </Menu>
+                </React.Fragment>
+            )}
+        </PopupState>
       </div>
       : 
       <Link to="/login"><Button variant="contained" color="primary"> Log In </Button></Link>

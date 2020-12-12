@@ -66,21 +66,22 @@ function ChannelInfoPage() {
     }
   }
 
-  const subscribeBtn = (subscribed)?
-    <Button
-      variant="contained"
-      onClick={UnsubscribeChannel}
-      style={{ backgroundColor: '#c00', color: 'white' }}
+  const subscribeBtn = (channel.id == currentUser.channel.id)? "" :
+    (subscribed)?
+      <Button
+        variant="contained"
+        onClick={UnsubscribeChannel}
+        style={{ backgroundColor: '#c00', color: 'white' }}
+      >
+        Unsubscribe
+      </Button> :
+      <Button
+        onClick={SubscribeChannel}
+        variant="contained"
+        style={{ backgroundColor: '#c00', color: 'white' }}
     >
-      Unsubscribe
-    </Button> :
-    <Button
-      onClick={SubscribeChannel}
-      variant="contained"
-      style={{ backgroundColor: '#c00', color: 'white' }}
-  >
-    Subscribe
-  </Button>
+      Subscribe
+    </Button>
 
   return (
     <div className="channelInfo">
@@ -141,7 +142,7 @@ function ChannelInfoPage() {
               <Link to={`/video/${p.videos[p.videos.length-1]?.id}/${p?.id}`}>
                 <PlaylistCard
                   key={`playlist-${p.id}`}
-                  thumbnail={ `https://youtube278.azurewebsites.net/api/video/image-stream/${p.videos[p.videos.length-1]?.id}`}
+                  thumbnail={ `https://youtube278.azurewebsites.net/api/video/image-stream/${p.videos[0]?.id}`}
                   numOfVideos={p.videos?.length}
                   title={p?.name}
                 />

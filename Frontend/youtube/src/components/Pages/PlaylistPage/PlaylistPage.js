@@ -24,7 +24,7 @@ function PlaylistPage() {
         {myPlaylists.map(p =>
           <Link to={`/video/${p.videos[p.videos.length-1]?.id}/${p.id}`}>
             <PlaylistCard
-              thumbnail={ `https://youtube278.azurewebsites.net/api/video/image-stream/${p.videos[p.videos.length-1]?.id}`}
+              thumbnail={ `https://youtube278.azurewebsites.net/api/video/image-stream/${p.videos[0]?.id}`}
               numOfVideos={p.videos?.length}
               title={p.name}
             />

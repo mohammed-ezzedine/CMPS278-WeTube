@@ -18,6 +18,7 @@ import ReportVideo from '../ReportVideo/ReportVideo';
 import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { get, post } from "axios";
 import TextField from '@material-ui/core/TextField';
+import { Link } from "react-router-dom";
 
 function InteractionSection({ views, channelName, video }) {
   const [selectedThumb, setSelectedThumb] = useState(null);
@@ -32,11 +33,11 @@ function InteractionSection({ views, channelName, video }) {
 
   useEffect(() => {
     if (video.author && video.reactions) {
-      setLikes(video.reactions.filter(reaction => !!reaction.like).length)
-      setDislikes(video.reactions.filter(reaction => !reaction.like).length)
-      setSubscribed((currentUser.subscriptions.filter(channel => channel.id === video.author.id).length > 0))
-      setLiked((video.reactions.filter(reaction => reaction.user.id === currentUser.id && reaction.like).length >0))
-      setDisliked((video.reactions.filter(reaction => reaction.user.id === currentUser.id && !reaction.like).length >0))
+      setLikes(video.reactions?.filter(reaction => !!reaction.like)?.length)
+      setDislikes(video.reactions?.filter(reaction => !reaction.like)?.length)
+      setSubscribed((currentUser.subscriptions?.filter(channel => channel.id === video.author.id)?.length > 0))
+      setLiked((video.reactions?.filter(reaction => reaction.user.id === currentUser.id && reaction.like)?.length >0))
+      setDisliked((video.reactions?.filter(reaction => reaction.user.id === currentUser.id && !reaction.like)?.length >0))
       
     }
   }, [video])
@@ -327,7 +328,9 @@ function InteractionSection({ views, channelName, video }) {
           </div>
         </div>
         <div className="channel-info">
-          <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video?.author?.id}`} />
+          <Link to={`/channel/${video?.author?.id}`}>
+            <Avatar className="channel-card" alt={video?.author?.name} src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video?.author?.id}`} />
+          </Link>
           <h4 className="channel-name">{video?.author?.name}</h4>
         </div>
         <div className="video-descr">{video.description}</div> 
