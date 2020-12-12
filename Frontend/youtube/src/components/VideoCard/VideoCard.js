@@ -303,23 +303,28 @@ function VideoCard({
     : "";
 
   return (
+    
     <div className="videoCard">
       {link}
       <div className="videoCard__info">
-        <Avatar className="videoCard__avatar" alt={channel} src={channelImg} />
-        <div className="videoCard__text">
-          <h4>{title}</h4>
-          <p>{channel}</p>
-          <p>{description}</p>
-          <p>
-            {views} Views • {timestamp?.split('T')[0]}
-          </p>
-          <p>
-            {commentsCount}
-            {likesCount}
-            {dislikesCount}
-          </p>
-        </div>
+        <Link to={`/video/${path}`}>
+          <Avatar className="videoCard__avatar" alt={channel} src={channelImg} />
+        </Link>
+        <Link to={`/channel/${channelId}`}>
+          <div className="videoCard__text">
+            <h4>{title}</h4>
+            <p>{channel}</p>
+            <p>{description}</p>
+            <p>
+              {views} Views • {timestamp?.split('T')[0]}
+            </p>
+            <p>
+              {commentsCount}
+              {likesCount}
+              {dislikesCount}
+            </p>
+          </div>
+        </Link>
       </div>
       <div className="admin-operations">
         <ButtonGroup variant="text">
