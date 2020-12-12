@@ -4,6 +4,7 @@ import InteractionSection from '../InteractionSection/InteractionSection';
 
 import './VideoPlayer.css';
 import { useParams } from 'react-router-dom';
+import { CircularProgress, Container, Grid } from '@material-ui/core';
 
 function VideoPlayerPage() {
   const [video, setVideo] = useState({});
@@ -31,8 +32,9 @@ function VideoPlayerPage() {
     loadVideoData();
   }, [id]);
 
-  return (
-    <div className="videoPlayer">
+  if (video.author !== undefined) {
+    return(
+      ( <div className="videoPlayer">
       <div className="videoPlayer__body">
         <div className="videoPlayer__player">
           <video
@@ -46,10 +48,20 @@ function VideoPlayerPage() {
         </div>
       </div>
       <div className="videoPlayer__playerRecommendations">
-        <PlayerRecommendation recommendationLink={recommendationLink}/>
+        <PlayerRecommendation recommendationLink={recommendationLink} currentVideoId={video.id}/>
       </div>
-    </div>
-  );
+    </div>)
+    )
+  }
+  else{
+    return (<> 
+    <Grid container alignContent="center" justify="center" spacing={0} direction="column" style={{minHeight: '100vh'}}>
+        <Grid item>
+                <CircularProgress variant="indeterminate" />Loading
+              </Grid>
+      </Grid> </>  );
+  }
+  
 }
 
 export default VideoPlayerPage;
