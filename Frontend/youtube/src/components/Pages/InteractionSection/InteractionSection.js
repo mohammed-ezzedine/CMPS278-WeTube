@@ -4,7 +4,6 @@ import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ShareIcon from "@material-ui/icons/Share";
-import ReportIcon from "@material-ui/icons/Report";
 import CommentList from "../CommentList/CommentList";
 import SnackBar from "@material-ui/core/Snackbar";
 import Slide from "@material-ui/core/Slide";
@@ -15,7 +14,8 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import "./InteractionSection.css";
 import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
-import { Button, Checkbox, FormControlLabel, Menu, MenuItem } from "@material-ui/core";
+import ReportVideo from '../ReportVideo/ReportVideo';
+import { Button, Checkbox, FormControlLabel } from "@material-ui/core";
 import { post } from "axios";
 import TextField from '@material-ui/core/TextField';
 
@@ -29,7 +29,7 @@ function InteractionSection({ views, channelName, video }) {
   const [subscribed, setSubscribed] = useState(null)
   const [liked, setLiked] = useState(null)
   const [disliked, setDisliked] = useState(null)
-  console.log(video);
+  
   useEffect(() => {
     if (video && video.reactions) {
       setLikes(video.reactions.filter(reaction => !!reaction.like).length)
@@ -300,7 +300,7 @@ function InteractionSection({ views, channelName, video }) {
             />
             <ShareIcon />
             <AddToPlaylist videoId={video.id}/>
-            <ReportIcon />
+            <ReportVideo videoId={video.id}/>
           </div>
         </div>
         <div className="channel-info">

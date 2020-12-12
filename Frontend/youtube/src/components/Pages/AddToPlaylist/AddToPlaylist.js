@@ -79,7 +79,6 @@ function AddToPlaylist({videoId}) {
         })
         .then(d => d.json())
         .then(d => {
-            console.log(d);
             fetch(`https://youtube278.azurewebsites.net/api/playlist/addvideo`, {
                 method: "POST",
                 headers: {
