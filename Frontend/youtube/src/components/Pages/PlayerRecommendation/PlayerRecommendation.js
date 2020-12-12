@@ -33,7 +33,6 @@ function PlayerRecommendation({ recommendationLink, currentVideoId }) {
   }, [recommendationLink, currentVideoId]);
 
   console.log(videos);
-  console.log(currentVideoId);
   return (
     <div className="playerRecommendation">
       {videos?.map((video, index) => {

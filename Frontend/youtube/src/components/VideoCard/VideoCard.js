@@ -312,7 +312,9 @@ function VideoCard({
         </Link>
         <Link to={`/channel/${channelId}`}>
           <div className="videoCard__text">
+          <Link to={`/video/${path}`}>
             <h4>{title}</h4>
+            </Link>
             <p>{channel}</p>
             <p>{description}</p>
             <p>

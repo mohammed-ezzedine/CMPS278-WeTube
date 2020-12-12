@@ -39,10 +39,7 @@ function ChannelInfoPage() {
         }
       );
       setSubscribed(true);
-      let ChannelResponse = await get(
-        `https://youtube278.azurewebsites.net/api/channel/${channel.id}`);
-        currentUser.subscriptions = currentUser.subscriptions.push(ChannelResponse);
-        window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
+        window.localStorage.setItem("CurrentUser", JSON.stringify(response.data));
 
     } catch (error) {
       if (error.response) {
@@ -63,8 +60,7 @@ function ChannelInfoPage() {
         }
       );
       setSubscribed(false);
-      currentUser.subscriptions = currentUser.subscriptions.filter(c => c.id !== channel.id);
-      window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
+      window.localStorage.setItem("CurrentUser", JSON.stringify(response.data));
     } catch (error) {
       console.error(error);
     }
@@ -100,7 +96,12 @@ function ChannelInfoPage() {
             <p>{channel.subscribers?.length} subscribers</p>
           </div>
           <div className="channelInfo__interactiveInfoRight">
-            {subscribeBtn}
+              {currentUser.channel.id === channel.id ? (
+                  <Button color="primary" variant="contained" href={`/channel/${channel.id}/stats`} >
+                        Channel Info
+                  </Button>
+              ) :subscribeBtn }
+            
           </div>
         </div>
       </div>

@@ -83,6 +83,7 @@ function InteractionSection({ views, channelName, video }) {
         className="comment-textarea"
         rows="1" 
         placeholder="Add a comment..."
+        value={inputComment}
         onChange={(e) => handleCommentChange(e)} />
       
       <div className="submit-wrapper">
@@ -178,11 +179,7 @@ function InteractionSection({ views, channelName, video }) {
         }
       );
       setSubscribed(true);
-      let ChannelResponse = await get(
-        `https://youtube278.azurewebsites.net/api/channel/${video.author.id}`);
-        console.log(ChannelResponse);
-        currentUser.subscriptions = currentUser.subscriptions.push(ChannelResponse);
-        window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
+        window.localStorage.setItem("CurrentUser", JSON.stringify(response.data));
 
     } catch (error) {
       if (error.response) {
@@ -202,10 +199,9 @@ function InteractionSection({ views, channelName, video }) {
         }
       );
       setSubscribed(false);
-      currentUser.subscriptions = currentUser.subscriptions.filter(channel => channel.id !== video.author.id);
-      window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
+      window.localStorage.setItem("CurrentUser", JSON.stringify(response.data));
     } catch (error) {
-      console.error(error);
+      console.error(error.response.data);
     }
   }
   
@@ -293,6 +289,7 @@ function InteractionSection({ views, channelName, video }) {
               className="interactions__subscribe"
               size="small"
               variant="contained"
+              style={{backgroundColor: subscribed ? "lightgray": "#c00"}}
               onClick={() => {
                 subscribed ? handleClick("unsubscribe", TransitionUp) : handleClick("subscribe", TransitionUp)
               }}
@@ -302,8 +299,8 @@ function InteractionSection({ views, channelName, video }) {
             )
 }
             <FormControlLabel
-              control={<Checkbox icon={<ThumbUpAltOutlinedIcon />} 
-              checkedIcon={<ThumbUpIcon />} 
+              control={<Checkbox icon={<ThumbUpAltOutlinedIcon style={{color: liked !== null && liked ? "blue" : "" }}/>} 
+              checkedIcon={<ThumbUpIcon style={{color: liked !== null && liked ? "blue" : "" }} />} 
               name="checkedH" />}
               label={likes}
               className="interactions__thumbsUp"
@@ -312,8 +309,8 @@ function InteractionSection({ views, channelName, video }) {
               onClick={() => {handleClick("thumbsUp", TransitionUp)}}
             />
             <FormControlLabel
-              control={<Checkbox icon={<ThumbDownAltOutlinedIcon />} 
-              checkedIcon={<ThumbDownIcon />} 
+              control={<Checkbox icon={<ThumbDownAltOutlinedIcon style={{color: disliked !== null && disliked ? "red" : "" }} />} 
+              checkedIcon={<ThumbDownIcon style={{color: disliked !== null && disliked ? "red" : "" }} />} 
               name="checkedH" />}
               label={dislikes}
               className="interactions__thumbsDown"

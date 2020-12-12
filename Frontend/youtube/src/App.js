@@ -21,6 +21,7 @@ import CreateChannel from './components/Forms/Channel/CreateChannel';
 import { AuthContext } from './components/Auth/AuthContextProvider';
 import EditChannel from './components/Forms/Channel/EditChannel';
 import ChannelInfoPage from './components/Pages/ChannelInfoPage/ChannelInfoPage';
+import ChannelStats from './components/Pages/ChannelStats/ChannelStats';
 
 function App() {
   const [auth, setAuth] = useContext(AuthContext);
@@ -30,6 +31,12 @@ function App() {
         <Header />
 
         <Switch>
+        <Route path="/channel/:id/stats">
+            <div className="app__page">
+              <Sidebar />
+              <ChannelStats />
+            </div>
+          </Route>
           <Route path="/channel/:id" component={ChannelInfoPage}>
             <div className="app__page">
               <Sidebar />

@@ -38,8 +38,8 @@
 }
 
 .interactions__subscribe {
-  color: white !important;
-  background-color: #c00 !important;
+  color: white!important;
+  background-color: #c00;
 }
 
 .interactions__thumbsUp:hover {
