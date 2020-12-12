@@ -71,6 +71,10 @@ function YourVideosPage() {
               }
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author?.id}`}
               channel={video.author?.name}
+              comments={video.comments?.length}
+              likes={video.reactions?.filter(r => r.like)?.length}
+              dislikes={video.reactions?.filter(r => !r.like)?.length}
+              description={video.description}
               adminView={true}
               featured={video.featured}
               channelId={video.author?.id}
@@ -96,6 +100,10 @@ function YourVideosPage() {
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
               channel={video.author.name}
               adminView={true}
+              comments={video.comments?.length}
+              likes={video.reactions?.filter(r => r.like)?.length}
+              dislikes={video.reactions?.filter(r => !r.like)?.length}
+              description={video.description}
               featured={video.featured}
               channelId={video.author.id}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
@@ -117,6 +125,10 @@ function YourVideosPage() {
                 ' | ' +
                 video.uploadDate.split('T')[1].split('.')[0]
               }
+              comments={video.comments?.length}
+              likes={video.reactions?.filter(r => r.like)?.length}
+              dislikes={video.reactions?.filter(r => !r.like)?.length}
+              description={video.description}
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author?.id}`}
               channel={video.author?.name}
               hidden={true}

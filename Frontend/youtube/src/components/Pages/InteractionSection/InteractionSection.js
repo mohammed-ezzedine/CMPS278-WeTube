@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ThumbUpIcon from "@material-ui/icons/ThumbUp";
-import ThumbDownAltIcon from "@material-ui/icons/ThumbDownAlt";
+import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
+import ThumbDownIcon from '@material-ui/icons/ThumbDown';
+import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 import ShareIcon from "@material-ui/icons/Share";
 import ReportIcon from "@material-ui/icons/Report";
 import CommentList from "../CommentList/CommentList";
@@ -13,8 +15,8 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import "./InteractionSection.css";
 import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
-import { Button, Menu, MenuItem } from "@material-ui/core";
-import { post, put } from "axios";
+import { Button, Checkbox, FormControlLabel, Menu, MenuItem } from "@material-ui/core";
+import { post } from "axios";
 import TextField from '@material-ui/core/TextField';
 
 function InteractionSection({ views, channelName, video }) {
@@ -265,7 +267,8 @@ function InteractionSection({ views, channelName, video }) {
             </p>
           </div>
           <div className="interactions__interactiveSection">
-            { (video.author.id) ? "" : (<Button
+            { (video.author.id) ? "" : (
+            <Button
               className="interactions__subscribe"
               size="small"
               variant="contained"
@@ -274,20 +277,25 @@ function InteractionSection({ views, channelName, video }) {
               }}
             >
               {subscribed ? "Subscribed" :"Subscribe"}
-            </Button>)}
-            <span className="reaction-counter">{likes}</span>
-            <ThumbUpIcon
+            </Button>
+            <FormControlLabel
+              control={<Checkbox icon={<ThumbUpAltOutlinedIcon />} 
+              checkedIcon={<ThumbUpIcon />} 
+              name="checkedH" />}
+              label={likes}
               className="interactions__thumbsUp"
               color="primary"
               style={{ color: liked !== null && liked ? "blue" : "" }}
               onClick={() => {handleClick("thumbsUp", TransitionUp)}}
             />
-            <span className="reaction-counter">{dislikes}</span>
-            <ThumbDownAltIcon
+            <FormControlLabel
+              control={<Checkbox icon={<ThumbDownAltOutlinedIcon />} 
+              checkedIcon={<ThumbDownIcon />} 
+              name="checkedH" />}
+              label={dislikes}
               className="interactions__thumbsDown"
-              color={"secondary"}
-              style={{ color: disliked!== null && disliked ? "red" : "" }}
-              onClick={() => handleClick("thumbsDown", TransitionUp)}
+              color={liked ? "secondary" : "inherit"}
+              onClick={() => {handleClick("thumbsDown", TransitionUp)}}
             />
             <ShareIcon />
             <AddToPlaylist videoId={video.id}/>
