@@ -189,18 +189,6 @@ namespace YouTubeClone.Controllers
         public async Task<ActionResult<IEnumerable<VideoDto>>> GetUserHistoryVideos([FromQuery] int userId, [FromQuery] string userSecret)
         {
             var user = await context.User
-                .Include(u => u.UserVideoViews)
-                    .ThenInclude(uv => uv.Video)
-                    .ThenInclude(v => v.Author)
-                .Include(u => u.UserVideoViews)
-                    .ThenInclude(uv => uv.Video)
-                    .ThenInclude(v => v.UserVideoComments)
-                .Include(u => u.UserVideoViews)
-                    .ThenInclude(uv => uv.Video)
-                    .ThenInclude(v => v.UserVideoViews)
-                .Include(u => u.UserVideoViews)
-                    .ThenInclude(uv => uv.Video)
-                    .ThenInclude(v => v.UserVideoReactions)
                 .FirstOrDefaultAsync(u => u.Id == userId);
 
             if (user == null)
@@ -213,13 +201,25 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            var videos = user.UserVideoViews
-                .OrderByDescending(v => v.DateTime)
-                .Select(uv => mapper.Map<VideoDto>(uv.Video))
-                .Distinct()
+            var userViewsVideoIds = await context.UserVideoViews
+                .Where(vv => vv.User.Id == userId)
+                .OrderByDescending(vv => vv.DateTime)
                 .Take(10)
+                .Select(vv => vv.Video.Id)
+                .ToListAsync();
+
+            var videos = await context.Video
+                .Where(v => userViewsVideoIds.Contains(v.Id))
+                .Include(v => v.Author)
+                .ToListAsync();
+
+            videos.ForEach(v => v.Author.Name = GetChannelName(v));
+
+            var result = videos
+                .Select(v => mapper.Map<VideoDto>(v))
                 .ToList();
-            return videos;
+
+            return result;
         }
 
         private string GetChannelName(Video v)

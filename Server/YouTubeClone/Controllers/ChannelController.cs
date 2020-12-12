@@ -442,6 +442,57 @@ namespace YouTubeClone.Controllers
         }
 
         /// <summary>
+        /// Unsubscribe to a channel
+        /// </summary>
+        /// <remarks>
+        /// Sample request:
+        ///     
+        ///     POST /api/channel/unsubscribe
+        ///     {
+        ///         "Content-Type": "application/json",
+        ///         "body": {
+        ///             "UserId": 0,
+        ///             "UserSecret": "",
+        ///             "ChannelId": 0,
+        ///         }
+        ///     }
+        ///     
+        /// </remarks>
+        [HttpPost("unsubscribe")]
+        public async Task<ActionResult> Unsubscribe([FromBody] PostChannelDto postChannelDto)
+        {
+            var user = await context.User
+                .Include(u => u.Channel)
+                .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
+
+            if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
+            {
+                return Unauthorized();
+            }
+
+            if (user.Channel?.Id == postChannelDto.ChannelId)
+            {
+                return BadRequest("User cannot unsubscribe from his own channel.");
+            }
+
+            var channel = await context.Channel.FindAsync(postChannelDto.ChannelId);
+
+            var previousSuscription = await context.UserChannelSubscription
+                .Include(ucs => ucs.Channel)
+                .Include(ucs => ucs.User)
+                .FirstOrDefaultAsync(ucs => ucs.Channel.Id == channel.Id && ucs.User.Id == user.Id);
+
+            if (previousSuscription == null)
+            {
+                return BadRequest("User is not subscribed to this channel.");
+            }
+
+            context.UserChannelSubscription.Remove(previousSuscription);
+            await context.SaveChangesAsync();
+            return Ok();
+        }
+
+        /// <summary>
         /// Add a video to the featured list of a channel
         /// </summary>
         /// <remarks>
