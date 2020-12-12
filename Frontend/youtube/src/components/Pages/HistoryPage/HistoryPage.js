@@ -26,7 +26,7 @@ function HistoryPage() {
                   videoId={video.id}
                   channel={video.author}
                   title={video.title}
-                  views={video.views.length}
+                  views={video.views?.length}
                   timestamp={video.uploadDate.split('T')[0] + " | " + video.uploadDate.split('T')[1].split('.')[0]}
                   channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
                   image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
