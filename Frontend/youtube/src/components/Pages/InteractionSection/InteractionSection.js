@@ -15,13 +15,8 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import "./InteractionSection.css";
 import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
-<<<<<<< HEAD
-import { Button, Menu, MenuItem } from "@material-ui/core";
-import { post, put } from "axios";
-=======
 import { Button, Checkbox, FormControlLabel, Menu, MenuItem } from "@material-ui/core";
 import { post } from "axios";
->>>>>>> 917f212c048edc7df1003731ab717181e47cbcff
 import TextField from '@material-ui/core/TextField';
 
 function InteractionSection({ views, channelName, video }) {
