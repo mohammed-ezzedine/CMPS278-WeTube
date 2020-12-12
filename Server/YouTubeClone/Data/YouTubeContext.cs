@@ -45,7 +45,8 @@ namespace YouTubeClone.Data
 
             builder.Entity<PlaylistVideo>()
                 .HasOne(pv => pv.Video)
-                .WithMany(v => v.Playlists);
+                .WithMany(v => v.Playlists)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<User>()
                 .HasMany(u => u.Subscriptions)
@@ -111,7 +112,8 @@ namespace YouTubeClone.Data
 
             builder.Entity<UserVideoView>()
                 .HasOne(uv => uv.Video)
-                .WithMany(v => v.UserVideoViews);
+                .WithMany(v => v.UserVideoViews)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<UserVideoWatchLater>()
                 .HasOne(uv => uv.User)
@@ -119,7 +121,8 @@ namespace YouTubeClone.Data
 
             builder.Entity<UserVideoWatchLater>()
                 .HasOne(uv => uv.Video)
-                .WithMany(v => v.UserVideoWatchLater);
+                .WithMany(v => v.UserVideoWatchLater)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Video>()
                 .HasOne(v => v.Author)
@@ -155,6 +158,9 @@ namespace YouTubeClone.Data
                 .HasMany(v => v.UserVideoWatchLater)
                 .WithOne(p => p.Video)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            //builder.Entity<UserVideoView>()
+            //    .has
         }
 
         public DbSet<Channel> Channel { get; set; }

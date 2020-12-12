@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20201209205128_AddChannelUser.Designer.cs" />
     <Compile Remove="Migrations\20201209205432_AddChannelUser.cs" />
     <Compile Remove="Migrations\20201209205432_AddChannelUser.Designer.cs" />
+    <Compile Remove="Migrations\20201212180842_AddOnDeleteBehavior.cs" />
+    <Compile Remove="Migrations\20201212180842_AddOnDeleteBehavior.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

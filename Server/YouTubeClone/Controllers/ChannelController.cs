@@ -299,12 +299,12 @@ namespace YouTubeClone.Controllers
         }
 
         /// <summary>
-        /// Create a new channel
+        /// Edit a channel
         /// </summary>
         /// <remarks>
         /// Sample request:
         ///     
-        ///     POST /api/channel
+        ///     PUT /api/channel
         ///     {
         ///         "Content-Type": "application/json",
         ///         "body": {
@@ -315,8 +315,8 @@ namespace YouTubeClone.Controllers
         ///     }
         ///     
         /// </remarks>
-        [HttpPost]
-        public async Task<ActionResult<ChannelDto>> PostChannel([FromBody] PostChannelDto postChannelDto)
+        [HttpPut]
+        public async Task<ActionResult<ChannelDto>> PutChannel([FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -327,17 +327,15 @@ namespace YouTubeClone.Controllers
                 return Unauthorized();
             }
 
-            if (user.Channel != null)
+            if (user.Channel == null)
             {
-                return BadRequest("User already has a channel.");
+                user.Channel = new Channel();
             }
 
-            var channel = new Channel { Description = postChannelDto.Description };
-            user.Channel = channel;
-            await context.Channel.AddAsync(channel);
+            user.Channel.Description = postChannelDto.Description ;
             await context.SaveChangesAsync();
 
-            return mapper.Map<ChannelDto>(channel);
+            return mapper.Map<ChannelDto>(user.Channel);
         }
 
         /// <summary>

@@ -117,7 +117,8 @@ namespace YouTubeClone.Controllers
                 LastName = _user.LastName,
                 Username = _user.Username,
                 HashedPassword = hashedPassword,
-                Secret = Guid.NewGuid()
+                Secret = Guid.NewGuid(),
+                Channel = new Channel()
             };
 
             await context.User.AddAsync(user);
