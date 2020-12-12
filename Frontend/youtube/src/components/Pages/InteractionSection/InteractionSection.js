@@ -31,7 +31,7 @@ function InteractionSection({ views, channelName, video }) {
   const [disliked, setDisliked] = useState(null)
   console.log(video);
   useEffect(() => {
-    if (video && video.reactions) {
+    if (video.author && video.reactions) {
       setLikes(video.reactions.filter(reaction => !!reaction.like).length)
       setDislikes(video.reactions.filter(reaction => !reaction.like).length)
       setSubscribed((currentUser.subscriptions.filter(channel => channel.id === video.author.id).length > 0))
@@ -117,11 +117,9 @@ function InteractionSection({ views, channelName, video }) {
 
       setLiked(true)
       setLikes(likes + 1)
-      console.log(video.reactions);
-      console.log(video.reactions.filter(reaction => reaction.like));
         if(disliked) {
           setDisliked(false)
-          setDislikes(video.reactions - dislikes)
+          setDislikes(dislikes > 0 ? dislikes -1 : 0 )
             
         }
           
@@ -160,7 +158,7 @@ function InteractionSection({ views, channelName, video }) {
         setDislikes(dislikes+ 1)
           if(liked) {
             setLiked(false)
-            setLikes(video.reactions.length - likes)
+            setLikes(likes >0 ? likes -1 : 0)
               
           }
             
@@ -222,7 +220,7 @@ function InteractionSection({ views, channelName, video }) {
     else if (thumb === "unsubscribe") {
       if (window.confirm("Are you sure you want to unsubscribe")) {
         UnsubscribeChannel();
-        setSelectedThumb(`Subscribed To ${video.author.name}`);
+        setSelectedThumb(`Unsubscribed From ${video.author.name}`);
       }
       
     }
@@ -295,7 +293,8 @@ function InteractionSection({ views, channelName, video }) {
               name="checkedH" />}
               label={dislikes}
               className="interactions__thumbsDown"
-              color={liked ? "secondary" : "inherit"}
+              color={"secondary"}
+              style={{ color: disliked !== null && disliked ? "red" : "" }}
               onClick={() => {handleClick("thumbsDown", TransitionUp)}}
             />
             <ShareIcon />
