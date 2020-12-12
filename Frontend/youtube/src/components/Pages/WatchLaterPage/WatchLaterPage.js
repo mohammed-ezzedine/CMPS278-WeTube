@@ -1,62 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import VideoRow from '../../VideoRow/VideoRow';
 
 import './WatchLaterPage.css';
 
 function WatchLaterPage() {
+  const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
+  const [videos, setVideos] = useState([]);
+  const query = (currentUser != null)? `?userId=${currentUser.id}&userSecret=${currentUser.secret}` : "";
+  
+  useEffect(() => {
+    fetch(`https://youtube278.azurewebsites.net/api/identity/watch-later${query}`)
+    .then(response => response.json())
+    .then(result => setVideos(result))
+    .catch(error => console.log('error', error));
+  }, []);
+
+  if (currentUser == null) {
+    return (
+      <h3>You are not logged in.</h3>
+    )
+  }
+  
   return (
     <div className="watchLater">
       <div className="watchLater__latest">
         <h2>Latest Video</h2>
-        <img
-          src="http://i3.ytimg.com/vi/HnKaaDcWOXw/maxresdefault.jpg"
-          alt=""
-        />
-        <hr />
-        <h3>Ben Awad</h3>
-        <p>Why I don't like Machine Learning</p>
+        <Link className="watchLater-thumbnail" to={`/video/${videos[videos.length - 1]?.id}`}>
+          <img src={`https://youtube278.azurewebsites.net/api/video/image-stream/${videos[videos.length - 1]?.id}`} />
+          <hr />
+          <h3>{videos[videos.length - 1]?.author?.name}</h3>
+          <p>{videos[videos.length - 1]?.title}</p>
+        </Link>
       </div>
       <div className="watchLater__videos">
-        <VideoRow
-          views="32M"
-          description="In this video I discuss why I have no interested in machine learning. ---- If you like cooking, checkout my side project: ..."
-          timestamp="1 year ago"
-          channel="Ben Awad"
-          title="Why I don't like Machine Learning"
-          image="http://i3.ytimg.com/vi/HnKaaDcWOXw/maxresdefault.jpg"
-        />
-        <VideoRow
-          views="32M"
-          description="Cats are awesome, and super funny too! Who doesn't like cats and kittens? They make us laugh and happy! Just look how they ..."
-          timestamp="4 years ago"
-          channel="Tiger Productions"
-          title="The funniest and most humorous cat videos ever! - Funny cat compilation"
-          image="http://i3.ytimg.com/vi/gXuU8qgJcYo/maxresdefault.jpg"
-        />
-        <VideoRow
-          views="32M"
-          description="Cats are awesome, and super funny too! Who doesn't like cats and kittens? They make us laugh and happy! Just look how they ..."
-          timestamp="4 years ago"
-          channel="Tiger Productions"
-          title="The funniest and most humorous cat videos ever! - Funny cat compilation"
-          image="http://i3.ytimg.com/vi/VPVzx1ZOVuw/maxresdefault.jpg"
-        />
-        <VideoRow
-          views="32M"
-          description="Cats are awesome, and super funny too! Who doesn't like cats and kittens? They make us laugh and happy! Just look how they ..."
-          timestamp="4 years ago"
-          channel="Tiger Productions"
-          title="The funniest and most humorous cat videos ever! - Funny cat compilation"
-          image="http://i3.ytimg.com/vi/rhPSo4_Tgi0/maxresdefault.jpg"
-        />
-        <VideoRow
-          views="32M"
-          description="Cats are awesome, and super funny too! Who doesn't like cats and kittens? They make us laugh and happy! Just look how they ..."
-          timestamp="4 years ago"
-          channel="Tiger Productions"
-          title="The funniest and most humorous cat videos ever! - Funny cat compilation"
-          image="http://i3.ytimg.com/vi/NT299zIk2JY/maxresdefault.jpg"
-        />
+        {videos.map(video => 
+          <Link to={`/video/${video.id}`}>
+            <VideoRow
+              views={video.views.length}
+              description={video.description?.substring(0, 20)}
+              timestamp={video.uploadDate.split('T')[0]}
+              channel={video.author?.name}
+              title={video.title}
+              isShown={true}
+              image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+            />
+          </Link>
+        )}
       </div>
     </div>
   );

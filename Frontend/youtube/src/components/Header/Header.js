@@ -5,8 +5,6 @@ import { Avatar, Button } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
-import AppsIcon from "@material-ui/icons/Apps";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 
 import "./Header.css";
 import { AuthContext } from "../Auth/AuthContextProvider";
@@ -49,12 +47,12 @@ function Header() {
         <Link to={`/add-video`}>
           <VideoCallIcon className="header__icon" />
         </Link>
-        <AppsIcon className="header__icon" />
-        <NotificationsIcon className="header__icon" />
-        <Avatar
-          alt="Firas Harb"
-          src={currentUser.channel?.imageUrl}
-        />
+        <Link to={`/editChannel`}>
+          <Avatar
+            alt={currentUser.firstName + " " + currentUser.lastName}
+            src={currentUser.channel?.imageUrl}
+          />
+        </Link>
       </div>
       : 
       <Link to="/login"><Button variant="contained" color="primary"> Log In </Button></Link>

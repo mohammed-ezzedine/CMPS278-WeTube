@@ -4,29 +4,37 @@ import InteractionSection from '../InteractionSection/InteractionSection';
 
 import './VideoPlayer.css';
 import { useParams } from 'react-router-dom';
+import { CircularProgress, Container, Grid } from '@material-ui/core';
 
 function VideoPlayerPage() {
   const [video, setVideo] = useState({});
   const [views, setViews] = useState(0);
   const [channelName, setChannelName] = useState('');
-  let { id } = useParams();
+  let { id, playlistId } = useParams();
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
   const query = (currentUser == null)? "" : `?userId=${currentUser.id}&userSecret=${currentUser.secret}`;
+
+  const recommendationLink = (playlistId != null) ?
+  `https://youtube278.azurewebsites.net/api/playlist/${playlistId}` :
+  (video?.author?.id != undefined && video?.author?.id != null)?
+  `https://youtube278.azurewebsites.net/api/video/recommendation?channelId=${video?.author?.id}` : "";
 
   const loadVideoData = async () => {
     const response = await fetch(
       `https://youtube278.azurewebsites.net/api/Video/${id}`);
     const responseJSON = await response.json();
     setVideo(responseJSON);
-    setViews(responseJSON.views.length);
-    setChannelName(responseJSON.author.name);
+    setViews(responseJSON.views?.length);
+    setChannelName(responseJSON.author?.name);
   };
+
   useEffect(() => {
-    
     loadVideoData();
   }, [id]);
-  return (
-    <div className="videoPlayer">
+
+  if (video.author !== undefined) {
+    return(
+      ( <div className="videoPlayer">
       <div className="videoPlayer__body">
         <div className="videoPlayer__player">
           <video
@@ -40,10 +48,20 @@ function VideoPlayerPage() {
         </div>
       </div>
       <div className="videoPlayer__playerRecommendations">
-        <PlayerRecommendation channelId={video?.author?.id}/>
+        <PlayerRecommendation recommendationLink={recommendationLink} currentVideoId={video.id}/>
       </div>
-    </div>
-  );
+    </div>)
+    )
+  }
+  else{
+    return (<> 
+    <Grid container alignContent="center" justify="center" spacing={0} direction="column" style={{minHeight: '100vh'}}>
+        <Grid item>
+                <CircularProgress variant="indeterminate" />Loading
+              </Grid>
+      </Grid> </>  );
+  }
+  
 }
 
 export default VideoPlayerPage;

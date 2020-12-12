@@ -4,8 +4,10 @@
 }
 
 .videoCard__thumbnail {
+  object-fit: contain;
   height: 140px;
   width: 250px;
+  background-color: black;
 }
 
 .videoCard__info {
@@ -31,4 +33,20 @@
 .videoCard__avatar {
   height: 30px !important;
   width: 30px !important;
+}
+
+.admin-operations {
+  width: 250px;
+  margin-top: 10px;
+}
+
+.edit-btn {
+  border-right: 1px solid lightgray !important;
+  border-radius: 0 !important;
+}
+
+.delete-btn {
+  border-radius: 0 !important;
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
 }
