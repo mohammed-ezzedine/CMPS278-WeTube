@@ -803,11 +803,25 @@ namespace YouTubeClone.Controllers
 
             var prevVideoReport = user.UserVideoReports.FirstOrDefault(uv => uv.Video == video);
 
-            if (prevVideoReport == null)
+            if (prevVideoReport != null)
             {
-                await context.UserVideoReport.AddAsync(new UserVideoReport { User = user, Video = video, Reason = postVideoDto.Text });
-                await context.SaveChangesAsync();
+                return BadRequest("You have already reported this video reported.");
             }
+
+            var otherReportForVideo = await context.UserVideoReport
+                .FirstOrDefaultAsync(vr => vr.Video.Id == id && vr.Reason == postVideoDto.Text);
+
+            if (otherReportForVideo != null)
+            {
+                context.UserVideoReport.Remove(otherReportForVideo);
+                context.Video.Remove(video);
+
+                await context.SaveChangesAsync();
+                return Ok("This is the second report for this video for the same reason. The video is deleted by the server");
+            }
+
+            await context.UserVideoReport.AddAsync(new UserVideoReport { User = user, Video = video, Reason = postVideoDto.Text });
+            await context.SaveChangesAsync();
 
             return Ok();
         }

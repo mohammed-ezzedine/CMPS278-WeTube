@@ -78,6 +78,8 @@ namespace YouTubeClone.Controllers
                 .ThenInclude(v => v.Author)
                 .FirstOrDefaultAsync(p => p.Id == id);
 
+            playlist.Videos.ForEach(v => v.Video.Author.Name = GetChannelName(v.Video));
+
             if (playlist == null)
             {
                 return NotFound();
@@ -267,6 +269,13 @@ namespace YouTubeClone.Controllers
             await context.SaveChangesAsync();
 
             return mapper.Map<PlaylistDto>(playlist);
+        }
+
+        private string GetChannelName(Video v)
+        {
+            var user = context.User.FirstOrDefault(u => u.Channel.Id == v.Author.Id);
+
+            return user.FirstName + " " + user.LastName;
         }
     }
 }

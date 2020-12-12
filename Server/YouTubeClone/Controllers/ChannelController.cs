@@ -144,7 +144,7 @@ namespace YouTubeClone.Controllers
         ///     }
         /// </remarks>
         [HttpPost("hidden")]
-        public async Task<ActionResult<IEnumerable<VideoSummaryDto>>> GetHiddenVideos(int id, [FromBody] PostChannelDto postChannelDto)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetHiddenVideos(int id, [FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -168,7 +168,7 @@ namespace YouTubeClone.Controllers
                 .ThenByDescending(v => v.UserVideoViews.Count)
                 .ThenByDescending(v => v.UserVideoReactions.Count)
                 .ThenByDescending(v => v.UserVideoComments.Count)
-                .Select(v => mapper.Map<VideoSummaryDto>(v))
+                .Select(v => mapper.Map<VideoDto>(v))
                 .ToListAsync();
 
             return result;
@@ -190,7 +190,7 @@ namespace YouTubeClone.Controllers
         ///     }
         /// </remarks>
         [HttpPost("featured/{id}")]
-        public async Task<ActionResult<IEnumerable<VideoSummaryDto>>> GetFeaturedVideos(int id, [FromBody] PostChannelDto postChannelDto)
+        public async Task<ActionResult<IEnumerable<VideoDto>>> GetFeaturedVideos(int id, [FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
@@ -214,7 +214,7 @@ namespace YouTubeClone.Controllers
                 .ThenByDescending(v => v.UserVideoViews.Count)
                 .ThenByDescending(v => v.UserVideoReactions.Count)
                 .ThenByDescending(v => v.UserVideoComments.Count)
-                .Select(v => mapper.Map<VideoSummaryDto>(v))
+                .Select(v => mapper.Map<VideoDto>(v))
                 .ToListAsync();
 
             return result;
