@@ -1,0 +1,51 @@
+.channelInfo {
+  flex: 0.8;
+  background-color: #f9f9f9;
+  padding: 40px 20px;
+  padding-bottom: 0;
+  width: 80%;
+}
+
+.channelInfo__interactive {
+  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.channelInfo__userAvatar {
+  width: 75px !important;
+  height: 75px !important;
+}
+
+.channelInfo__interactiveInfo {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.channelInfo__featured {
+  min-height: 35vh;
+}
+
+.channelInfo__featuredContainer,
+.channelInfo__playlistsContainer,
+.channelInfo__videosContainer {
+  display: flex;
+  flex-wrap: wrap;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+
+.horizontal-menu {
+  width: 100%;
+}
+
+.channelInfo__playlists {
+  min-height: 35vh;
+}
+
+.channelInfo__videos {
+  min-height: 35vh;
+}
