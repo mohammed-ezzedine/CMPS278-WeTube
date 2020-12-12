@@ -43,6 +43,7 @@ function WatchLaterPage() {
               channel={video.author?.name}
               title={video.title}
               isShown={true}
+              videoId={video.id}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
             />
           </Link>
