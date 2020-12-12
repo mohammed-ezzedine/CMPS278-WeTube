@@ -16,7 +16,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import "./InteractionSection.css";
 import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
 import { Button, Checkbox, FormControlLabel, Menu, MenuItem } from "@material-ui/core";
-import { post } from "axios";
+import { get, post } from "axios";
 import TextField from '@material-ui/core/TextField';
 
 function InteractionSection({ views, channelName, video }) {
@@ -29,7 +29,6 @@ function InteractionSection({ views, channelName, video }) {
   const [subscribed, setSubscribed] = useState(null)
   const [liked, setLiked] = useState(null)
   const [disliked, setDisliked] = useState(null)
-  console.log(video);
   useEffect(() => {
     if (video.author && video.reactions) {
       setLikes(video.reactions.filter(reaction => !!reaction.like).length)
@@ -168,6 +167,7 @@ function InteractionSection({ views, channelName, video }) {
   }
   const SubscribeChannel = async () => {
     try {
+      console.log(video.author);
       let response = await post(
         `https://youtube278.azurewebsites.net/api/channel/subscribe`,
         {
@@ -176,8 +176,17 @@ function InteractionSection({ views, channelName, video }) {
           ChannelId: video.author.id,
         }
       );
+      setSubscribed(true);
+      let ChannelResponse = await get(
+        `https://youtube278.azurewebsites.net/api/channel/${video.author.id}`);
+        console.log(ChannelResponse);
+        currentUser.subscriptions = currentUser.subscriptions.push(ChannelResponse);
+        window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
+
     } catch (error) {
-      console.error(error);
+      if (error.response) {
+        console.error(error.response.data);
+      }
       
     }
   };
@@ -191,6 +200,9 @@ function InteractionSection({ views, channelName, video }) {
           ChannelId: video.author.id,
         }
       );
+      setSubscribed(false);
+      currentUser.subscriptions = currentUser.subscriptions.filter(channel => channel.id !== video.author.id);
+      window.localStorage.setItem("CurrentUser", JSON.stringify(currentUser));
     } catch (error) {
       console.error(error);
     }
@@ -218,10 +230,13 @@ function InteractionSection({ views, channelName, video }) {
 
     }
     else if (thumb === "unsubscribe") {
-      if (window.confirm("Are you sure you want to unsubscribe")) {
+      let confirming = window.confirm("Are you sure you want to unsubscribe");
+      console.log(confirming);
+      if (!confirming) {
+        return;
+      }
         UnsubscribeChannel();
         setSelectedThumb(`Unsubscribed From ${video.author.name}`);
-      }
       
     }
     setOpen(true);
