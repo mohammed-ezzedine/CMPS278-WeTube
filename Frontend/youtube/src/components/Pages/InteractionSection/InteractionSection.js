@@ -14,7 +14,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import "./InteractionSection.css";
 import AddToPlaylist from '../AddToPlaylist/AddToPlaylist';
 import { Button, Menu, MenuItem } from "@material-ui/core";
-import { post } from "axios";
+import { post, put } from "axios";
 import TextField from '@material-ui/core/TextField';
 
 function InteractionSection({ views, channelName, video }) {
@@ -27,16 +27,18 @@ function InteractionSection({ views, channelName, video }) {
   const [subscribed, setSubscribed] = useState(null)
   const [liked, setLiked] = useState(null)
   const [disliked, setDisliked] = useState(null)
-
+  console.log(video);
   useEffect(() => {
     if (video && video.reactions) {
       setLikes(video.reactions.filter(reaction => !!reaction.like).length)
       setDislikes(video.reactions.filter(reaction => !reaction.like).length)
       setSubscribed((currentUser.subscriptions.filter(channel => channel.id === video.author.id).length > 0))
-      setLiked(video.reactions.filter(reaction => reaction.user.id === currentUser.id && reaction.like))
-      setDisliked(video.reactions.filter(reaction => reaction.user.id === currentUser.id && !reaction.like))
+      setLiked((video.reactions.filter(reaction => reaction.user.id === currentUser.id && reaction.like).length >0))
+      setDisliked((video.reactions.filter(reaction => reaction.user.id === currentUser.id && !reaction.like).length >0))
+      
     }
   }, [video])
+      
   const [inputComment, setInputComment] = useState("");
   // const [likes, setLikes] = useState(video.reactions.filter(reaction => !!reaction.like).length)
   // const [dislikes, setDislikes] = useState(video.reactions.filter(reaction => !reaction.like).length)
@@ -91,7 +93,8 @@ function InteractionSection({ views, channelName, video }) {
 
   //Liking/Disliking/Subscribing methods
   function LikeVideo() {
-    fetch(`https://youtube278.azurewebsites.net/api/video/like/${video.id}`, {
+    if (!liked) {
+      fetch(`https://youtube278.azurewebsites.net/api/video/like/${video.id}`, {
       method: "PUT",
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -105,50 +108,63 @@ function InteractionSection({ views, channelName, video }) {
     })
     .then((response) => {
       if (response.ok && response.status === 200) {
-        setLikes(likes +1)
+        return response.json()
+      }
+    })
+    .then(video =>{
+
+      setLiked(true)
+      setLikes(likes + 1)
+      console.log(video.reactions);
+      console.log(video.reactions.filter(reaction => reaction.like));
         if(disliked) {
           setDisliked(false)
-          setDislikes(dislikes -1)
+          setDislikes(video.reactions - dislikes)
             
         }
-          setLiked(true)
-          setLikes(likes +1)
           
-      }
-      }
-    )
+      
+    })
     .catch((error) => console.log(error));
+    }
+    
   }
 
   function DislikeVideo() {
-    fetch(
-      `https://youtube278.azurewebsites.net/api/video/undolike/${video.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-          mode: "no-cors",
-        },
-        body: JSON.stringify({
-          userId: currentUser.id,
-          userSecret: currentUser.secret,
-        }),
-      }
-    ).then((response) => {
-      if (response.ok && response.status === 200) {
-        if(liked) {
-          setLiked(false)
-          setLikes(likes -1)
-            
+    if (!disliked) {
+      fetch(
+        `https://youtube278.azurewebsites.net/api/video/dislike/${video.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json",
+            mode: "no-cors",
+          },
+          body: JSON.stringify({
+            userId: currentUser.id,
+            userSecret: currentUser.secret,
+          }),
         }
-          setDisliked(true)
-          setDislikes(dislikes +1)
-          
+      ).then((response) => {
+        if (response.ok && response.status === 200) {
+          // console.log(response);
+          return response.json()
+        }
       }
+      )
+      .then((video) => {
+        setDisliked(true)
+        setDislikes(dislikes+ 1)
+          if(liked) {
+            setLiked(false)
+            setLikes(video.reactions.length - likes)
+              
+          }
+            
+      })
+      .catch((error) => console.log(error));
     }
-    )
-    .catch((error) => console.log(error));
   }
   const SubscribeChannel = async () => {
     try {
@@ -161,9 +177,25 @@ function InteractionSection({ views, channelName, video }) {
         }
       );
     } catch (error) {
+      console.error(error);
       
     }
   };
+  const UnsubscribeChannel = async() => {
+    try {
+      let response = await post(
+        `https://youtube278.azurewebsites.net/api/channel/unsubscribe`,
+        {
+          UserId: currentUser.id,
+          UserSecret: currentUser.secret,
+          ChannelId: video.author.id,
+        }
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
 
   function TransitionUp(props) {
     return <Slide {...props} direction="up" />;
@@ -184,6 +216,13 @@ function InteractionSection({ views, channelName, video }) {
       SubscribeChannel();
       setSelectedThumb(`Subscribed To ${video.author.name}`);
 
+    }
+    else if (thumb === "unsubscribe") {
+      if (window.confirm("Are you sure you want to unsubscribe")) {
+        UnsubscribeChannel();
+        setSelectedThumb(`Subscribed To ${video.author.name}`);
+      }
+      
     }
     setOpen(true);
   };
@@ -226,7 +265,7 @@ function InteractionSection({ views, channelName, video }) {
             </p>
           </div>
           <div className="interactions__interactiveSection">
-            <Button
+            { (video.author.id) ? "" : (<Button
               className="interactions__subscribe"
               size="small"
               variant="contained"
@@ -235,17 +274,19 @@ function InteractionSection({ views, channelName, video }) {
               }}
             >
               {subscribed ? "Subscribed" :"Subscribe"}
-            </Button>
+            </Button>)}
             <span className="reaction-counter">{likes}</span>
             <ThumbUpIcon
               className="interactions__thumbsUp"
-              color={liked ? "primary" : "inherit"}
+              color="primary"
+              style={{ color: liked !== null && liked ? "blue" : "" }}
               onClick={() => {handleClick("thumbsUp", TransitionUp)}}
             />
             <span className="reaction-counter">{dislikes}</span>
             <ThumbDownAltIcon
               className="interactions__thumbsDown"
-              color={disliked ? "secondary" : "inherit"}
+              color={"secondary"}
+              style={{ color: disliked!== null && disliked ? "red" : "" }}
               onClick={() => handleClick("thumbsDown", TransitionUp)}
             />
             <ShareIcon />
