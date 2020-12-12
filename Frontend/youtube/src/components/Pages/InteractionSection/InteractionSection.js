@@ -29,7 +29,7 @@ function InteractionSection({ views, channelName, video }) {
   const [subscribed, setSubscribed] = useState(null)
   const [liked, setLiked] = useState(null)
   const [disliked, setDisliked] = useState(null)
-  
+
   useEffect(() => {
     if (video.author && video.reactions) {
       setLikes(video.reactions.filter(reaction => !!reaction.like).length)
@@ -196,7 +196,6 @@ function InteractionSection({ views, channelName, video }) {
     }
   }
   
-
   function TransitionUp(props) {
     return <Slide {...props} direction="up" />;
   }
@@ -233,6 +232,15 @@ function InteractionSection({ views, channelName, video }) {
 
     setOpen(false);
   };
+
+  function copyVideoUrl() {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => {
+        setTransition(() => TransitionUp);
+        setSelectedThumb("Video link is copied to your clipboard.");
+        setOpen(true);
+      })
+  }
 
   return (
     <div className="interactions">
@@ -297,7 +305,10 @@ function InteractionSection({ views, channelName, video }) {
               style={{ color: disliked !== null && disliked ? "red" : "" }}
               onClick={() => {handleClick("thumbsDown", TransitionUp)}}
             />
-            <ShareIcon />
+            <Button
+              onClick={copyVideoUrl}>
+              <ShareIcon />
+            </Button>
             <AddToPlaylist videoId={video.id}/>
             <ReportVideo videoId={video.id}/>
           </div>
