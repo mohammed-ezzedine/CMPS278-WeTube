@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import './VideoCard.css';
 import { Link } from 'react-router-dom';
-import { Button, Menu, MenuItem, TextField, Slide, IconButton, Dialog } from "@material-ui/core";
+import { Button, Menu, MenuItem, TextField, Slide, IconButton, Dialog, ButtonGroup } from "@material-ui/core";
 import PopupState, { bindMenu, bindTrigger } from 'material-ui-popup-state';
 import CloseIcon from "@material-ui/icons/Close";
 import SnackBar from "@material-ui/core/Snackbar";
@@ -25,7 +25,10 @@ function VideoCard({
   hidden = false,
   adminView = false,
   featured = false,
-  channelId = -1
+  channelId = -1,
+  comments = -1,
+  likes = -1,
+  dislikes = -1
 }) {
   const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
   const [videoHidden, setVideoHidden] = useState(hidden);
@@ -204,6 +207,15 @@ function VideoCard({
       <Button color="default" onClick={() => showVideo()}>Show</Button> :
       <Button color="default" onClick={() => hideVideo()}>Hide</Button>
     : "";
+  
+  const commentsCount = (comments != -1)?
+    `${comments} Comments • ` : ""
+
+  const likesCount = (likes != -1)?
+    `${likes} Likes • ` : ""
+  
+  const dislikesCount = (dislikes != -1)?
+    `${dislikes} Dislikes` : ""
 
   function PaperComponent(props) {
     return (
@@ -215,8 +227,11 @@ function VideoCard({
 
   const deleteBtn = (adminView)?
     <>
-    <Button color="secondary" onClick={handleClickOpen}>
-    Delete
+    <Button 
+      className="delete-btn"
+      color="secondary" 
+      onClick={handleClickOpen}>
+        Delete
     </Button>
     <Dialog
       open={confirmOpen}
@@ -245,10 +260,13 @@ function VideoCard({
     : "";
 
   const editBtn = (adminView)?
-    <PopupState variant="popover" popupId="demo-popup-menu">
+    <PopupState 
+      
+      variant="popover" 
+      popupId="demo-popup-menu">
           {(popupState) => (
               <React.Fragment>
-              <Button {...bindTrigger(popupState)}>Edit</Button>
+              <Button className="edit-btn"  {...bindTrigger(popupState)}>Edit</Button>
               <Menu {...bindMenu(popupState)}>
                   <MenuItem>
                     <TextField 
@@ -296,13 +314,20 @@ function VideoCard({
           <p>
             {views} Views • {timestamp?.split('T')[0]}
           </p>
+          <p>
+            {commentsCount}
+            {likesCount}
+            {dislikesCount}
+          </p>
         </div>
       </div>
       <div className="admin-operations">
-        {toggleVisibilityBtn}
-        {toggleFeatureBtn}
-        {deleteBtn}
-        {editBtn}
+        <ButtonGroup variant="text">
+          {toggleVisibilityBtn}
+          {toggleFeatureBtn}
+          {editBtn}
+          {deleteBtn}
+        </ButtonGroup>
       </div>
       <SnackBar
         open={open}

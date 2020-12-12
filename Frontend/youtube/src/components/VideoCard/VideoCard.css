@@ -36,9 +36,17 @@
 }
 
 .admin-operations {
-  background-color: rgb(243, 243, 243);
-  text-align: center;
-  columns: 2;
   width: 250px;
   margin-top: 10px;
+}
+
+.edit-btn {
+  border-right: 1px solid lightgray !important;
+  border-radius: 0 !important;
+}
+
+.delete-btn {
+  border-radius: 0 !important;
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
 }
