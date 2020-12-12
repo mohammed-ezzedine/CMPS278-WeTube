@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
@@ -266,36 +267,54 @@ namespace YouTubeClone.Controllers
 
             var channelVideosIds = user.Channel.Videos.Select(v => v.Id);
 
-            var lastMonthViewsCount = context.UserVideoViews
-                .Where(uv =>
-                    channelVideosIds.Contains(uv.Video.Id)
-                    && uv.DateTime.Subtract(DateTime.Now).TotalDays < 30)
-                .Count();
-
-            var totalViewsCount = context.UserVideoViews
-                .Where(uv => channelVideosIds.Contains(uv.Video.Id))
-                .Count();
-
-            var topVideosInTwoDays = context.UserVideoViews
+            var channelViews = await context.UserVideoViews
                 .Include(uv => uv.Video)
-                .Where(uv => channelVideosIds.Contains(uv.Video.Id)
-                    && uv.DateTime.Subtract(DateTime.Now).TotalHours < 48)
-                .Select(uv => mapper.Map<VideoSummaryDto>(uv.Video))
-                .Take(10);
+                .Where(uv => channelVideosIds.Contains(uv.Video.Id))
+                .ToListAsync();
 
-            var topVideosAllTime = context.UserVideoViews
-               .Include(uv => uv.Video)
-               .Where(uv => channelVideosIds.Contains(uv.Video.Id))
-               .Select(uv => mapper.Map<VideoSummaryDto>(uv.Video))
-               .Take(10);
+            // choosing from the channel views, the counter from the last month
+            var lastMonthViewsCount = channelViews
+                .Where(uv => (uv.DateTime - DateTime.Now).TotalDays < 30)
+                .Count();
 
-            return Ok(new
+            var totalViewsCount = channelViews.Count();
+
+            var channelVideos = await context.Video
+                .Where(v => v.Author.Id == user.Channel.Id)
+                .OrderByDescending(v => v.UserVideoViews.Count)
+                .ToListAsync();
+
+            var topVideosAllTime = channelVideos
+                .Select(v => mapper.Map<VideoSummaryDto>(v))
+                .Take(10)
+                .ToList();
+
+            Video[] cloneChannelVideos = new Video[channelVideos.Count];
+            channelVideos.CopyTo(cloneChannelVideos);
+
+            cloneChannelVideos
+                .ToList()
+                .ForEach(v =>
+                {
+                    v.UserVideoViews = v.UserVideoViews?.Where(uv => (uv.DateTime - DateTime.Now).TotalHours < 48)?.ToList();
+                });
+
+            var topVideosInTwoDays = cloneChannelVideos
+                .ToList()
+                .Take(10)
+                .Select(v => mapper.Map<VideoSummaryDto>(v))
+                .ToList();
+
+
+            var results = new
             {
                 LastMonthViews = lastMonthViewsCount,
                 TotalViews = totalViewsCount,
                 TopVideosInTwoDays = topVideosInTwoDays,
                 TopVideosAllTime = topVideosAllTime
-            });
+            };
+
+            return Ok(results);
         }
 
         /// <summary>
