@@ -115,10 +115,16 @@ namespace YouTubeClone.Controllers
             var channel = await context.Channel
                 .Include(c => c.Playlists)
                 .ThenInclude(p => p.Videos)
-                .Include(c => c.Videos)
+                .Include(c => c.Videos).ThenInclude(v => v.UserVideoViews)
+                .Include(c => c.Videos).ThenInclude(v => v.Author)
                 .Include(c => c.Subscribers)
                 .ThenInclude(s => s.User)
                 .FirstOrDefaultAsync(c => c.Id == id);
+
+            var owner = await context.User.FirstOrDefaultAsync(u => u.Channel.Id == channel.Id);
+
+            channel.Name = owner?.FirstName + " " + owner?.LastName;
+            channel.Videos.ForEach(v => v.Author.Name = GetChannelName(v));
 
             if (channel == null)
             {
@@ -409,10 +415,12 @@ namespace YouTubeClone.Controllers
         ///     
         /// </remarks>
         [HttpPost("subscribe")]
-        public async Task<ActionResult> Subscribe([FromBody] PostChannelDto postChannelDto)
+        public async Task<ActionResult<UserDto>> Subscribe([FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
+                .Include(u => u.Subscriptions)
+                .ThenInclude(sc => sc.Channel)
                 .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
 
             if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
@@ -438,7 +446,8 @@ namespace YouTubeClone.Controllers
 
             await context.UserChannelSubscription.AddAsync(new UserChannelSubscription { User = user, Channel = channel });
             await context.SaveChangesAsync();
-            return Ok();
+
+            return mapper.Map<UserDto>(user);
         }
 
         /// <summary>
@@ -459,10 +468,12 @@ namespace YouTubeClone.Controllers
         ///     
         /// </remarks>
         [HttpPost("unsubscribe")]
-        public async Task<ActionResult> Unsubscribe([FromBody] PostChannelDto postChannelDto)
+        public async Task<ActionResult<UserDto>> Unsubscribe([FromBody] PostChannelDto postChannelDto)
         {
             var user = await context.User
                 .Include(u => u.Channel)
+                .Include(u => u.Subscriptions)
+                .ThenInclude(sc => sc.Channel)
                 .FirstOrDefaultAsync(u => u.Id == postChannelDto.UserId);
 
             if (user == null || user.Secret != Guid.Parse(postChannelDto.UserSecret))
@@ -489,7 +500,8 @@ namespace YouTubeClone.Controllers
 
             context.UserChannelSubscription.Remove(previousSuscription);
             await context.SaveChangesAsync();
-            return Ok();
+
+            return mapper.Map<UserDto>(user);
         }
 
         /// <summary>
@@ -546,6 +558,13 @@ namespace YouTubeClone.Controllers
             await context.SaveChangesAsync();
 
             return Ok();
+        }
+
+        private string GetChannelName(Video v)
+        {
+            var user = context.User.FirstOrDefault(u => u.Channel.Id == v.Author.Id);
+
+            return user.FirstName + " " + user.LastName;
         }
     }
 }

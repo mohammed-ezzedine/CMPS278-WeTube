@@ -20,12 +20,14 @@ namespace YouTubeClone.Models.Dtos
         public bool Featured { get; set; }
 
         public DateTime UploadDate { get; set; }
+
+        public int ViewsCount { get; set; }
+
+        public ChannelSummaryDto Author { get; set; }
     }
 
     public class VideoDto : VideoSummaryDto
     {
-        public ChannelSummaryDto Author { get; set; }
-
         public List<CommentDto> Comments { get; set; }
 
         public List<VideoReactionDto> Reactions { get; set; }

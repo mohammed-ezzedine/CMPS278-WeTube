@@ -19,6 +19,6 @@ namespace YouTubeClone.Models.Dtos
 
         public List<VideoSummaryDto> Videos { get; set; }
 
-        public List<PlaylistSummaryDto> Playlists { get; set; }
+        public List<PlaylistDto> Playlists { get; set; }
     }
 }
