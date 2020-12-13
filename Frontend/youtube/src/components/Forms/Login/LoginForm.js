@@ -9,11 +9,14 @@ import Box from "@material-ui/core/Box";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
+import { Link } from 'react-router-dom';
 
 //Formik
 import { useFormik } from "formik";
 
 import * as yup from "yup";
+
+import './LoginForm.css'
 
 import Copyright from "../Register/Copyright.js";
 import { useStyles } from "../Register/styles.js";
@@ -157,6 +160,9 @@ export default function LoginForm({firstTime}) {
           >
             Login{" "}
           </Button>{" "}
+          <Link to="/register" className="link" >
+            Don't have an account? Sign Up
+          </Link>
         </form>{" "}
       </div>{" "}
       <Box mt={5}>
