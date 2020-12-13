@@ -17,22 +17,20 @@ function SearchPage() {
 
   useEffect(() => {
     fetch(`https://youtube278.azurewebsites.net/api/video/search${query}`)
-      .then(response => response.json())
-      .then(result => setContent(result))
-      .catch(error => console.log('error', error));
+      .then((response) => response.json())
+      .then((result) => setContent(result))
+      .catch((error) => console.log('error', error));
   }, [searchTerm, page]);
-  
-  var pages = []
+
+  var pages = [];
   for (var i = 1; i <= content.pagesCount; i++) {
     pages.push(i);
   }
 
+  console.log(content);
+
   return (
     <div className="searchPage">
-      <div className="searchPage__filter">
-        <TuneOutlinedIcon />
-        <h2>FILTER</h2>
-      </div>
       <hr />
       {content.videos?.map((video) => {
         return (
@@ -49,12 +47,11 @@ function SearchPage() {
         );
       })}
       <hr />
-      {pages.map((i) => 
-        <Link 
-          className="pagination-link" 
-          to={`/search/${searchTerm}/${i}`}
-        >{i}</Link>
-      )}
+      {pages.map((i) => (
+        <Link className="pagination-link" to={`/search/${searchTerm}/${i}`}>
+          {i}
+        </Link>
+      ))}
     </div>
   );
 }

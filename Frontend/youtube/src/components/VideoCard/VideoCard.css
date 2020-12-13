@@ -30,6 +30,11 @@
   color: grey;
 }
 
+.videoCard__channelLink:hover,
+.videoCard__videoLink:hover {
+  text-decoration: underline;
+}
+
 .videoCard__avatar {
   height: 30px !important;
   width: 30px !important;

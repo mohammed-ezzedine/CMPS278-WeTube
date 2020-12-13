@@ -24,15 +24,19 @@ function HistoryPage() {
         <div className="history__videos">
           {videos.map((video) => {
             return (
-                <VideoRow
-                  videoId={video.id}
-                  channel={video.author}
-                  title={video.title}
-                  views={video.viewsCount}
-                  timestamp={video.uploadDate.split('T')[0] + " | " + video.uploadDate.split('T')[1].split('.')[0]}
-                  channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
-                  image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
-                />
+              <VideoRow
+                path={video.id}
+                channel={video.author}
+                title={video.title}
+                views={video.viewsCount}
+                timestamp={
+                  video.uploadDate.split('T')[0] +
+                  ' | ' +
+                  video.uploadDate.split('T')[1].split('.')[0]
+                }
+                channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
+                image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
+              />
             );
           })}
         </div>
