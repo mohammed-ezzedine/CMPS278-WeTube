@@ -15,14 +15,15 @@ function BarChart({stats}) {
     const [views, setviews] = useState(AllTimeVids.map(video => video.viewsCount))
     const [data, setdata] = useState({
         labels:labels,
+        datasetKeyProvider: 'alallad',
         datasets:[
             {
                 label: "Top 10 videos of all time",
-                data: views
+                data: views,
+                backgroundColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
+                borderColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
             }
         ],
-        fillColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
-        strokeColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
     })
 
 
@@ -34,14 +35,15 @@ function BarChart({stats}) {
             setviews(AllTimeVids.map(video => video.viewsCount))
             setdata({
                 labels:labels,
+                datasetKeyProvider: 'alallad',
                 datasets:[
                     {
                         label: "Top 10 videos of all time",
-                        data: views
+                        data: views,
+                        backgroundColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
+                        borderColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
                     }
                 ],
-                fillColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
-                strokeColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
             })
         }
         else{
@@ -49,14 +51,15 @@ function BarChart({stats}) {
             setviews(twoDayVids.map(video => video.viewsCount))
             setdata({
                 labels:labels,
+                datasetKeyProvider: 'alallad',
                 datasets:[
                     {
                         label: "Top 10 videos in the last 2 days",
-                        data: views
+                        data: views,
+                        backgroundColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
+                        borderColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
                     }
                 ],
-                fillColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
-                strokeColor:['rgba(255, 21, 84, 0.5)','rgba(255, 173, 84, 0.5)','rgba(89, 173, 196, 0.5)','rgba(89, 173, 19, 0.5)','rgba(53, 76, 187, 0.6)','rgba(0, 0, 0, 0.6)','rgba(50, 32, 52, 0.6)','rgba(50, 32, 52, 0.6)', "rgba(50, 32, 52, 0.6)", "rgba(50, 32, 52, 0.6)"],
             })
         }
     }

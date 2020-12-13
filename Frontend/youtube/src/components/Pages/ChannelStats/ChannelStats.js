@@ -6,7 +6,7 @@ import BarChart from './BarChart';
 
 function ChannelStats() {
     const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
-    const [channel, setchannel] = useState(currentUser.channel)
+    const [channel, setchannel] = useState(currentUser?.channel)
     const [stats, setstats] = useState(null)
     const classes = useStyles();
 
@@ -27,8 +27,17 @@ function ChannelStats() {
     useEffect(() => {
         loadChannelAndStats()
     }, [])
-console.log(stats);
+
+  if (currentUser == null) {
     return (
+      <div>
+        <h2>Channel Stats</h2>
+        <h2>You are not logged in</h2>
+      </div>
+    )
+  }    
+
+  return (
         stats ? (<div className="channelInfo">
         <div className="channelInfo__interactive">
     <Avatar
@@ -69,10 +78,10 @@ console.log(stats);
     <BarChart stats={stats} />
     </div>) : (<> 
     <Grid container alignContent="center" justify="center" spacing={0} direction="column" style={{minHeight: '100vh'}}>
-        <Grid item>
-                <CircularProgress variant="indeterminate" />Loading
-              </Grid>
-      </Grid> </>  )
+      <Grid item>
+        <CircularProgress variant="indeterminate" />Loading
+      </Grid>
+    </Grid> </>  )
 
     )
 }

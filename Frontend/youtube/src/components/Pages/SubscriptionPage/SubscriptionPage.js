@@ -8,29 +8,40 @@ function SubscriptionPage() {
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
 
   useEffect(() => {
-    let userId = currentUser?.id;
-    let userSecret = currentUser?.secret;
-
-    var raw = JSON.stringify({ UserId: userId, UserSecret: userSecret });
-
-    var myHeaders = new Headers();
-    myHeaders.append('Content-Type', 'application/json');
-
-    var requestOptions = {
-      method: 'POST',
-      headers: myHeaders,
-      body: raw,
-      redirect: 'follow',
-    };
-
-    fetch(
-      'https://youtube278.azurewebsites.net/api/video/from-subscriptions',
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => setContent(result))
-      .catch((error) => console.log('error', error));
+    if (currentUser != null) {
+      let userId = currentUser?.id;
+      let userSecret = currentUser?.secret;
+  
+      var raw = JSON.stringify({ UserId: userId, UserSecret: userSecret });
+  
+      var myHeaders = new Headers();
+      myHeaders.append('Content-Type', 'application/json');
+  
+      var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow',
+      };
+  
+      fetch(
+        'https://youtube278.azurewebsites.net/api/video/from-subscriptions',
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => setContent(result))
+        .catch((error) => console.log('error', error));
+    }
   }, []);
+
+  if (currentUser == null) {
+    return (
+      <div>
+        <h2>Subscriptions</h2>
+        <h2>You are not logged in</h2>
+      </div>
+    )
+  }
 
   return (
     <div className="subscriptions">

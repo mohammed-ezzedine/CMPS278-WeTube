@@ -29,6 +29,10 @@ function ChannelInfoPage() {
 
   
   const SubscribeChannel = async () => {
+    if (currentUser == null) {
+      return;
+    }
+
     try {
       let response = await post(
         `https://youtube278.azurewebsites.net/api/channel/subscribe`,
@@ -50,6 +54,10 @@ function ChannelInfoPage() {
   };
 
   const UnsubscribeChannel = async() => {
+    if (currentUser == null) {
+      return;
+    }
+
     try {
       let response = await post(
         `https://youtube278.azurewebsites.net/api/channel/unsubscribe`,
@@ -66,7 +74,7 @@ function ChannelInfoPage() {
     }
   }
 
-  const subscribeBtn = (channel.id == currentUser.channel.id)? "" :
+  const subscribeBtn = (currentUser == null || channel.id == currentUser.channel?.id)? "" :
     (subscribed)?
       <Button
         variant="contained"
@@ -97,7 +105,7 @@ function ChannelInfoPage() {
             <p>{channel.subscribers?.length} subscribers</p>
           </div>
           <div className="channelInfo__interactiveInfoRight">
-              {currentUser.channel.id === channel.id ? (
+              {currentUser?.channel?.id === channel.id ? (
                   <Button color="primary" variant="contained" href={`/channel/stats`} >
                         Channel Info
                   </Button>

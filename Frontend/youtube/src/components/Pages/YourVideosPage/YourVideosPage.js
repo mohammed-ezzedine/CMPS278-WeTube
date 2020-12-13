@@ -10,49 +10,60 @@ function YourVideosPage() {
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
 
   useEffect(() => {
-    fetch(
-      `https://youtube278.azurewebsites.net/api/video/channel/${currentUser.channel.id}`
-    )
-      .then((response) => response.json())
-      .then((result) => setVideos(result))
-      .catch((error) => console.log('error', error));
+    if (currentUser != null) {
+      fetch(
+        `https://youtube278.azurewebsites.net/api/video/channel/${currentUser.channel?.id}`
+      )
+        .then((response) => response.json())
+        .then((result) => setVideos(result))
+        .catch((error) => console.log('error', error));
+  
+      var raw = JSON.stringify({
+        userId: currentUser?.id,
+        userSecret: currentUser?.secret,
+      });
+      fetch(
+        `https://youtube278.azurewebsites.net/api/channel/hidden?id=${currentUser.channel?.id}`,
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: raw,
+        }
+      )
+        .then((response) => response.json())
+        .then((result) => setHiddenVideos(result))
+        .catch((error) => console.log('error', error));
+  
+      var raw = JSON.stringify({
+        userId: currentUser?.id,
+        userSecret: currentUser?.secret,
+      });
+      fetch(
+        `https://youtube278.azurewebsites.net/api/channel/featured/${currentUser.channel?.id}`,
+        {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: raw,
+        }
+      )
+        .then((response) => response.json())
+        .then((result) => setFeaturedVideos(result))
+        .catch((error) => console.log('error', error));
+    }
+  }, [currentUser?.id]);
 
-    var raw = JSON.stringify({
-      userId: currentUser?.id,
-      userSecret: currentUser?.secret,
-    });
-    fetch(
-      `https://youtube278.azurewebsites.net/api/channel/hidden?id=${currentUser.channel.id}`,
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: raw,
-      }
+  if (currentUser == null) {
+    return (
+      <div>
+        <h2>Your Videos</h2>
+        <h2>You are not logged in</h2>
+      </div>
     )
-      .then((response) => response.json())
-      .then((result) => setHiddenVideos(result))
-      .catch((error) => console.log('error', error));
-
-    var raw = JSON.stringify({
-      userId: currentUser?.id,
-      userSecret: currentUser?.secret,
-    });
-    fetch(
-      `https://youtube278.azurewebsites.net/api/channel/featured/${currentUser.channel.id}`,
-      {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: raw,
-      }
-    )
-      .then((response) => response.json())
-      .then((result) => setFeaturedVideos(result))
-      .catch((error) => console.log('error', error));
-  }, [currentUser.id]);
+  }
 
   return (
     <div className="yourVideos">

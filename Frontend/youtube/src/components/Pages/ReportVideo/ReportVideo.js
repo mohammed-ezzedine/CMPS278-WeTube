@@ -62,47 +62,67 @@ function ReportVideo({videoId}) {
         .catch((error) => console.log(error));
     }
 
-    return(
-        <div className="add-playlist-container">
-            <PopupState variant="popover" popupId="demo-popup-menu">
-                {(popupState) => (
+    if (currentUser != null) {
+        return(
+            <div className="add-playlist-container">
+                <PopupState variant="popover" popupId="demo-popup-menu">
+                    {(popupState) => (
+                        <React.Fragment>
+                        <Button {...bindTrigger(popupState)}>
+                            <ReportIcon />
+                        </Button>
+                        <Menu {...bindMenu(popupState)}>
+                            {reportReasons.map(r => 
+                                <MenuItem onClick={(e) => {
+                                    popupState.close();
+                                    reportVideo(r)
+                                }}>{r}</MenuItem>
+                            )}
+                           
+                        </Menu>
+                        </React.Fragment>
+                    )}
+                </PopupState>
+                <SnackBar
+                    open={open}
+                    autoHideDuration={4000}
+                    onClose={handleClose}
+                    message={message}
+                    TransitionComponent={transition}
+                    action={
                     <React.Fragment>
-                    <Button {...bindTrigger(popupState)}>
-                        <ReportIcon />
-                    </Button>
-                    <Menu {...bindMenu(popupState)}>
-                        {reportReasons.map(r => 
-                            <MenuItem onClick={(e) => {
-                                popupState.close();
-                                reportVideo(r)
-                            }}>{r}</MenuItem>
-                        )}
-                       
-                    </Menu>
+                        <IconButton
+                        size="small"
+                        aria-label="close"
+                        color="inherit"
+                        onClick={handleClose}
+                        >
+                        <CloseIcon fontSize="small" />
+                        </IconButton>
                     </React.Fragment>
-                )}
-            </PopupState>
-            <SnackBar
-                open={open}
-                autoHideDuration={4000}
-                onClose={handleClose}
-                message={message}
-                TransitionComponent={transition}
-                action={
-                <React.Fragment>
-                    <IconButton
-                    size="small"
-                    aria-label="close"
-                    color="inherit"
-                    onClick={handleClose}
-                    >
-                    <CloseIcon fontSize="small" />
-                    </IconButton>
-                </React.Fragment>
-                }
-            />
-        </div>
-    );
+                    }
+                />
+            </div>
+        );
+    } else {
+        // User is not signed in, or he doesn;t have a channel --> he can't add the video to a playlist
+        return (
+            <div className="add-playlist-container">
+                <PopupState variant="popover" popupId="demo-popup-menu">
+                    {(popupState) => (
+                        <React.Fragment>
+                        <Button {...bindTrigger(popupState)}>
+                            <ReportIcon />
+                        </Button>
+                        <Menu {...bindMenu(popupState)}>
+                            <MenuItem onClick={popupState.close}>You should sign in first</MenuItem>
+                        </Menu>
+                        </React.Fragment>
+                    )}
+                </PopupState>
+            </div>
+        );
+    }
 }
 
 export default ReportVideo;

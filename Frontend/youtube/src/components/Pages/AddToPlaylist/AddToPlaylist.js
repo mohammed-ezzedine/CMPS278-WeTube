@@ -16,12 +16,14 @@ function AddToPlaylist({videoId}) {
     const [myPlaylists, setMyPlaylists] = useState([]);
 
     useEffect(() => {
-        fetch(`https://youtube278.azurewebsites.net/api/playlist/channel/${currentUser.channel?.id}`)
-        .then(d => d.json())
-        .then(d => {
-            setMyPlaylists(d);
-        })
-        .catch((error) => console.log(error));
+        if (currentUser != null) {
+            fetch(`https://youtube278.azurewebsites.net/api/playlist/channel/${currentUser.channel?.id}`)
+            .then(d => d.json())
+            .then(d => {
+                setMyPlaylists(d);
+            })
+            .catch((error) => console.log(error));
+        }
     }, [currentUser])
 
     function TransitionUp(props) {
@@ -37,6 +39,10 @@ function AddToPlaylist({videoId}) {
     };
 
     function addToWatchLater() {
+        if (currentUser == null) {
+            return;
+        }
+
         fetch(`https://youtube278.azurewebsites.net/api/video/addtowatchlater/${videoId}`, {
           method: "POST",
           headers: {
@@ -64,6 +70,10 @@ function AddToPlaylist({videoId}) {
     }
 
     function addToNewPlaylist() {
+        if (currentUser == null) {
+            return;
+        }
+
         fetch(`https://youtube278.azurewebsites.net/api/playlist`, {
           method: "POST",
           headers: {
@@ -105,6 +115,11 @@ function AddToPlaylist({videoId}) {
     }
 
     function addToPlaylist(playlist) {
+        
+        if (currentUser == null) {
+            return;
+        }
+
         fetch(`https://youtube278.azurewebsites.net/api/playlist/addvideo`, {
             method: "POST",
             headers: {
@@ -207,7 +222,7 @@ function AddToPlaylist({videoId}) {
                             <PlaylistAddIcon />
                         </Button>
                         <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={popupState.close}>You should sign in and have a channel first</MenuItem>
+                            <MenuItem onClick={popupState.close}>You should sign in first</MenuItem>
                         </Menu>
                         </React.Fragment>
                     )}

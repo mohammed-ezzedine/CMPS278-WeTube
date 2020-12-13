@@ -45,7 +45,11 @@ function App() {
               <ChannelInfoPage />
             </div>
           </Route>
-          <Route exact path="/video/:id/:playlistId?" component={VideoPlayerPage}>
+          <Route
+            exact
+            path="/video/:id/:playlistId?"
+            component={VideoPlayerPage}
+          >
             <div className="app__page">
               <Sidebar />
               <VideoPlayerPage />
@@ -127,6 +131,12 @@ function App() {
             <div className="app__page">
               <Sidebar />
               <EditChannel />
+            </div>
+          </Route>
+          <Route exact path="/home">
+            <div className="app__page">
+              <Sidebar />
+              <RecommendedVideos />
             </div>
           </Route>
           <Route path="/">
