@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 
-import { Avatar, Button, IconButton, Menu, MenuItem, Slide, TextField } from "@material-ui/core";
+import { Avatar, Button, Container, IconButton, Menu, MenuItem, Slide, TextField } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
 import VideoCallIcon from "@material-ui/icons/VideoCall";
@@ -55,6 +55,7 @@ function Header() {
         <Link to={`/add-video`}>
           <VideoCallIcon className="header__icon" />
         </Link>
+
         <PopupState variant="popover" popupId="demo-popup-menu">
             {(popupState) => (
                 <React.Fragment>
@@ -81,8 +82,11 @@ function Header() {
         </PopupState>
       </div>
       : 
+      <div className="header__icons">
       <Link to="/login"><Button variant="contained" color="primary"> Log In </Button></Link>
-
+      <Link to="/Register"><Button variant="contained" color="primary"> Register </Button></Link>
+      </div>
+      
 }
     </div>
   );

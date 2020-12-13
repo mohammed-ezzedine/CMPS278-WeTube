@@ -32,6 +32,7 @@ function App() {
         <Header />
 
         <Switch>
+          
         <Route exact path="/channel/stats">
             <div className="app__page">
               <Sidebar />
@@ -104,10 +105,16 @@ function App() {
               <RegisterForm />
             </div>
           </Route>
+          <Route exact path="/login/success">
+            <div className="app__page">
+              <Sidebar />
+              <LoginForm firstTime={true} />
+            </div>
+          </Route>
           <Route exact path="/login">
             <div className="app__page">
               <Sidebar />
-              <LoginForm />
+              <LoginForm firstTime={false}/>
             </div>
           </Route>
           <Route exact path="/createChannel">

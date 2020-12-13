@@ -22,7 +22,7 @@ import Alert from "@material-ui/lab/Alert";
 import { Redirect } from "react-router-dom";
 import { AuthContext } from "../../Auth/AuthContextProvider.js";
 
-export default function LoginForm() {
+export default function LoginForm({firstTime}) {
   const classes = useStyles();
   const [UserName, setUserName] = useState("");
   const [auth, setAuth] = useContext(AuthContext);
@@ -162,7 +162,8 @@ export default function LoginForm() {
       <Box mt={5}>
         <Copyright />
       </Box>{" "}
-      {success ? <Redirect to="../../Pages/RecommendedVideos" />: ""}
+      {success && firstTime ? <Redirect to="/createChannel" /> : ""}
+      {success && !firstTime ? <Redirect to="../../Pages/RecommendedVideos" />: ""}
     </Container>
   );
 }
