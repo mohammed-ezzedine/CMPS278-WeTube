@@ -73,8 +73,9 @@ function YourVideosPage() {
           return (
             <VideoCard
               title={video.title}
-              views={video.views?.length}
+              views={video.viewsCount}
               path={`${video.id}`}
+              key={`${video.id}`}
               timestamp={
                 video.uploadDate.split('T')[0] +
                 ' | ' +
@@ -101,7 +102,7 @@ function YourVideosPage() {
           return (
             <VideoCard
               title={video.title}
-              views={video.views?.length}
+              views={video.viewsCount}
               path={`${video.id}`}
               timestamp={
                 video.uploadDate.split('T')[0] +
@@ -129,7 +130,7 @@ function YourVideosPage() {
           return (
             <VideoCard
               title={video.title}
-              views={video.views?.length}
+              views={video.viewsCount}
               path={`${video.id}`}
               timestamp={
                 video.uploadDate.split('T')[0] +

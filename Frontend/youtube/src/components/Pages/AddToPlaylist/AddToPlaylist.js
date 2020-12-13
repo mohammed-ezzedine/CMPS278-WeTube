@@ -153,17 +153,17 @@ function AddToPlaylist({videoId}) {
                             <PlaylistAddIcon />
                         </Button>
                         <Menu {...bindMenu(popupState)}>
-                            <MenuItem onClick={(e) => {
+                            <MenuItem key="watch-later" onClick={(e) => {
                                 popupState.close();
                                 addToWatchLater()
                             }}>Add to Watch Later</MenuItem>
                             {myPlaylists.map(p => 
-                                <MenuItem onClick={(e) => {
+                                <MenuItem key={`playlist-${p.name}`}  onClick={(e) => {
                                     popupState.close();
                                     addToPlaylist(p)
                                 }}>Add To Playlist: {p.name}</MenuItem>
                             )}
-                            <MenuItem>
+                            <MenuItem key="new-playlist">
                                 <PopupState variant="popover" popupId="demo-popup-menu-2">
                                     {(popupState) => (
                                         <React.Fragment>
@@ -171,7 +171,7 @@ function AddToPlaylist({videoId}) {
                                             Add to new playlist
                                         </Button>
                                         <Menu {...bindMenu(popupState)}>
-                                            <MenuItem>
+                                            <MenuItem key="new-playlist-info">
                                                 <TextField 
                                                     placeholder="Playlist name"
                                                     onChange={(e) => handlePlaylistNameChange(e)}

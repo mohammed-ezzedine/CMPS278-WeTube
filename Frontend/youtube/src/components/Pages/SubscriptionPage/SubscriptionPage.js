@@ -58,6 +58,7 @@ function SubscriptionPage() {
               channel={video.author.name}
               image={`https://youtube278.azurewebsites.net/api/video/image-stream/${video.id}`}
               path={video.id}
+              key={video.id}
             />
           );
         })}

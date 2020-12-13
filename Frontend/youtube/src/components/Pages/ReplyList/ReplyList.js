@@ -4,7 +4,7 @@ import ReplyRow from '../ReplyRow/ReplyRow';
 function ReplyList({replies}) {
   return (
     <div className="commentList">
-      {replies?.map((reply) => <ReplyRow reply={reply} />)}
+      {replies?.map((reply) => <ReplyRow key={`reply-${reply.id}`} reply={reply} />)}
     </div>
   );
 }

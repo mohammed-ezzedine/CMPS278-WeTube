@@ -73,7 +73,7 @@ function ReportVideo({videoId}) {
                         </Button>
                         <Menu {...bindMenu(popupState)}>
                             {reportReasons.map(r => 
-                                <MenuItem onClick={(e) => {
+                                <MenuItem key={`reason-${r}`} onClick={(e) => {
                                     popupState.close();
                                     reportVideo(r)
                                 }}>{r}</MenuItem>

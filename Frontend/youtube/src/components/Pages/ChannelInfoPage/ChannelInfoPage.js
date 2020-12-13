@@ -126,7 +126,7 @@ function ChannelInfoPage() {
               <VideoCard
                 key={`featuredvideos-${v.id}`}
                 title={v?.title}
-                views={v?.views?.length}
+                views={v?.viewsCount}
                 timestamp={v?.uploadDate}
                 channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${v?.author?.id}`}
                 channel={v?.author?.name}
@@ -172,7 +172,7 @@ function ChannelInfoPage() {
               <VideoCard
                 key={`videos-${v.id}`}
                 title={v?.title}
-                views={v?.views?.length}
+                views={v?.viewsCount}
                 timestamp={v?.uploadDate}
                 channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${v?.author?.id}`}
                 channel={v?.author?.name}

@@ -5,13 +5,9 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import {
   Avatar,
   Button,
-  IconButton,
   Menu,
   MenuItem,
-  Slide,
-  TextField,
 } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import VideoCallIcon from '@material-ui/icons/VideoCall';
 
@@ -40,8 +36,8 @@ function Header() {
         <Link to="/">
           <img
             className="header_logo"
-            src="https://upload.wikimedia.org/wikipedia/commons/e/e1/Logo_of_YouTube_%282015-2017%29.svg"
-            alt="Logo Of Youtube"
+            src="WeTube.png"
+            alt="Logo Of WeTube"
           />
         </Link>
       </div>
@@ -76,6 +72,11 @@ function Header() {
                   <MenuItem onClick={popupState.close}>
                     <Link to={`/editChannel`}>Change Photo</Link>
                   </MenuItem>
+                  { currentUser?.channel ?
+                    <MenuItem onClick={popupState.close}>
+                      <Link to={`/channel/${currentUser?.channel?.id}`}>My Channel</Link>
+                    </MenuItem> : ""
+                  }
                   <MenuItem onClick={popupState.close}>
                     <Button onClick={logout}>Logout</Button>
                   </MenuItem>

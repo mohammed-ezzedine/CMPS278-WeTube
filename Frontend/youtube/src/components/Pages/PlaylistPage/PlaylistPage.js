@@ -31,7 +31,7 @@ function PlaylistPage() {
       <h2>Playlist</h2>
       <div className="playlist__videos">
         {myPlaylists.map(p =>
-          <Link to={`/video/${p.videos[p.videos.length-1]?.id}/${p.id}`}>
+          <Link key={p.id} to={`/video/${p.videos[p.videos.length-1]?.id}/${p.id}`}>
             <PlaylistCard
               thumbnail={ `https://youtube278.azurewebsites.net/api/video/image-stream/${p.videos[0]?.id}`}
               numOfVideos={p.videos?.length}

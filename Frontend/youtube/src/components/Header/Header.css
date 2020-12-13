@@ -62,11 +62,7 @@ a.header__searchLink > svg {
 }
 
 .header_logo {
-  height: 25px;
+  height: 50px;
   object-fit: contain;
   margin-left: 20px;
-}
-
-a{
-
 }

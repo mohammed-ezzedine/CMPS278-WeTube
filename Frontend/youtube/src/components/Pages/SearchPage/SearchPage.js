@@ -38,6 +38,7 @@ function SearchPage() {
             title={video.title}
             views={video.views.length}
             path={video.id}
+            key={video.id}
             description={video.description}
             timestamp={video.uploadDate}
             channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}

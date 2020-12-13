@@ -25,6 +25,7 @@ function HistoryPage() {
           {videos.map((video) => {
             return (
               <VideoRow
+                key={video.id}
                 path={video.id}
                 channel={video.author}
                 title={video.title}

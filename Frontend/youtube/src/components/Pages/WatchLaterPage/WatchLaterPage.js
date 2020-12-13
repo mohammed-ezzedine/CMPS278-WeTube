@@ -50,7 +50,7 @@ function WatchLaterPage() {
       </div>
       <div className="watchLater__videos">
         {videos.map((video) => (
-          <Link to={`/video/${video.id}`}>
+          <Link key={video.id} to={`/video/${video.id}`}>
             <VideoRow
               views={video.views.length}
               description={video.description?.substring(0, 20)}

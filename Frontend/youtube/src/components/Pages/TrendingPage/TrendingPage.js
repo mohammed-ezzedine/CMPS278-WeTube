@@ -24,6 +24,7 @@ function TrendingPage() {
               title={video.title}
               views={video.views.length}
               path={video.id}
+              key={video.id}
               timestamp={video.uploadDate}
               channelId={video.author.id}
               channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${video.author.id}`}
