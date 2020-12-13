@@ -35,10 +35,10 @@ function PlayerRecommendation({ recommendationLink, currentVideoId }) {
   console.log(videos);
   return (
     <div className="playerRecommendation">
-      {videos?.map((video, index) => {
+      {videos?.map((video) => {
         return (
           <VideoRow
-            key={index}
+            key={video.id}
             title={video.title}
             videoId={video.id}
             views={video.views?.length}

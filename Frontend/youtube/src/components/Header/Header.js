@@ -20,7 +20,7 @@ function Header() {
   };
 
   function logout() {
-    window.localStorage.setItem("CurrentUser", null);
+    window.localStorage.removeItem("CurrentUser");
     currentUser = null;
     setAuth(false);
   }

@@ -64,7 +64,6 @@ console.log(stats);
         </Grid>
       </Grid>      
       </div>
-      aaaaaa
       
     </div>
     <BarChart stats={stats} />

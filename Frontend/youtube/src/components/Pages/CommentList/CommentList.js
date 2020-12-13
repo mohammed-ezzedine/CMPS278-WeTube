@@ -4,7 +4,7 @@ import CommentRow from '../CommentRow/CommentRow';
 function CommentList({comments}) {
   return (
     <div className="commentList">
-      {comments?.map((comment) => <CommentRow comment={comment} />)}
+      {comments?.map((comment) => <CommentRow key={comment.id} comment={comment} />)}
     </div>
   );
 }

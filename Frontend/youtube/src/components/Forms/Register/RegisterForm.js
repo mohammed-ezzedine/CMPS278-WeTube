@@ -18,6 +18,7 @@ import Copyright from "./Copyright.js";
 import * as yup from "yup";
 import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import { Redirect } from "react-router-dom";
 
 
 
@@ -203,6 +204,8 @@ function RegisterForm() {
           </Grid>
         </form>
       </div>
+      {success && <Redirect to={`/login`} />}
+      
       <Box mt={5}>
         <Copyright />
       </Box>
