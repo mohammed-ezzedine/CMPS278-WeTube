@@ -1,4 +1,4 @@
-# CMPS278-YouTube
+# CMPS278-WeTube
 YouTube Clone using ReactJS and ASP.NET Core.
 
 # Tech Stack:
