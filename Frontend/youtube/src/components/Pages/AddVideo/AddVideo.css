@@ -1,0 +1,10 @@
+
+
+.addVideo{
+    flex: 0.8;
+    min-height: 90vh;
+    background-color: #f9f9f9;
+    padding: 40px 20px;
+    padding-bottom: 0;
+}
+

@@ -1,0 +1,14 @@
+.yourVideos {
+  flex: 0.8;
+  padding: 40px 20px;
+}
+
+.yourVideos > h2 {
+  margin-left: 5px;
+  margin-bottom: 20px;
+}
+
+.yourVideos__videos {
+  display: flex;
+  flex-wrap: wrap;
+}

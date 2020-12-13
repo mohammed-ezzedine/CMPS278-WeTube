@@ -1,0 +1,90 @@
+.interactions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.interactions__info {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.interactions__mainInteractionSection {
+  width: 100%;
+  display: flex;
+  gap: 0 30px;
+  padding: 0 10%;
+  margin-bottom: 30px;
+}
+
+.interactions__title {
+  flex: 0.8;
+}
+
+.interactions__interactiveSection {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  flex: 0.2;
+}
+
+.interactions__interactiveSection svg {
+  margin-left: 12px;
+  color: grey;
+}
+
+.reaction-counter {
+  margin-left: 20px;
+}
+
+.interactions__subscribe {
+  color: white!important;
+  background-color: #c00;
+}
+
+.interactions__thumbsUp:hover {
+  color: #1277a5;
+}
+.interactions__thumbsDown:hover {
+  color: #a51212;
+}
+
+.channel-info {
+  display: flex;
+  flex-direction: row;
+}
+
+.channel-info .channel-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 20px;
+}
+
+.video-descr {
+  margin-left: 60px;
+  margin-bottom: 20px;
+}
+
+.add-comment, .add-reply {
+  display: flex;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.add-comment .comment-textarea, .add-reply .reply-textarea {
+  flex: 1;
+  margin-right: 10px;
+  padding: 5px;
+  border: none;
+}
+
+.add-comment submit-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-comment Button {
+  background-color: rgb(148, 173, 219);
+}

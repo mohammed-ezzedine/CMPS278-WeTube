@@ -1,0 +1,38 @@
+.videoPlayer {
+  display: flex;
+  flex: 0.8;
+}
+
+.videoPlayer__body {
+  display: flex;
+  flex: 0.7;
+  flex-direction: column;
+}
+
+.videoPlayer__player {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* flex: 0.4; */
+  margin: 30px;
+}
+.videoPlayer__interactions {
+  flex: 0.6;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.videoPlayer__playerRecommendations {
+  flex: 0.3;
+}
+.videoPlayer__playerRecommendations img {
+  object-fit: contain;
+  width: 200px;
+}
+
+video {
+  max-height: 600px;
+  width: 100%;
+  background-color: black;
+}

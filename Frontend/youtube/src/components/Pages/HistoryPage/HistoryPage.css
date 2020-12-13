@@ -1,0 +1,9 @@
+.history {
+  flex: 0.8;
+  padding: 40px 20px;
+}
+
+.history > h2 {
+  margin-left: 5px;
+  margin-bottom: 20px;
+}

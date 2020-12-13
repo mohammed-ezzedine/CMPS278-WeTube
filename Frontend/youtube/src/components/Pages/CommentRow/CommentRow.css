@@ -1,0 +1,29 @@
+.commentRow {
+  display: flex;
+  gap: 0 10px;
+  align-items: center;
+  background-color: rgb(250, 249, 249);
+  padding: 10px;
+  margin: 25px;
+  /* border: 1px solid black; */
+  /* border-radius: 10px; */
+}
+
+.commentRow__info {
+  width: 100%;
+  padding-right: 200px;
+}
+
+.commentRow__authorInfo {
+  display: flex;
+  flex-direction: row;
+  gap: 0 10px;
+}
+
+.commentRow__timestamp {
+  color: grey;
+}
+
+.reply {
+  margin-left: 100px;
+}

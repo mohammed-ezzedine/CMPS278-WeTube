@@ -1,0 +1,57 @@
+.videoCard {
+  margin-bottom: 40px;
+  width: 270px;
+}
+
+.videoCard__thumbnail {
+  object-fit: contain;
+  height: 140px;
+  width: 250px;
+  background-color: black;
+}
+
+.videoCard__info {
+  display: flex;
+  padding-right: 30px;
+  margin-top: 10px;
+}
+
+.videoCard__text {
+  margin-left: 15px;
+}
+
+.videoCard__text > h4 {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.videoCard__text > p {
+  font-size: 14px;
+  color: grey;
+}
+
+.videoCard__channelLink:hover,
+.videoCard__videoLink:hover {
+  text-decoration: underline;
+}
+
+.videoCard__avatar {
+  height: 30px !important;
+  width: 30px !important;
+}
+
+.admin-operations {
+  width: 250px;
+  margin-top: 10px;
+}
+
+.edit-btn {
+  border-right: 1px solid lightgray !important;
+  border-radius: 0 !important;
+}
+
+.delete-btn {
+  border-radius: 0 !important;
+  border-top-right-radius: 5px !important;
+  border-bottom-right-radius: 5px !important;
+}
