@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage, useFormik } from 'formik';
-import VideoCard from '../../VideoCard/VideoCard';
 import { post, put } from 'axios';
+import {Helmet} from "react-helmet";
 
 import './AddVideo.css';
 import {
@@ -174,6 +174,11 @@ const AddVideo = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Add Video</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <CssBaseline />
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={success ? 'success' : 'error'}>

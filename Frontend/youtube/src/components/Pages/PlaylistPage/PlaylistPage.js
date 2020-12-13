@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {Helmet} from "react-helmet";
 
 import './PlaylistPage.css';
 import PlaylistCard from '../../PlaylistCard/PlaylistCard';
@@ -28,6 +29,11 @@ function PlaylistPage() {
 
   return (
     <div className="playlist">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Playlists</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <h2>Playlist</h2>
       <div className="playlist__videos">
         {myPlaylists.map(p =>

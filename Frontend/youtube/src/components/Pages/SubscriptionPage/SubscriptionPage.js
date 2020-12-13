@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VideoCard from '../../VideoCard/VideoCard';
+import {Helmet} from "react-helmet";
 
 import './SubscriptionPage.css';
 
@@ -45,6 +46,11 @@ function SubscriptionPage() {
 
   return (
     <div className="subscriptions">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Subscriptions</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <h2>Subscriptions</h2>
       <div className="subscriptions__videos">
         {content?.videos?.map((video) => {

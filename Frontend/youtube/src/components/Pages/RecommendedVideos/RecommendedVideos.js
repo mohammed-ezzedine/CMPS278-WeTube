@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './RecommendedVideos.css';
 import VideoCard from '../../VideoCard/VideoCard';
+import {Helmet} from "react-helmet";
 
 function RecommendedVideos() {
   const [videos, setvideos] = useState([]);
@@ -20,6 +21,11 @@ function RecommendedVideos() {
 
   return (
     <div className="recommendedVideos">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Home</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <h2>Latest</h2>
       <div className="recommendedVideos__videos">
         {videos.map((video) => {

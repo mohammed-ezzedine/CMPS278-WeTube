@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PlayerRecommendation from '../PlayerRecommendation/PlayerRecommendation';
 import InteractionSection from '../InteractionSection/InteractionSection';
+import {Helmet} from "react-helmet";
 
 import './VideoPlayer.css';
 import { useParams } from 'react-router-dom';
@@ -41,6 +42,11 @@ function VideoPlayerPage() {
   if (video.author !== undefined) {
     return (
       <div className="videoPlayer">
+        <Helmet>
+            <meta charSet="utf-8" />
+            <title>WeTube - {video?.title}</title>
+            <link rel="canonical" href="http://example.com" />
+        </Helmet>
         <div className="videoPlayer__body">
           <div className="videoPlayer__player">
             <video

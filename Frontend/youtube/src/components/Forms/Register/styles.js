@@ -30,5 +30,5 @@ export const useStyles = makeStyles((theme) => ({
   },
   marginBottom: {
     marginBottom: theme.spacing(3),
-  },
+  }
 }));
