@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PlaylistCard from '../../PlaylistCard/PlaylistCard';
 import { get, post } from "axios";
+import {Helmet} from "react-helmet";
 
 function ChannelInfoPage() {
   const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
@@ -93,6 +94,11 @@ function ChannelInfoPage() {
 
   return (
     <div className="channelInfo">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Channel</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <div className="channelInfo__interactive">
         <Avatar 
           className="channelInfo__userAvatar" 
@@ -127,6 +133,7 @@ function ChannelInfoPage() {
                 key={`featuredvideos-${v.id}`}
                 title={v?.title}
                 views={v?.viewsCount}
+                path={v?.id}
                 timestamp={v?.uploadDate}
                 channelImg={`https://youtube278.azurewebsites.net/api/channel/image-stream/${v?.author?.id}`}
                 channel={v?.author?.name}

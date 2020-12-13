@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Axios from 'axios';
 import { useStyles } from '../../Forms/Register/styles';
 import BarChart from './BarChart';
+import {Helmet} from "react-helmet";
 
 function ChannelStats() {
     const currentUser = JSON.parse(window.localStorage.getItem("CurrentUser"));
@@ -40,6 +41,11 @@ function ChannelStats() {
   return (
         stats ? (<div className="channelInfo">
         <div className="channelInfo__interactive">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Channel Stats</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
     <Avatar
       className="channelInfo__userAvatar" 
       src={`https://youtube278.azurewebsites.net/api/channel/image-stream/${channel.id}`}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VideoCard from '../../VideoCard/VideoCard';
+import {Helmet} from "react-helmet";
 
 import './YourVideosPage.css';
 
@@ -67,6 +68,11 @@ function YourVideosPage() {
 
   return (
     <div className="yourVideos">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Your Videos</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <h2>Featured Videos</h2>
       <div className="yourVideos__videos">
         {featuredVideos.map((video) => {

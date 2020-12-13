@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './SearchPage.css';
 import VideoRow from '../../VideoRow/VideoRow';
-import TuneOutlinedIcon from '@material-ui/icons/TuneOutlined';
-import videos from '../../../assets/recommendedVideos.json';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import {Helmet} from "react-helmet";
 
 function SearchPage() {
   const [content, setContent] = useState({});
@@ -31,6 +30,11 @@ function SearchPage() {
 
   return (
     <div className="searchPage">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Search: {searchTerm}</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <hr />
       {content.videos?.map((video) => {
         return (

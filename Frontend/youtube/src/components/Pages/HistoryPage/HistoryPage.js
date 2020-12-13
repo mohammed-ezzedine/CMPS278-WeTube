@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import VideoRow from '../../VideoRow/VideoRow';
-import { Link } from 'react-router-dom';
+import {Helmet} from "react-helmet";
 
 import './HistoryPage.css';
 
@@ -20,6 +20,11 @@ function HistoryPage() {
   if (currentUser != null) {
     return (
       <div className="history">
+        <Helmet>
+            <meta charSet="utf-8" />
+            <title>WeTube - History</title>
+            <link rel="canonical" href="http://example.com" />
+        </Helmet>
         <h2>History</h2>
         <div className="history__videos">
           {videos.map((video) => {

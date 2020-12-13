@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Router } from 'react-router';
 import VideoCard from '../../VideoCard/VideoCard';
+import {Helmet} from "react-helmet";
 
 import './TrendingPage.css';
 
@@ -16,6 +16,11 @@ function TrendingPage() {
 
   return (
     <div className="trending">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Trending</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <h2>Trending</h2>
       <div className="trending__videos">
         {videos.map((video) => {

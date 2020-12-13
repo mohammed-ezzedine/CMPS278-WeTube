@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import VideoRow from '../../VideoRow/VideoRow';
+import {Helmet} from "react-helmet";
 
 import './WatchLaterPage.css';
 
@@ -32,6 +33,11 @@ function WatchLaterPage() {
 
   return (
     <div className="watchLater">
+      <Helmet>
+          <meta charSet="utf-8" />
+          <title>WeTube - Watch Later</title>
+          <link rel="canonical" href="http://example.com" />
+      </Helmet>
       <div className="watchLater__latest">
         <h2>Latest Video</h2>
         <Link
