@@ -35,9 +35,9 @@ function InteractionSection({ views, channelName, video }) {
     if (video.author && video.reactions) {
       setLikes(video.reactions?.filter(reaction => !!reaction.like)?.length)
       setDislikes(video.reactions?.filter(reaction => !reaction.like)?.length)
-      setSubscribed((currentUser.subscriptions?.filter(channel => channel.id === video.author.id)?.length > 0))
-      setLiked((video.reactions?.filter(reaction => reaction.user.id === currentUser.id && reaction.like)?.length >0))
-      setDisliked((video.reactions?.filter(reaction => reaction.user.id === currentUser.id && !reaction.like)?.length >0))
+      setSubscribed((currentUser?.subscriptions?.filter(channel => channel.id === video.author.id)?.length > 0))
+      setLiked((video.reactions?.filter(reaction => reaction.user.id === currentUser?.id && reaction.like)?.length >0))
+      setDisliked((video.reactions?.filter(reaction => reaction.user.id === currentUser?.id && !reaction.like)?.length >0))
       
     }
   }, [video])
@@ -45,7 +45,7 @@ function InteractionSection({ views, channelName, video }) {
   const [inputComment, setInputComment] = useState("");
   // const [likes, setLikes] = useState(video.reactions.filter(reaction => !!reaction.like).length)
   // const [dislikes, setDislikes] = useState(video.reactions.filter(reaction => !reaction.like).length)
-  // const [subscribed, setSubscribed] = useState(currentUser.subscriptions.filter(channel => channel.id === video.author.id))
+  // const [subscribed, setSubscribed] = useState(currentUser?.subscriptions.filter(channel => channel.id === video.author.id))
 
   const handleCommentChange = (e) => {
     setInputComment(e.target.value);
@@ -64,8 +64,8 @@ function InteractionSection({ views, channelName, video }) {
         mode: "no-cors",
       },
       body: JSON.stringify({
-        userId: currentUser.id,
-        userSecret: currentUser.secret,
+        userId: currentUser?.id,
+        userSecret: currentUser?.secret,
         videoId: video.id,
         message: inputComment
       }),
@@ -97,7 +97,7 @@ function InteractionSection({ views, channelName, video }) {
 
   //Liking/Disliking/Subscribing methods
   function LikeVideo() {
-    if (!liked) {
+    if (!liked && currentUser != null) {
       fetch(`https://youtube278.azurewebsites.net/api/video/like/${video.id}`, {
       method: "PUT",
       headers: {
@@ -106,8 +106,8 @@ function InteractionSection({ views, channelName, video }) {
         mode: "no-cors",
       },
       body: JSON.stringify({
-        userId: currentUser.id,
-        userSecret: currentUser.secret,
+        userId: currentUser?.id,
+        userSecret: currentUser?.secret,
       }),
     })
     .then((response) => {
@@ -133,7 +133,7 @@ function InteractionSection({ views, channelName, video }) {
   }
 
   function DislikeVideo() {
-    if (!disliked) {
+    if (!disliked && currentUser != null) {
       fetch(
         `https://youtube278.azurewebsites.net/api/video/dislike/${video.id}`,
         {
@@ -144,8 +144,8 @@ function InteractionSection({ views, channelName, video }) {
             mode: "no-cors",
           },
           body: JSON.stringify({
-            userId: currentUser.id,
-            userSecret: currentUser.secret,
+            userId: currentUser?.id,
+            userSecret: currentUser?.secret,
           }),
         }
       ).then((response) => {
@@ -169,13 +169,17 @@ function InteractionSection({ views, channelName, video }) {
     }
   }
   const SubscribeChannel = async () => {
+    if (currentUser == null) {
+      return;
+    }
+
     try {
       console.log(video.author);
       let response = await post(
         `https://youtube278.azurewebsites.net/api/channel/subscribe`,
         {
-          UserId: currentUser.id,
-          UserSecret: currentUser.secret,
+          UserId: currentUser?.id,
+          UserSecret: currentUser?.secret,
           ChannelId: video.author.id,
         }
       );
@@ -194,8 +198,8 @@ function InteractionSection({ views, channelName, video }) {
       let response = await post(
         `https://youtube278.azurewebsites.net/api/channel/unsubscribe`,
         {
-          UserId: currentUser.id,
-          UserSecret: currentUser.secret,
+          UserId: currentUser?.id,
+          UserSecret: currentUser?.secret,
           ChannelId: video.author.id,
         }
       );
@@ -286,7 +290,7 @@ function InteractionSection({ views, channelName, video }) {
             </p>
           </div>
           <div className="interactions__interactiveSection">
-            { (video.author.id === currentUser.id) ? "" : (<Button
+            { (currentUser == null || video.author.id === currentUser?.id) ? "" : (<Button
               className="interactions__subscribe"
               size="small"
               variant="contained"
@@ -304,6 +308,7 @@ function InteractionSection({ views, channelName, video }) {
               checkedIcon={<ThumbUpIcon style={{color: liked !== null && liked ? "blue" : "" }} />} 
               name="checkedH" />}
               label={likes}
+              disabled={currentUser == null}
               className="interactions__thumbsUp"
               color="primary"
               style={{ color: liked !== null && liked ? "blue" : "" }}
@@ -314,6 +319,7 @@ function InteractionSection({ views, channelName, video }) {
               checkedIcon={<ThumbDownIcon style={{color: disliked !== null && disliked ? "red" : "" }} />} 
               name="checkedH" />}
               label={dislikes}
+              disabled={currentUser == null}
               className="interactions__thumbsDown"
               color={"secondary"}
               style={{ color: disliked !== null && disliked ? "red" : "" }}

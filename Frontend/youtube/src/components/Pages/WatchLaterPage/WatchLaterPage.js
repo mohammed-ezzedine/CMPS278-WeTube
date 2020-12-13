@@ -18,7 +18,10 @@ function WatchLaterPage() {
 
   if (currentUser == null) {
     return (
-      <h3>You are not logged in.</h3>
+      <div>
+        <h2>Watch Later</h2>
+        <h2>You are not logged in</h2>
+      </div>
     )
   }
   

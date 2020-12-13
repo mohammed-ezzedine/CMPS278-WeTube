@@ -26,11 +26,10 @@ import { AuthContext } from '../../Auth/AuthContextProvider.js';
 import { useEditChannelStyles } from './styles.js';
 
 const EditChannel = () => {
-  const classes = useEditChannelStyles();
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
-  console.log(currentUser);
-  let { id, imageUrl } = currentUser?.channel;
+  const classes = useEditChannelStyles();
   const [readerRes, setReaderRes] = useState(null);
+  let { id, imageUrl } = (currentUser != null)? currentUser?.channel : { id: null, imageUrl: null};
   const [profilePic, setProfilePic] = useState(
     imageUrl
       ? `https://youtube278.azurewebsites.net/api/channel/image-stream/${id}`
@@ -41,6 +40,15 @@ const EditChannel = () => {
   const [open, setOpen] = useState(false);
   const [success, setSuccess] = useState(false);
   console.log(readerRes);
+
+  if (currentUser == null) {
+    return(
+      <div>
+        <h2>You are not logged in.</h2>
+      </div>
+    )
+  }
+
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {

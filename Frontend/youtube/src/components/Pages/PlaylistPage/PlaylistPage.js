@@ -9,13 +9,22 @@ function PlaylistPage() {
   const [myPlaylists, setMyPlaylists] = useState([]);
 
   useEffect(() => {
-    fetch(`https://youtube278.azurewebsites.net/api/playlist/channel/${currentUser.channel?.id}`)
+    fetch(`https://youtube278.azurewebsites.net/api/playlist/channel/${currentUser?.channel?.id}`)
     .then(d => d.json())
     .then(d => {
         setMyPlaylists(d);
     })
     .catch((error) => console.log(error));
   }, [currentUser])
+
+  if (currentUser == null) {
+    return (
+      <div>
+        <h2>Playlists</h2>
+        <h2>You are not logged in</h2>
+      </div>
+    )
+  }    
 
   return (
     <div className="playlist">

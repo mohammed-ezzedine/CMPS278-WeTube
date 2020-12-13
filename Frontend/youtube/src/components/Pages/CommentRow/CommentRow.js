@@ -26,8 +26,8 @@ function CommentRow({comment}) {
     if (comment) {
       setLikes(comment.userCommentReactions.filter(reaction => reaction.like).length);
       setDislikes(comment.userCommentReactions.filter(reaction => !reaction.like).length);
-      setLiked(comment.userCommentReactions.filter(reaction => reaction.user.id === currentUser.id && reaction.like).length > 0);
-      setDisliked(comment.userCommentReactions.filter(reaction => reaction.user.id === currentUser.id && !reaction.like).length > 0);
+      setLiked(comment.userCommentReactions.filter(reaction => reaction.user.id === currentUser?.id && reaction.like).length > 0);
+      setDisliked(comment.userCommentReactions.filter(reaction => reaction.user.id === currentUser?.id && !reaction.like).length > 0);
     }
     
   }, [comment])
@@ -36,7 +36,7 @@ function CommentRow({comment}) {
     setInputReply(e.target.value);
   }
   const like = async() => {
-    if (liked) {
+    if (liked || currentUser == null) {
       return;
     }
     try {
@@ -59,7 +59,7 @@ function CommentRow({comment}) {
     }
   }
   const dislike = async() => {
-    if (disliked) {
+    if (disliked || currentUser == null) {
       return;
     }
     try {
@@ -136,6 +136,7 @@ function CommentRow({comment}) {
               checkedIcon={<ThumbUpIcon style={{color:  liked !== null && liked ? "blue" : "" }} />} 
               name="checkedC" />}
               label={likes}
+              disabled={currentUser == null}
               className="interactions__thumbsUp"
               color="primary"
               style={{ color:  liked !== null && liked ? "blue" : "" }}
@@ -147,6 +148,7 @@ function CommentRow({comment}) {
               checkedIcon={<ThumbDownIcon style={{color: disliked ? "red" : "" }} />} 
               name="checkedC" />}
               label={dislikes}
+              disabled={currentUser == null}
               className="interactions__thumbsDown"
               color={"secondary"}
               style={{ color: disliked ? "red" : "" }}

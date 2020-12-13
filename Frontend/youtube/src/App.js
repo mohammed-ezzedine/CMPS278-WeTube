@@ -122,6 +122,12 @@ function App() {
               <EditChannel />
             </div>
           </Route>
+          <Route exact path="/home">
+            <div className="app__page">
+              <Sidebar />
+              <RecommendedVideos />
+            </div>
+          </Route>
           <Route exact path="/">
             <div className="app__page">
               <Sidebar />

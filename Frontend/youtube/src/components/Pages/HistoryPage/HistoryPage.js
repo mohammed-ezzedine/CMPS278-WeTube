@@ -9,10 +9,12 @@ function HistoryPage() {
   const currentUser = JSON.parse(window.localStorage.getItem('CurrentUser'));
 
   useEffect(() => {
-    fetch(`https://youtube278.azurewebsites.net/api/Identity/history?userId=${currentUser?.id}&userSecret=${currentUser?.secret}`)
-      .then(response => response.json())
-      .then(result => setVideos(result))
-      .catch(error => console.log('error', error));
+    if (currentUser != null) {
+      fetch(`https://youtube278.azurewebsites.net/api/Identity/history?userId=${currentUser?.id}&userSecret=${currentUser?.secret}`)
+        .then(response => response.json())
+        .then(result => setVideos(result))
+        .catch(error => console.log('error', error));
+    }
   }, []);
 
   if (currentUser != null) {
@@ -37,10 +39,12 @@ function HistoryPage() {
       </div>
     );
   } else {
-    <div className="history">
+    return (
+      <div>
         <h2>History</h2>
-        <h2>You are not signed in</h2>
+        <h2>You are not logged in</h2>
       </div>
+    )
   }
 }
 
