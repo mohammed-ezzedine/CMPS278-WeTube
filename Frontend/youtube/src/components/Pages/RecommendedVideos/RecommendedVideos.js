@@ -25,6 +25,7 @@ function RecommendedVideos() {
         {videos.map((video) => {
           return (
             <VideoCard
+              key={video.id}
               title={video.title}
               views={video.views.length}
               timestamp={video.uploadDate}

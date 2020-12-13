@@ -73,16 +73,15 @@ function ChannelStats() {
         </Grid>
       </Grid>      
       </div>
-      aaaaaa
       
     </div>
     <BarChart stats={stats} />
     </div>) : (<> 
     <Grid container alignContent="center" justify="center" spacing={0} direction="column" style={{minHeight: '100vh'}}>
-        <Grid item>
-                <CircularProgress variant="indeterminate" />Loading
-              </Grid>
-      </Grid> </>  )
+      <Grid item>
+        <CircularProgress variant="indeterminate" />Loading
+      </Grid>
+    </Grid> </>  )
 
     )
 }
