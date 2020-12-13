@@ -40,7 +40,6 @@ function PlayerRecommendation({ recommendationLink, currentVideoId }) {
           <VideoRow
             key={video.id}
             title={video.title}
-            videoId={video.id}
             path={video.id}
             views={video.views?.length}
             description={video.description}
