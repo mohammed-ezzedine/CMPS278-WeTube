@@ -32,7 +32,7 @@ function App() {
         <Header />
 
         <Switch>
-        <Route exact path="/channel/stats">
+          <Route exact path="/channel/stats">
             <div className="app__page">
               <Sidebar />
               <ChannelStats />
@@ -44,7 +44,11 @@ function App() {
               <ChannelInfoPage />
             </div>
           </Route>
-          <Route exact path="/video/:id/:playlistId?" component={VideoPlayerPage}>
+          <Route
+            exact
+            path="/video/:id/:playlistId?"
+            component={VideoPlayerPage}
+          >
             <div className="app__page">
               <Sidebar />
               <VideoPlayerPage />
