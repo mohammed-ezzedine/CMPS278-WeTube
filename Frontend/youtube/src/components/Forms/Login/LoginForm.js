@@ -163,7 +163,7 @@ export default function LoginForm({firstTime}) {
         <Copyright />
       </Box>{" "}
       {success && firstTime ? <Redirect to="/createChannel" /> : ""}
-      {success && !firstTime ? <Redirect to="../../Pages/RecommendedVideos" />: ""}
+      {success && !firstTime ? <Redirect to="/" />: ""}
     </Container>
   );
 }
