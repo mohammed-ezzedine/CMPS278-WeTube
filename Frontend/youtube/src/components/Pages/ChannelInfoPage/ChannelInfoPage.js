@@ -98,7 +98,7 @@ function ChannelInfoPage() {
           </div>
           <div className="channelInfo__interactiveInfoRight">
               {currentUser.channel.id === channel.id ? (
-                  <Button color="primary" variant="contained" href={`/channel/${channel.id}/stats`} >
+                  <Button color="primary" variant="contained" href={`/channel/stats`} >
                         Channel Info
                   </Button>
               ) :subscribeBtn }

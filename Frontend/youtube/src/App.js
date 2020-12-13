@@ -22,6 +22,7 @@ import { AuthContext } from './components/Auth/AuthContextProvider';
 import EditChannel from './components/Forms/Channel/EditChannel';
 import ChannelInfoPage from './components/Pages/ChannelInfoPage/ChannelInfoPage';
 import ChannelStats from './components/Pages/ChannelStats/ChannelStats';
+import BarChart from './components/Pages/ChannelStats/BarChart';
 
 function App() {
   const [auth, setAuth] = useContext(AuthContext);
@@ -31,97 +32,97 @@ function App() {
         <Header />
 
         <Switch>
-        <Route path="/channel/:id/stats">
+        <Route exact path="/channel/stats">
             <div className="app__page">
               <Sidebar />
               <ChannelStats />
             </div>
           </Route>
-          <Route path="/channel/:id" component={ChannelInfoPage}>
+          <Route exact path="/channel/:id" component={ChannelInfoPage}>
             <div className="app__page">
               <Sidebar />
               <ChannelInfoPage />
             </div>
           </Route>
-          <Route path="/video/:id/:playlistId?" component={VideoPlayerPage}>
+          <Route exact path="/video/:id/:playlistId?" component={VideoPlayerPage}>
             <div className="app__page">
               <Sidebar />
               <VideoPlayerPage />
             </div>
           </Route>
-          <Route path="/trending">
+          <Route exact path="/trending">
             <div className="app__page">
               <Sidebar />
               <TrendingPage />
             </div>
           </Route>
-          <Route path="/playlists">
+          <Route exact path="/playlists">
             <div className="app__page">
               <Sidebar />
               <PlaylistPage />
             </div>
           </Route>
-          <Route path="/your-videos">
+          <Route exact path="/your-videos">
             <div className="app__page">
               <Sidebar />
               <YourVideosPage />
             </div>
           </Route>
-          <Route path="/watch-later">
+          <Route exact path="/watch-later">
             <div className="app__page">
               <Sidebar />
               <WatchLaterPage />
             </div>
           </Route>
-          <Route path="/history">
+          <Route exact path="/history">
             <div className="app__page">
               <Sidebar />
               <HistoryPage />
             </div>
           </Route>
-          <Route path="/subscriptions">
+          <Route exact path="/subscriptions">
             <div className="app__page">
               <Sidebar />
               <SubscriptionPage />
             </div>
           </Route>
-          <Route path="/search/:searchTerm/:page?">
+          <Route exact path="/search/:searchTerm/:page?">
             <div className="app__page">
               <Sidebar />
               <SearchPage />
             </div>
           </Route>
-          <Route path="/add-video">
+          <Route exact path="/add-video">
             <div className="app__page">
               <Sidebar />
               <AddVideo />
             </div>
           </Route>
-          <Route path="/register">
+          <Route exact path="/register">
             <div className="app__page">
               <Sidebar />
               <RegisterForm />
             </div>
           </Route>
-          <Route path="/login">
+          <Route exact path="/login">
             <div className="app__page">
               <Sidebar />
               <LoginForm />
             </div>
           </Route>
-          <Route path="/createChannel">
+          <Route exact path="/createChannel">
             <div className="app__page">
               <Sidebar />
               <CreateChannel />
             </div>
           </Route>
-          <Route path="/editChannel">
+          <Route exact path="/editChannel">
             <div className="app__page">
               <Sidebar />
               <EditChannel />
             </div>
           </Route>
-          <Route path="/">
+          <Route exact path="/">
             <div className="app__page">
               <Sidebar />
               <RecommendedVideos />
