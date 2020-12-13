@@ -38,7 +38,7 @@ function InteractionSection({ views, channelName, video }) {
         video.reactions?.filter((reaction) => !reaction.like)?.length
       );
       setSubscribed(
-        currentUser.subscriptions?.filter(
+        currentUser?.subscriptions?.filter(
           (channel) => channel.id === video.author.id
         )?.length > 0
       );
