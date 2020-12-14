@@ -10,3 +10,4 @@ YouTube Clone using ReactJS and ASP.NET Core.
   <li> Material UI</li>
 </ul>
  
+<img src="https://github.com/mezdn/CMPS278-WeTube/blob/main/Assets/WeTube-Demo.gif" />
